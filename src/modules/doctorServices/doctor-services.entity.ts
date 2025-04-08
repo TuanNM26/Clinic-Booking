@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Doctor } from '../doctors/doctor.entity';
-import { Service } from '../services/service.entity';
+import { Doctor } from '../doctor/doctor.entity';
+import { Service } from '../service/service.entity';
 import { BaseEntity } from '../database/base.entity';
 
 @Entity('doctor_services')

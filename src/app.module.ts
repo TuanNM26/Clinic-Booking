@@ -5,25 +5,29 @@ import * as path from 'path';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './modules/users/user.module';
+import { UserModule } from './modules/user/user.module';
 // import { AuthModule } from './auth/auth.module';
-import { RolesModule } from './modules/roles/roles.module';
+import { RoleModule } from './modules/role/role.module';
 
 // Import các entity
-import { User } from './modules/users/user.entity';
-import { Role } from './modules/roles/role.entity';
-import { Doctor } from './modules/doctors/doctor.entity';
-import { Service } from './modules/services/service.entity';
+import { User } from './modules/user/user.entity';
+import { Role } from './modules/role/role.entity';
+import { Doctor } from './modules/doctor/doctor.entity';
+import { Service } from './modules/service/service.entity';
 import { DoctorService } from './modules/doctorServices/doctor-services.entity';
-import { Shift } from './modules/shifts/shifts.entity';
-import { Appointment } from './modules/appointments/appointments.entity';
+import { Shift } from './modules/shift/shifts.entity';
+import { Appointment } from './modules/appointment/appointments.entity';
 import { MailHistory } from './modules/mail-history/mail-history.entity';
-import { UserNotificationSetting } from './modules/user-notification-settings/users.notification-setting.entity';
+import { UserNotificationSetting } from './modules/user-notification-setting/users.notification-setting.entity';
+import { AuthGuardModule } from './common/guards/authGuard.module';
+import { AuthModule } from './common/auth/auth.module';
 
+const envPath = path.join(__dirname, './configs/.env-dev');
+console.log('✅ envFilePath:', envPath); // 👈 log ra để kiểm tra
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: path.join(__dirname, './configs/.env-dev'), 
+      envFilePath: path.join(__dirname, './configs/common/configs/.env-dev'), 
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({
@@ -39,13 +43,15 @@ import { UserNotificationSetting } from './modules/user-notification-settings/us
         Appointment, MailHistory, UserNotificationSetting
       ],
       synchronize: false,
-      migrations: ['dist/migrations/*.js'],
+      migrations: ['dist/common/migrations/*.js'],
       migrationsRun: true,
     }),
 
     // AuthModule,
     UserModule,
-    RolesModule,
+    RoleModule,
+    AuthGuardModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
