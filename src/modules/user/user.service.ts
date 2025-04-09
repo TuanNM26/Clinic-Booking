@@ -1,53 +1,52 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { UserRepository } from './user.repository';
 import { CreateUserDto } from './user.dto/createUser.dto';
 import { UpdateUserDto } from './user.dto/updateUser.dto';
 import * as bcrypt from 'bcrypt';
+import { User } from './user.entity';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-  ) {}
+  constructor(private readonly userRepo: UserRepository) {}
 
-  async getAll(): Promise<User[]> {
-    return this.userRepository.find();
+  getAll() {
+    return this.userRepo.findAll();
   }
 
-  async findOne(id: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { id } });
+  findOne(id: string) {
+    return this.userRepo.findById(id);
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { email } });
+  findByEmail(email: string) {
+    return this.userRepo.findByEmail(email);
   }
 
   async register(data: CreateUserDto): Promise<User> {
     const existing = await this.findByEmail(data.email);
-    if (existing) {
-      throw new Error('Email already exists');
-    }
+    if (existing) throw new Error('Email already exists');
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
-    const user = this.userRepository.create({ ...data, password: hashedPassword });
-    return this.userRepository.save(user);
+    const user = this.userRepo.createUser({
+      ...data,
+      dob: new Date(data.dob),
+      password: hashedPassword,
+    });    
+    return this.userRepo.saveUser(user);  
   }
 
   async updateUser(id: string, data: UpdateUserDto): Promise<User> {
     const existing = await this.findOne(id);
     if (!existing) throw new NotFoundException('User not found');
-
-    await this.userRepository.update(id, data);
+    const updatedData = {
+      ...data,
+      dob: data.dob ? new Date(data.dob) : undefined,
+    };
+    await this.userRepo.updateUser(id, updatedData);
     return this.findOne(id);
   }
 
   async deleteUser(id: string): Promise<void> {
-    const result = await this.userRepository.softDelete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException('User not found');
-    }
+    const result = await this.userRepo.softDelete(id);
+    if (result.affected === 0) throw new NotFoundException('User not found');
   }
 }
