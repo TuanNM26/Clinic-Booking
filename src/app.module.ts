@@ -19,9 +19,12 @@ import { Appointment } from './modules/appointments/entities/appointment.entity'
 import { AuthModule } from './common/auth/auth.module';
 import { SpecializationsModule } from './modules/specializations/specializations.module';
 import { ShiftsModule } from './modules/shifts/shifts.module';
+import { PermissionModule } from './common/guards/permission.module';
+import { PermissionsModule } from './modules/permissions/permissions.module';
+import { DoctorShiftsModule } from './modules/doctor-shifts/doctor-shifts.module';
+import { AppointmentsModule } from './modules/appointments/appointments.module';
 
 const envPath = path.join(__dirname, './configs/.env-dev');
-console.log('✅ envFilePath:', envPath); // 👈 log ra để kiểm tra
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -52,6 +55,9 @@ console.log('✅ envFilePath:', envPath); // 👈 log ra để kiểm tra
     AuthModule,
     SpecializationsModule,
     ShiftsModule,
+    PermissionsModule,
+    DoctorShiftsModule,
+    AppointmentsModule  
   ],
   controllers: [AppController],
   providers: [AppService],

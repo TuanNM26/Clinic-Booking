@@ -17,13 +17,28 @@ export class UsersRepository {
     return this.repository.save(user);
   }
 
-  getAllUsers(): Promise<User[]> {
-    return this.repository.find();
+  async getAllUsers(): Promise<User[]> {
+    return this.repository.find({
+      relations: ['role'], 
+    });
   }
-
-  getUserById(id: string): Promise<User> {
-    return this.repository.findOneBy({ id });
+  
+  async getUserById(id: string): Promise<User | null> {
+    return this.repository.findOne({
+      where: { id },
+      relations: ['role'], 
+    });
   }
+  
+  async findUsersByRole(roleName: string): Promise<User[]> {
+    return this.repository.find({
+      where: {
+        role: { name: roleName },
+      },
+      relations: ['role'],
+    });
+  }
+  
 
   getByEmail(email: string): Promise<User> {
     return this.repository.findOne({ where: { email } });

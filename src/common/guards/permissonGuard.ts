@@ -1,12 +1,12 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { PermissionService } from '../guards/permission.service';
+import { PermissionGuardService } from './permissionGuard.service';
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
-    private permissionService: PermissionService,
+    private permissionService: PermissionGuardService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -15,10 +15,7 @@ export class PermissionGuard implements CanActivate {
       context.getHandler(),
     );
 
-    console.log('🔐 Required permissions:', requiredPermissions);
-
     if (!requiredPermissions || requiredPermissions.length === 0) {
-      console.log('✅ No specific permissions required.');
       return true;
     }
 
@@ -26,7 +23,6 @@ export class PermissionGuard implements CanActivate {
     const roleId = request.user?.role;
 
     if (!roleId) {
-      console.log('⛔ No roleId found in user payload.');
       return false;
     }
 
@@ -34,21 +30,9 @@ export class PermissionGuard implements CanActivate {
 
     for (const permissionName of requiredPermissions) {
       const roleIds = await this.permissionService.getRoleIdsByPermissionName(permissionName);
-      console.log(`🔑 Permission "${permissionName}" is allowed for roles:`, roleIds);
       roleIds.forEach(id => allowedRoleIds.add(id));
     }
-
-    console.log('👤 User roleId:', roleId);
-    console.log('✅ Allowed Role IDs:', Array.from(allowedRoleIds));
-
     const hasPermission = allowedRoleIds.has(roleId);
-
-    if (!hasPermission) {
-      console.log('❌ Access denied. User role does not have required permission.');
-    } else {
-      console.log('✅ Access granted.');
-    }
-
     return hasPermission;
   }
 }

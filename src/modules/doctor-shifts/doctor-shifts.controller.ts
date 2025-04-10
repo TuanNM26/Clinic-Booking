@@ -1,13 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UsePipes, ValidationPipe, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { DoctorShiftsService } from './doctor-shifts.service';
 import { CreateDoctorShiftDto } from './dto/create-doctor-shift.dto';
 import { UpdateDoctorShiftDto } from './dto/update-doctor-shift.dto';
+import { DoctorShift } from './entities/doctor-shift.entity';
+import { Auth } from 'src/common/decorator/auth.decorator';
+import { CurrentUser } from 'src/common/decorator/currentUser.decorator';
 
 @Controller('doctor-shifts')
 export class DoctorShiftsController {
   constructor(private readonly doctorShiftsService: DoctorShiftsService) {}
 
   @Post()
+  @UsePipes(new ValidationPipe())
   create(@Body() createDoctorShiftDto: CreateDoctorShiftDto) {
     return this.doctorShiftsService.create(createDoctorShiftDto);
   }
@@ -17,18 +21,51 @@ export class DoctorShiftsController {
     return this.doctorShiftsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.doctorShiftsService.findOne(+id);
+  @Get(':doctorId/:shiftId')
+  findOne(@Param('doctorId') doctorId: string, @Param('shiftId') shiftId: string) {
+    return this.doctorShiftsService.findOne(doctorId, shiftId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDoctorShiftDto: UpdateDoctorShiftDto) {
-    return this.doctorShiftsService.update(+id, updateDoctorShiftDto);
+  @Put(':doctorId/:shiftId')
+  @UsePipes(new ValidationPipe())
+  async update(
+      @Param('doctorId') doctorId: string,
+      @Param('shiftId') shiftId: string,
+      @Body() updateDoctorShiftDto: UpdateDoctorShiftDto,
+    ): Promise<DoctorShift> {
+      return this.doctorShiftsService.update(doctorId, shiftId, updateDoctorShiftDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.doctorShiftsService.remove(+id);
+  @Delete(':doctorId/:shiftId')
+  @HttpCode(HttpStatus.OK)
+  remove(@Param('doctorId') doctorId: string, @Param('shiftId') shiftId: string) {
+    return this.doctorShiftsService.remove(doctorId, shiftId);
   }
+
+  @Get('my-schedule')
+  @Auth(['confirm_schedule'])
+  getMySchedule(
+  @CurrentUser() user: any,
+  @Query('startDate') startDate?: string,
+  @Query('endDate') endDate?: string,
+) {
+  const start = startDate ? new Date(startDate) : undefined;
+  const end = endDate ? new Date(endDate) : undefined;
+  return this.doctorShiftsService.getScheduleByDoctorIdWithFilter(user.sub, start, end);
+}
+
+
+
+@Get('schedule/:doctorId')
+@Auth(['view_schedule_statistics']) // Quyền cho admin
+getDoctorSchedule(
+  @Param('doctorId') doctorId: string,
+  @Query('startDate') startDate?: string,
+  @Query('endDate') endDate?: string,
+) {
+  const start = startDate ? new Date(startDate) : undefined;
+  const end = endDate ? new Date(endDate) : undefined;
+  return this.doctorShiftsService.getScheduleByDoctorIdWithFilter(doctorId, start, end);
+}
+
 }

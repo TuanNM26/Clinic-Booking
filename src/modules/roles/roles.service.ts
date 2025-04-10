@@ -1,26 +1,48 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { RoleRepository } from './role.repository';
+import { Role } from './entities/role.entity';
 
 @Injectable()
 export class RolesService {
-  create(createRoleDto: CreateRoleDto) {
-    return 'This action adds a new role';
+  constructor(private readonly roleRepository: RoleRepository) {}
+
+  async create(createRoleDto: CreateRoleDto): Promise<Role> {
+    const existingRole = await this.roleRepository.findByName(createRoleDto.name);
+    if (existingRole) {
+      throw new Error(`Role with name "${createRoleDto.name}" already exists`);
+    }
+    return this.roleRepository.create(createRoleDto);
   }
 
-  findAll() {
-    return `This action returns all roles`;
+  async findAll(): Promise<Role[]> {
+    return this.roleRepository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} role`;
+  async findOne(id: string): Promise<Role> {
+    const role = await this.roleRepository.findOne(id);
+    if (!role) {
+      throw new NotFoundException(`Role with ID "${id}" not found`);
+    }
+    return role;
   }
 
-  update(id: number, updateRoleDto: UpdateRoleDto) {
-    return `This action updates a #${id} role`;
+  async update(id: string, updateRoleDto: UpdateRoleDto): Promise<Role> {
+    const role = await this.roleRepository.findOne(id);
+    if (!role) {
+      throw new NotFoundException(`Role with ID "${id}" not found`);
+    }
+    await this.roleRepository.update(id, updateRoleDto);
+    return this.findOne(id);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} role`;
+  async remove(id: string): Promise<{ message: string }> {
+    const role = await this.roleRepository.findOne(id);
+    if (!role) {
+      throw new NotFoundException(`Role with ID "${id}" not found`);
+    }
+    await this.roleRepository.remove(id);
+    return { message: `Role with ID "${id}" has been successfully deleted` };
   }
 }
