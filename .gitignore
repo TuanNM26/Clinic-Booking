@@ -35,5 +35,5 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # Env files (added)
-.env-dev
-.env-staging
+src/common/configs/.env-dev
+src/common/configs/.env-staging

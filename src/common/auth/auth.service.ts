@@ -1,18 +1,22 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import  { SignOptions} from 'jsonwebtoken'; 
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt'; // ✅ Đúng cú pháp CommonJS (NodeJS)
-import { UserService } from "src/modules/user/user.service";
+import { UsersService } from "src/modules/users/users.service";
 import { LoginDto } from "./dto/LoginDTO";
 
 @Injectable()
 export default class AuthService {
-    constructor( private _configService : ConfigService, private _userService : UserService){}
+  constructor(
+    private _configService: ConfigService,
+    @Inject(forwardRef(() => UsersService))
+    private _usersService: UsersService,
+  ) {}
 
     public async hashPass(plainpassword : string){
         const salt = await bcrypt.genSalt(10);
-        return bcrypt.hash(plainpassword, salt);
+        return bcrypt.hash(plainpassword, salt);  
     }    
 
     public comparePass(plainPassword : string, hashedPassword : string){
@@ -28,13 +32,14 @@ export default class AuthService {
     }
 
     async validateUser(loginDto: LoginDto) {
-      const user = await this._userService.findByEmail(loginDto.email);
+      const user = await this._usersService.findByEmail(loginDto.email);
       if (!user || !(await this.comparePass(loginDto.password, user.password))) {
         throw new UnauthorizedException('Invalid credentials');
       }
+      console.log(user);
     
-      const payload = { username: user.name, sub: user.id, role: user.role };
-    
+      const payload = { username: user.full_name, sub: user.id, role: user.role_id };
+      
       const accessToken = this.sign(
         payload,
         this._configService.get<string>("ACCESS_KEY")!,

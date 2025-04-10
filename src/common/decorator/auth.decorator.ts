@@ -1,7 +1,10 @@
 import { applyDecorators, SetMetadata, UseGuards } from '@nestjs/common';
-import { Role } from '../enum/roles.enum';
-import { AuthGuardService } from '../guards/authGuards.service';
+import { AuthGuard } from '../guards/authGuards';
+import { PermissionGuard } from '../guards/permissonGuard';
 
-export function Auth(roles: Role[] = []): MethodDecorator {
-    return applyDecorators(SetMetadata('roles', roles), UseGuards(AuthGuardService));
-  }
+export function Auth(permissions: string[] = []): MethodDecorator {
+  return applyDecorators(
+    SetMetadata('permissions', permissions),
+    UseGuards(AuthGuard, PermissionGuard)
+  );
+}

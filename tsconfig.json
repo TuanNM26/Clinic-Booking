@@ -1,5 +1,5 @@
 {
-  "compilerOptions": {
+   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
@@ -18,5 +18,6 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "strictPropertyInitialization": false,
+    "types": []
   }
 }
