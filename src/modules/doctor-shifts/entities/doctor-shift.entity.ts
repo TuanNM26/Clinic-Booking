@@ -1,9 +1,10 @@
 import { Entity, PrimaryColumn, ManyToOne, JoinColumn, Column } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Shift } from '../../shifts/entities/shift.entity';
+import { BaseEntity } from 'src/common/database/base.entity';
 
 @Entity('doctor_shifts')
-export class DoctorShift {
+export class DoctorShift extends BaseEntity{
   @PrimaryColumn()
   doctor_id: string;
 

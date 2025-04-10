@@ -1,9 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Appointment } from '../../appointments/entities/appointment.entity';
+import { BaseEntity } from 'src/common/database/base.entity';
 
 @Entity('specializations')
-export class Specialization {
+export class Specialization extends BaseEntity{
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

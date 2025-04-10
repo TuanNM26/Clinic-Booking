@@ -14,7 +14,6 @@ import { DoctorShift } from 'src/modules/doctor-shifts/entities/doctor-shift.ent
 import { Specialization } from 'src/modules/specializations/entities/specialization.entity';
 import { Appointment } from 'src/modules/appointments/entities/appointment.entity';
 import { Permission } from 'src/modules/permissions/entities/permission.entity';
-import { RolePermission } from 'src/modules/role-permissions/entities/role-permission.entity';
 import { Shift } from 'src/modules/shifts/entities/shift.entity';
 
 
@@ -29,7 +28,6 @@ export const AppDataSource = new DataSource({
   entities: [
     User,
     Role,
-    RolePermission,
     DoctorShift,
     Permission,
     Specialization,

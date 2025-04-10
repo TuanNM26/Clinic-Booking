@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { RolePermission } from '../../role-permissions/entities/role-permission.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany } from 'typeorm';
+import { Role } from '../../roles/entities/role.entity';
+import { BaseEntity } from 'src/common/database/base.entity';
 
 @Entity('permissions')
-export class Permission {
+export class Permission extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -12,7 +13,6 @@ export class Permission {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @OneToMany(() => RolePermission, rp => rp.permission)
-  rolePermissions: RolePermission[];
+  @ManyToMany(() => Role, role => role.permissions) 
+  roles: Role[];
 }
-    

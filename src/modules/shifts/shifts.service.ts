@@ -1,26 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateShiftDto } from './dto/create-shift.dto';
 import { UpdateShiftDto } from './dto/update-shift.dto';
+import { ShiftRepository } from './shifts.repository';
+import { Shift } from './entities/shift.entity';
 
 @Injectable()
 export class ShiftsService {
-  create(createShiftDto: CreateShiftDto) {
-    return 'This action adds a new shift';
+  constructor(private readonly shiftRepository: ShiftRepository) {}
+
+  async create(createShiftDto: CreateShiftDto): Promise<Shift> {
+    return this.shiftRepository.create(createShiftDto);
   }
 
-  findAll() {
-    return `This action returns all shifts`;
+  async findAll(): Promise<Shift[]> {
+    return this.shiftRepository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} shift`;
+  async findOne(id: string): Promise<Shift> {
+    const shift = await this.shiftRepository.findOne(id);
+    if (!shift) {
+      throw new NotFoundException(`Shift with ID "${id}" not found`);
+    }
+    return shift;
   }
 
-  update(id: number, updateShiftDto: UpdateShiftDto) {
-    return `This action updates a #${id} shift`;
+  async update(id: string, updateShiftDto: UpdateShiftDto): Promise<Shift> {
+    const shift = await this.shiftRepository.findOne(id);
+    if (!shift) {
+      throw new NotFoundException(`Shift with ID "${id}" not found`);
+    }
+    await this.shiftRepository.update(id, updateShiftDto);
+    return this.findOne(id);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} shift`;
+  async remove(id: string): Promise<{ message: string }> {
+    const shift = await this.shiftRepository.findOne(id);
+    if (!shift) {
+      throw new NotFoundException(`Shift with ID "${id}" not found`);
+    }
+    await this.shiftRepository.remove(id);
+    return { message: `Shift with ID "${id}" has been successfully deleted` };
   }
 }

@@ -3,9 +3,10 @@ import { Role } from '../../roles/entities/role.entity';
 import { Specialization } from '../../specializations/entities/specialization.entity';
 import { DoctorShift } from '../../doctor-shifts/entities/doctor-shift.entity';
 import { Appointment } from '../../appointments/entities/appointment.entity';
+import { BaseEntity } from 'src/common/database/base.entity';
 
 @Entity('users')
-export class User {
+export class User extends BaseEntity{
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

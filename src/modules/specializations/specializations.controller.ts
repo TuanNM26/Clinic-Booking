@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, HttpCode, HttpStatus } from '@nestjs/common';
 import { SpecializationsService } from './specializations.service';
 import { CreateSpecializationDto } from './dto/create-specialization.dto';
 import { UpdateSpecializationDto } from './dto/update-specialization.dto';
@@ -19,16 +19,22 @@ export class SpecializationsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.specializationsService.findOne(+id);
+    return this.specializationsService.findOne(id);
   }
 
-  @Patch(':id')
+  @Get('name/:name') // Thêm endpoint get theo tên
+  findByName(@Param('name') name: string) {
+    return this.specializationsService.findByName(name);
+  }
+
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateSpecializationDto: UpdateSpecializationDto) {
-    return this.specializationsService.update(+id, updateSpecializationDto);
+    return this.specializationsService.update(id, updateSpecializationDto);
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.OK)
   remove(@Param('id') id: string) {
-    return this.specializationsService.remove(+id);
+    return this.specializationsService.remove(id);
   }
 }

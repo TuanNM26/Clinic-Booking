@@ -2,9 +2,10 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 't
 import { User } from '../../users/entities/user.entity';
 import { Shift } from '../../shifts/entities/shift.entity';
 import { Specialization } from '../../specializations/entities/specialization.entity';
+import { BaseEntity } from 'src/common/database/base.entity';
 
 @Entity('appointments')
-export class Appointment {
+export class Appointment extends BaseEntity{
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
