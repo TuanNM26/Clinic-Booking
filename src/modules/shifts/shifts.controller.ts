@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { ShiftsService } from './shifts.service';
 import { CreateShiftDto } from './dto/create-shift.dto';
 import { UpdateShiftDto } from './dto/update-shift.dto';
@@ -19,16 +19,16 @@ export class ShiftsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.shiftsService.findOne(+id);
+    return this.shiftsService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateShiftDto: UpdateShiftDto) {
-    return this.shiftsService.update(+id, updateShiftDto);
+    return this.shiftsService.update(id, updateShiftDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.shiftsService.remove(+id);
+    return this.shiftsService.remove(id);
   }
 }

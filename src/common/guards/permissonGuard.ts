@@ -32,15 +32,9 @@ export class PermissionGuard implements CanActivate {
 
     const allowedRoleIds = new Set<string>();
 
-    for (const permission of requiredPermissions) {
-      const permissionId = await this.permissionService.getPermissionIdByName(permission);
-      if (!permissionId) {
-        console.log(`⚠️ Permission "${permission}" not found.`);
-        continue;
-      }
-
-      const roleIds = await this.permissionService.getRoleIdsByPermissionId(permissionId);
-      console.log(`🔑 Permission "${permission}" (ID: ${permissionId}) is allowed for roles:`, roleIds);
+    for (const permissionName of requiredPermissions) {
+      const roleIds = await this.permissionService.getRoleIdsByPermissionName(permissionName);
+      console.log(`🔑 Permission "${permissionName}" is allowed for roles:`, roleIds);
       roleIds.forEach(id => allowedRoleIds.add(id));
     }
 

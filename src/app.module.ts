@@ -11,12 +11,14 @@ import { RolesModule } from './modules/roles/roles.module';
 import { User } from './modules/users/entities/user.entity';
 import { DoctorShift } from './modules/doctor-shifts/entities/doctor-shift.entity';
 import { Permission } from './modules/permissions/entities/permission.entity';
-import { RolePermission } from './modules/role-permissions/entities/role-permission.entity';
+// import { RolePermission } from './modules/role-permissions/entities/role-permission.entity';
 import { Role } from './modules/roles/entities/role.entity';
 import { Shift } from './modules/shifts/entities/shift.entity';
 import { Specialization } from './modules/specializations/entities/specialization.entity';
 import { Appointment } from './modules/appointments/entities/appointment.entity';
 import { AuthModule } from './common/auth/auth.module';
+import { SpecializationsModule } from './modules/specializations/specializations.module';
+import { ShiftsModule } from './modules/shifts/shifts.module';
 
 const envPath = path.join(__dirname, './configs/.env-dev');
 console.log('✅ envFilePath:', envPath); // 👈 log ra để kiểm tra
@@ -35,7 +37,10 @@ console.log('✅ envFilePath:', envPath); // 👈 log ra để kiểm tra
       password: process.env.DB_PASS,
       autoLoadEntities: true,
       entities: [
-        User, Role, DoctorShift, Permission, RolePermission, Shift,
+        User, 
+        Role, 
+        DoctorShift, Permission,  
+        Shift,
         Appointment,Specialization
       ],
       synchronize: false,
@@ -44,7 +49,9 @@ console.log('✅ envFilePath:', envPath); // 👈 log ra để kiểm tra
     }),
     UsersModule,
     RolesModule,
-    AuthModule
+    AuthModule,
+    SpecializationsModule,
+    ShiftsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

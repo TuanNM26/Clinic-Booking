@@ -1,9 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToMany } from 'typeorm';
+import { Permission } from '../../permissions/entities/permission.entity';
 import { User } from '../../users/entities/user.entity';
-import { RolePermission } from '../../role-permissions/entities/role-permission.entity';
+import { BaseEntity } from 'src/common/database/base.entity';
 
 @Entity('roles')
-export class Role {
+export class Role extends BaseEntity{
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -19,6 +20,11 @@ export class Role {
   @OneToMany(() => User, user => user.role)
   users: User[];
 
-  @OneToMany(() => RolePermission, rp => rp.role)
-  rolePermissions: RolePermission[];
+  @ManyToMany(() => Permission, permission => permission.roles) 
+  @JoinTable({
+    name: 'role_permissions',
+    joinColumn: { name: 'role_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'permission_id', referencedColumnName: 'id' },
+  })
+  permissions: Permission[];
 }

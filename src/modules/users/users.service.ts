@@ -37,7 +37,7 @@ export class UsersService {
   }
 
   async update(id: string, dto: UpdateUserDto): Promise<User> {
-    await this.findOne(id); // kiểm tra tồn tại trước
+    await this.findOne(id);
     return this.usersRepo.updateUser(id, dto);
   }
 
