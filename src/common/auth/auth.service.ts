@@ -36,8 +36,6 @@ export default class AuthService {
       if (!user || !(await this.comparePass(loginDto.password, user.password))) {
         throw new UnauthorizedException('Invalid credentials');
       }
-      console.log(user);
-    
       const payload = { username: user.full_name, sub: user.id, role: user.role_id };
       
       const accessToken = this.sign(

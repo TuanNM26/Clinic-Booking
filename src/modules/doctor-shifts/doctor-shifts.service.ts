@@ -1,26 +1,63 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDoctorShiftDto } from './dto/create-doctor-shift.dto';
 import { UpdateDoctorShiftDto } from './dto/update-doctor-shift.dto';
+import { DoctorShiftRepository } from './doctor-shift.repository';
+import { DoctorShift } from './entities/doctor-shift.entity';
+import { plainToInstance } from 'class-transformer';
+import { DoctorShiftScheduleDto } from './dto/DoctorShiftSchedule.dto';
 
 @Injectable()
 export class DoctorShiftsService {
-  create(createDoctorShiftDto: CreateDoctorShiftDto) {
-    return 'This action adds a new doctorShift';
+  constructor(private readonly doctorShiftRepository: DoctorShiftRepository) {}
+
+  async create(createDoctorShiftDto: CreateDoctorShiftDto): Promise<DoctorShift> {
+    return this.doctorShiftRepository.create(createDoctorShiftDto);
   }
 
-  findAll() {
-    return `This action returns all doctorShifts`;
+  async findAll(): Promise<DoctorShift[]> {
+    return this.doctorShiftRepository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} doctorShift`;
+  async findOne(doctorId: string, shiftId: string): Promise<DoctorShift> {
+    const doctorShift = await this.doctorShiftRepository.findOne(doctorId, shiftId);
+    if (!doctorShift) {
+      throw new NotFoundException(`DoctorShift with doctor ID "${doctorId}" and shift ID "${shiftId}" not found`);
+    }
+    return doctorShift;
   }
 
-  update(id: number, updateDoctorShiftDto: UpdateDoctorShiftDto) {
-    return `This action updates a #${id} doctorShift`;
+  async update(
+    doctorId: string,
+    shiftId: string,
+    updateDoctorShiftDto: UpdateDoctorShiftDto,
+  ): Promise<DoctorShift> {
+    const existingDoctorShift = await this.doctorShiftRepository.findOne(doctorId, shiftId);
+    if (!existingDoctorShift) {
+      throw new NotFoundException(`DoctorShift with doctor ID "${doctorId}" and shift ID "${shiftId}" not found`);
+    }
+    await this.doctorShiftRepository.update(doctorId, shiftId, updateDoctorShiftDto);
+    return this.findOne(doctorId, updateDoctorShiftDto.shiftId);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} doctorShift`;
+  async remove(doctorId: string, shiftId: string): Promise<{ message: string }> {
+    const existingDoctorShift = await this.doctorShiftRepository.findOne(doctorId, shiftId);
+    if (!existingDoctorShift) {
+      throw new NotFoundException(`DoctorShift with doctor ID "${doctorId}" and shift ID "${shiftId}" not found`);
+    }
+    await this.doctorShiftRepository.remove(doctorId, shiftId);
+    return {
+      message: `DoctorShift with doctor ID "${doctorId}" and shift ID "${shiftId}" has been successfully deleted`,
+    };
+  }
+  async getScheduleByDoctorIdWithFilter(
+    doctorId: string,
+    startDate?: Date,
+    endDate?: Date,
+  ) {
+    const data = await this.doctorShiftRepository.findByDoctorIdWithTimeFilter(doctorId, startDate, endDate);
+    
+    return plainToInstance(DoctorShiftScheduleDto, data, {
+      excludeExtraneousValues: true,
+    });
   }
 }

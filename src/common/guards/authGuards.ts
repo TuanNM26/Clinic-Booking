@@ -29,7 +29,6 @@ export class AuthGuard implements CanActivate {
         token,
         this.configService.get<string>('ACCESS_KEY'),
       );
-      console.log(decoded);
       request.user = decoded; 
       return true;
     } catch (error) {

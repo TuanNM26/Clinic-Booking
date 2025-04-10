@@ -4,6 +4,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import AuthService from 'src/common/auth/auth.service';
+import { UserResponseDto } from './dto/response.user.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UsersService {
@@ -20,15 +22,22 @@ export class UsersService {
     return this.usersRepo.createUser(userToCreate);
   }
 
-  findAll(): Promise<User[]> {
-    return this.usersRepo.getAllUsers();
+  async findAll(): Promise<UserResponseDto[]> {
+    const users = await this.usersRepo.getAllUsers();
+    return plainToInstance(UserResponseDto, users, { excludeExtraneousValues: true });
   }
 
-  async findOne(id: string): Promise<User> {
+  async findOne(id: string): Promise<UserResponseDto> {
     const user = await this.usersRepo.getUserById(id);
     if (!user) throw new NotFoundException('User not found');
-    return user;
+    return plainToInstance(UserResponseDto, user, { excludeExtraneousValues: true });
   }
+
+  async findUsersByRole(roleName: string): Promise<UserResponseDto[]> {
+    const users = await this.usersRepo.findUsersByRole(roleName);
+    return plainToInstance(UserResponseDto, users, { excludeExtraneousValues: true });
+  }
+  
 
   async findByEmail(email: string): Promise<User> {
     const user = await this.usersRepo.findByEmail(email);

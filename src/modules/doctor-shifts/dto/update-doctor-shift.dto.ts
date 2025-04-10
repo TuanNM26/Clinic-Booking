@@ -1,4 +1,11 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateDoctorShiftDto } from './create-doctor-shift.dto';
+import { IsOptional, IsString } from 'class-validator';
 
-export class UpdateDoctorShiftDto extends PartialType(CreateDoctorShiftDto) {}
+export class UpdateDoctorShiftDto {
+  @IsOptional()
+  @IsString()
+  doctorId?: string;
+
+  @IsOptional()
+  @IsString()
+  shiftId?: string;
+}

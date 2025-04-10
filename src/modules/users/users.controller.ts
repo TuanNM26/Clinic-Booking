@@ -13,7 +13,7 @@ export class UsersController {
 
   
   @Post()
-  @Auth(['view_schedule_statistics'])
+  // @Auth(['view_schedule_statistics'])
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
@@ -23,6 +23,12 @@ export class UsersController {
    {
     return this.usersService.findAll();
   }
+
+  @Get('role/doctor')
+  getDoctors() {
+  return this.usersService.findUsersByRole('Doctor');
+  }
+
 
   @Get(':id')
   findOne(@Param('id') id: string) {
