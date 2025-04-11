@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Specialization } from '../specializations/entities/specialization.entity';
 
 @Injectable()
 export class UsersRepository {
@@ -12,6 +13,13 @@ export class UsersRepository {
     private readonly repository: Repository<User>,
   ) {}
 
+  findUserBySpecialization(specialization: string) {
+    return this.repository.find({
+      where : { specialization_id : specialization  },
+      relations : ['specialization']
+    });
+  }
+
   createUser(dto: CreateUserDto): Promise<User> {
     const user = this.repository.create(dto);
     return this.repository.save(user);
@@ -19,14 +27,14 @@ export class UsersRepository {
 
   async getAllUsers(): Promise<User[]> {
     return this.repository.find({
-      relations: ['role'], 
+      relations: ['role', 'specialization'], 
     });
   }
   
   async getUserById(id: string): Promise<User | null> {
     return this.repository.findOne({
       where: { id },
-      relations: ['role'], 
+      relations: ['role', 'specialization'], 
     });
   }
   
@@ -35,7 +43,7 @@ export class UsersRepository {
       where: {
         role: { name: roleName },
       },
-      relations: ['role'],
+      relations: ['role','specialization'],
     });
   }
   

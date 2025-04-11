@@ -33,4 +33,17 @@ export class ShiftRepository {
   async remove(id: string): Promise<void> {
     await this.shiftRepository.softDelete(id);
   }
+
+  async getAvailableShifts(specializationId: string, doctorId: string, date: string) {
+    return this.shiftRepository
+      .createQueryBuilder('shift')
+      .leftJoinAndSelect('shift.doctorShifts', 'doctorShift')
+      .leftJoinAndSelect('doctorShift.doctor', 'doctor')
+      .leftJoinAndSelect('doctor.specialization', 'specialization')
+      .where('shift.date = :date', { date })
+      .andWhere('specialization.id = :specializationId', { specializationId })
+      .andWhere('doctor.id = :doctorId', {doctorId})
+      .getMany();
+  }
+  
 }

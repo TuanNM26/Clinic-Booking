@@ -7,6 +7,12 @@ import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 
 @Injectable()
 export class AppointmentsRepository {
+  findAllForDoctor(query: any, id: any): Appointment[] | PromiseLike<Appointment[]> {
+    throw new Error('Method not implemented.');
+  }
+  findOneForDoctor(id: string, dotctorId: string): Appointment | PromiseLike<Appointment> {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectRepository(Appointment)
     private readonly appointmentRepository: Repository<Appointment>,
@@ -39,5 +45,9 @@ export class AppointmentsRepository {
     if (result.affected === 0) {
       throw new NotFoundException(`Appointment with ID "${id}" not found`);
     }
+  }
+
+  async getStatusById(id: string) {
+    return this.appointmentRepository.findOne({ where: { id }, select: ['id', 'status', 'updatedAt'] });
   }
 }

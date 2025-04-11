@@ -61,6 +61,7 @@ export class UserResponseDto {
   @Expose()
   @Type(() => SpecializationInfo)
   specialization: SpecializationInfo;
+  
 }
 
 

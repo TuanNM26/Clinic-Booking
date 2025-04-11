@@ -6,6 +6,7 @@ import { PermissionGuard } from 'src/common/guards/permissonGuard';
 import { Auth } from 'src/common/decorator/auth.decorator';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/common/guards/authGuards';
+import { Specialization } from '../specializations/entities/specialization.entity';
 
 @Controller('users')
 export class UsersController {
@@ -33,6 +34,11 @@ export class UsersController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
+  }
+
+  @Get('specialization/:specialization')
+  getDoctorBySpecializtion(@Param('specialization') specialization : string){
+    return this.usersService.findUserBySpecialization(specialization);
   }
 
   @Put(':id')

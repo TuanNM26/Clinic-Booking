@@ -1,20 +1,23 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
-import { InjectRepository } from '@nestjs/typeorm';
+import { AppointmentsRepository } from './appointments.repository';
 import { Appointment } from './entities/appointment.entity';
-import { Repository, FindManyOptions } from 'typeorm';
+import { FindManyOptions } from 'typeorm';
+import { plainToInstance } from 'class-transformer';
+import { AppointmentResponseDto } from './dto/response-appointment.dto';
 
 @Injectable()
 export class AppointmentsService {
+  
+  
   constructor(
-    @InjectRepository(Appointment)
-    private readonly appointmentsRepository: Repository<Appointment>,
+    private readonly appointmentsRepository: AppointmentsRepository,
   ) {}
 
-  async create(createAppointmentDto: CreateAppointmentDto): Promise<Appointment> {
-    const appointment = this.appointmentsRepository.create(createAppointmentDto);
-    return this.appointmentsRepository.save(appointment);
+  async create(createAppointmentDto: CreateAppointmentDto): Promise<AppointmentResponseDto> {
+    const appointment =  this.appointmentsRepository.createAppointment(createAppointmentDto);
+    return plainToInstance(AppointmentResponseDto,appointment, {excludeExtraneousValues : true})
   }
 
   async findAll(query: any): Promise<Appointment[]> {
@@ -37,27 +40,30 @@ export class AppointmentsService {
     }
     // Add more filtering options based on your needs
 
-    return this.appointmentsRepository.find(findOptions);
+    return this.appointmentsRepository.findAllAppointments(findOptions);
   }
 
   async findOne(id: string): Promise<Appointment> {
-    const appointment = await this.appointmentsRepository.findOneBy({ id });
-    if (!appointment) {
-      throw new NotFoundException(`Appointment with ID "${id}" not found`);
-    }
-    return appointment;
+    return this.appointmentsRepository.findAppointmentById(id);
   }
 
   async update(id: string, updateAppointmentDto: UpdateAppointmentDto): Promise<Appointment> {
-    const appointment = await this.findOne(id);
-    await this.appointmentsRepository.merge(appointment, updateAppointmentDto);
-    return this.appointmentsRepository.save(appointment);
+    return this.appointmentsRepository.updateAppointment(id, updateAppointmentDto);
   }
 
   async remove(id: string): Promise<void> {
-    const result = await this.appointmentsRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException(`Appointment with ID "${id}" not found`);
-    }
+    return this.appointmentsRepository.deleteAppointment(id);
+  }
+
+  async getStatus(id: string) {
+    return this.appointmentsRepository.getStatusById(id);
+  }
+
+  findAllForDoctor(query: any, id: any): Appointment[] | PromiseLike<Appointment[]> {
+    return this.appointmentsRepository.findAllForDoctor(query, id);
+  }
+
+  findOneForDoctor(id: string, dotctorId: string): Appointment | PromiseLike<Appointment> {
+    return this.appointmentsRepository.findOneForDoctor(id, dotctorId);
   }
 }

@@ -15,10 +15,10 @@ export class Appointment extends BaseEntity{
   @Column({ nullable: true })
   phone_number: string;
 
-  @Column({ nullable: true })
+  @Column()
   email: string;
 
-  @Column({ type: 'date', nullable: true })
+  @Column({ type: 'date' })
   dob: Date;
 
   @Column({ nullable: true })
@@ -27,7 +27,7 @@ export class Appointment extends BaseEntity{
   @Column({ nullable: true })
   address: string;
 
-  @Column({ name: 'identity_number', nullable: true })
+  @Column({ name: 'identity_number' })
   identity_number: string;
 
   @Column()
@@ -54,7 +54,7 @@ export class Appointment extends BaseEntity{
   @Column({ type: 'enum', enum: ['pending', 'confirmed', 'cancelled', 'completed'], default: 'pending' })
   status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamp' })
   appointment_date: Date;
 
   @Column({ type: 'text', nullable: true })
