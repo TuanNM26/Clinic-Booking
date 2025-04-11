@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Shift } from './entities/shift.entity';
+import { Shift } from '../entities/shift.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateShiftDto } from './dto/create-shift.dto';
-import { UpdateShiftDto } from './dto/update-shift.dto';
+import { CreateShiftDto } from '../dto/create-shift.dto';
+import { UpdateShiftDto } from '../dto/update-shift.dto';
 
 @Injectable()
 export class ShiftRepository {

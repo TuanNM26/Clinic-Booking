@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository, UpdateResult } from 'typeorm';
-import { DoctorShift } from './entities/doctor-shift.entity';
+import { DoctorShift } from '../entities/doctor-shift.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateDoctorShiftDto } from './dto/create-doctor-shift.dto';
-import { UpdateDoctorShiftDto } from './dto/update-doctor-shift.dto';
+import { CreateDoctorShiftDto } from '../dto/create-doctor-shift.dto';
+import { UpdateDoctorShiftDto } from '../dto/update-doctor-shift.dto';
 
 @Injectable()
 export class DoctorShiftRepository {

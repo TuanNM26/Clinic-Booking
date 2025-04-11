@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateShiftDto } from './dto/create-shift.dto';
-import { UpdateShiftDto } from './dto/update-shift.dto';
-import { ShiftRepository } from './shifts.repository';
-import { Shift } from './entities/shift.entity';
+import { CreateShiftDto } from '../dto/create-shift.dto';
+import { UpdateShiftDto } from '../dto/update-shift.dto';
+import { ShiftRepository } from '../repositories/shifts.repository';
+import { Shift } from '../entities/shift.entity';
 import { plainToInstance } from 'class-transformer';
-import { AvailableShiftDto } from './dto/AvailableShiftDto';
+import { AvailableShiftDto } from '../dto/AvailableShiftDto';
 
 @Injectable()
 export class ShiftsService {

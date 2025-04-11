@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Query, Put, Req } from '@nestjs/common';
-import { AppointmentsService } from './appointments.service';
+import { AppointmentsService } from './services/appointments.service';
 import { CreateAppointmentDto } from './dto';
 import { UpdateAppointmentDto } from './dto';
 import { Appointment } from './entities/appointment.entity';

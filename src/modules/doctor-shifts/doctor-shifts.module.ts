@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { DoctorShiftsService } from './doctor-shifts.service';
+import { DoctorShiftsService } from './services/doctor-shifts.service';
 import { DoctorShiftsController } from './doctor-shifts.controller';
-import { DoctorShiftRepository } from './doctor-shift.repository';
+import { DoctorShiftRepository } from './repositories/doctor-shift.repository';
 import { DoctorShift } from './entities/doctor-shift.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/common/auth/auth.module';
