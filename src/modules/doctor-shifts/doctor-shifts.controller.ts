@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UsePipes, ValidationPipe, HttpCode, HttpStatus, Query } from '@nestjs/common';
-import { DoctorShiftsService } from './doctor-shifts.service';
+import { DoctorShiftsService } from './services/doctor-shifts.service';
 import { CreateDoctorShiftDto } from './dto/create-doctor-shift.dto';
 import { UpdateDoctorShiftDto } from './dto/update-doctor-shift.dto';
 import { DoctorShift } from './entities/doctor-shift.entity';

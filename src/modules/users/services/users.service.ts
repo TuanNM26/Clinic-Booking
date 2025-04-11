@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UsersRepository } from './user.repository';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { UsersRepository } from '../repositories/user.repository';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
+import { User } from '../entities/user.entity';
 import AuthService from 'src/common/auth/auth.service';
-import { UserResponseDto } from './dto/response.user.dto';
+import { UserResponseDto } from '../dto/response.user.dto';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()

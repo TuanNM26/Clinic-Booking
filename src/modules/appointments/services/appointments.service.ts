@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { UpdateAppointmentDto } from './dto';
-import { AppointmentsRepository } from './appointments.repository';
-import { Appointment } from './entities/appointment.entity';
+import { CreateAppointmentDto } from '../dto/create-appointment.dto';
+import { UpdateAppointmentDto } from '../dto';
+import { AppointmentsRepository } from '../repositories/appointments.repository';
+import { Appointment } from '../entities/appointment.entity';
 import { FindManyOptions } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
-import { AppointmentResponseDto } from './dto';
+import { AppointmentResponseDto } from '../dto';
 import { AppointmentStatus } from 'src/common/enum/status.enum';
 
 @Injectable()

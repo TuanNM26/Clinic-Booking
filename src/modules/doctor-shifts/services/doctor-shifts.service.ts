@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateDoctorShiftDto } from './dto/create-doctor-shift.dto';
-import { UpdateDoctorShiftDto } from './dto/update-doctor-shift.dto';
-import { DoctorShiftRepository } from './doctor-shift.repository';
-import { DoctorShift } from './entities/doctor-shift.entity';
+import { CreateDoctorShiftDto } from '../dto/create-doctor-shift.dto';
+import { UpdateDoctorShiftDto } from '../dto/update-doctor-shift.dto';
+import { DoctorShiftRepository } from '../repositories/doctor-shift.repository';
+import { DoctorShift } from '../entities/doctor-shift.entity';
 import { plainToInstance } from 'class-transformer';
-import { DoctorShiftScheduleDto } from './dto/DoctorShiftSchedule.dto';
+import { DoctorShiftScheduleDto } from '../dto/DoctorShiftSchedule.dto';
 
 @Injectable()
 export class DoctorShiftsService {

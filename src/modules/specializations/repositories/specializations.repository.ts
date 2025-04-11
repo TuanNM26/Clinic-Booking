@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Specialization } from './entities/specialization.entity';
+import { Specialization } from '../entities/specialization.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UpdateSpecializationDto } from './dto/update-specialization.dto';
-import { CreateSpecializationDto } from './dto/create-specialization.dto';
+import { UpdateSpecializationDto } from '../dto';
+import { CreateSpecializationDto } from '../dto';
 
 @Injectable()
 export class SpecializationRepository {

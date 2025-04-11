@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateSpecializationDto } from './dto/create-specialization.dto';
-import { UpdateSpecializationDto } from './dto/update-specialization.dto';
-import { SpecializationRepository } from './specializations.repository';
-import { Specialization } from './entities/specialization.entity';
+import { CreateSpecializationDto } from '../dto/create-specialization.dto';
+import { UpdateSpecializationDto } from '../dto/update-specialization.dto';
+import { SpecializationRepository } from '../repositories/specializations.repository';
+import { Specialization } from '../entities/specialization.entity';
 
 @Injectable()
 export class SpecializationsService {

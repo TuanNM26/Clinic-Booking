@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ShiftsService } from './shifts.service';
+import { ShiftsService } from './services/shifts.service';
 import { ShiftsController } from './shifts.controller';
-import { ShiftRepository } from './shifts.repository';
+import { ShiftRepository } from './repositories/shifts.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Shift } from './entities/shift.entity';
 
