@@ -1,4 +1,4 @@
-// doctor-shift-schedule.dto.ts
+
 import { Expose, Type } from 'class-transformer';
 
 export class ShiftDto {

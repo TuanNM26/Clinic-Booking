@@ -3,6 +3,8 @@ import { CreateShiftDto } from './dto/create-shift.dto';
 import { UpdateShiftDto } from './dto/update-shift.dto';
 import { ShiftRepository } from './shifts.repository';
 import { Shift } from './entities/shift.entity';
+import { plainToInstance } from 'class-transformer';
+import { AvailableShiftDto } from './dto/AvailableShiftDto';
 
 @Injectable()
 export class ShiftsService {
@@ -41,4 +43,12 @@ export class ShiftsService {
     await this.shiftRepository.remove(id);
     return { message: `Shift with ID "${id}" has been successfully deleted` };
   }
+
+  async getAvailableShifts(specializationId: string, doctorId : string ,date: string ) {
+    const shifts = await this.shiftRepository.getAvailableShifts(specializationId, doctorId, date);
+  
+    return plainToInstance(AvailableShiftDto, shifts, { excludeExtraneousValues: true });
+  }
+  
+  
 }

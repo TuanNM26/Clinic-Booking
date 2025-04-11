@@ -9,6 +9,6 @@ import { Shift } from './entities/shift.entity';
   imports: [TypeOrmModule.forFeature([Shift])],
   controllers: [ShiftsController],
   providers: [ShiftsService,ShiftRepository],
-  exports: [ShiftsService,ShiftRepository]
+  exports: [ShiftsService]
 })
 export class ShiftsModule {}

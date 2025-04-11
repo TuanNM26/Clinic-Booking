@@ -1,6 +1,6 @@
-// create-appointment.dto.ts
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsString, IsOptional, IsDate, IsEnum } from 'class-validator';
+import { AppointmentStatus } from 'src/common/enum/status.enum';
 
 export class CreateAppointmentDto {
   @IsNotEmpty()
@@ -17,7 +17,7 @@ export class CreateAppointmentDto {
 
   @IsOptional()
   @IsDate()
-  @Type(() => Date) // ✅ thêm dòng này
+  @Type(() => Date) 
   dob?: Date;
 
 
@@ -46,8 +46,8 @@ export class CreateAppointmentDto {
   specialized_id: string;
 
   @IsOptional()
-  @IsEnum(['pending', 'confirmed', 'cancelled', 'completed'])
-  status?: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+  @IsEnum(AppointmentStatus)
+  status?: AppointmentStatus;
 
   @IsOptional()
   @IsDate()

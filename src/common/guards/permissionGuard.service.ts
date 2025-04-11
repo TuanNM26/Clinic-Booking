@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Permission } from '../../modules/permissions/entities/permission.entity';
-import { Role } from '../../modules/roles/entities/role.entity'; // Import Role entity
+import { Role } from '../../modules/roles/entities/role.entity';
 
 @Injectable()
 export class PermissionGuardService {
@@ -11,7 +11,7 @@ export class PermissionGuardService {
     private readonly permissionRepository: Repository<Permission>,
 
     @InjectRepository(Role)
-    private readonly roleRepository: Repository<Role>, // Inject Role repository
+    private readonly roleRepository: Repository<Role>,
   ) {}
 
   async getPermissionIdByName(permissionName: string): Promise<string | null> {

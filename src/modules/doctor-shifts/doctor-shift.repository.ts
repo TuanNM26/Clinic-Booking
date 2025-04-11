@@ -13,10 +13,10 @@ export class DoctorShiftRepository {
   ) {}
 
   async create(createDoctorShiftDto: CreateDoctorShiftDto): Promise<DoctorShift> {
+    console.log(createDoctorShiftDto);
     const doctorShift = this.doctorShiftRepository.create({
-      doctor_id: createDoctorShiftDto.doctorId, // Map DTO property to entity property
-      shift_id: createDoctorShiftDto.shiftId,   // Map DTO property to entity property
-      // Các thuộc tính khác của DoctorShift nếu có và được cung cấp trong DTO
+      doctor_id: createDoctorShiftDto.doctorId, 
+      shift_id: createDoctorShiftDto.shiftId,   
     });
     return await this.doctorShiftRepository.save(doctorShift);
   }
@@ -25,25 +25,25 @@ export class DoctorShiftRepository {
     return await this.doctorShiftRepository.find();
   }
 
-  async findOne(doctorId: string, shiftId: string): Promise<DoctorShift | null> {
-    try {
-      const result = await this.doctorShiftRepository
-        .createQueryBuilder('doctor_shift')
-        .where('doctor_shift.doctor_id = :doctorId', { doctorId })
-        .andWhere('doctor_shift.shift_id = :shiftId', { shiftId })
+  async findOne(doctorId : string , shiftId : string) : Promise<DoctorShift | null> {
+       try {
+        const result = this.doctorShiftRepository.createQueryBuilder('doctor_shift')
+        .where('doctor_Shift.doctor_id = :doctorId' , { doctorId})
+        .andWhere('doctor_shift.shift_id = :shiftid', {shiftId})
         .getOne();
-      return result;
-    } catch (error) {
-      return null;
-    }
+        return result
+       }
+       catch (error){
+        return null
+       }
   }
-
+  
   async update(
     doctorId: string,
     shiftId: string,
     updateDoctorShiftDto: UpdateDoctorShiftDto,
   ): Promise<DoctorShift> {
-    const existingDoctorShift = await this.findOne(doctorId, shiftId); // Tìm kiếm bằng ID cũ
+    const existingDoctorShift = await this.findOne(doctorId, shiftId); 
 
     const updateResult: UpdateResult = await this.doctorShiftRepository.update(
       { doctor_id: doctorId, shift_id: shiftId },
@@ -63,11 +63,7 @@ export class DoctorShiftRepository {
     await this.doctorShiftRepository.softDelete({ doctor_id: doctorId, shift_id: shiftId });
   }
 
-  async findByDoctorIdWithTimeFilter(
-    doctorId: string,
-    startDate?: Date,
-    endDate?: Date,
-  ): Promise<DoctorShift[]> {
+  async findByDoctorIdWithTimeFilter(doctorId: string,startDate?: Date,endDate?: Date,): Promise<DoctorShift[]> {
     const query = this.doctorShiftRepository
       .createQueryBuilder('doctor_shift')
       .leftJoinAndSelect('doctor_shift.doctor', 'doctor')

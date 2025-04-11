@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Query } from '@nestjs/common';
 import { ShiftsService } from './shifts.service';
 import { CreateShiftDto } from './dto/create-shift.dto';
 import { UpdateShiftDto } from './dto/update-shift.dto';
@@ -12,7 +12,7 @@ export class ShiftsController {
     return this.shiftsService.create(createShiftDto);
   }
 
-  @Get()
+  @Get('all')
   findAll() {
     return this.shiftsService.findAll();
   }
@@ -31,4 +31,16 @@ export class ShiftsController {
   remove(@Param('id') id: string) {
     return this.shiftsService.remove(id);
   }
+
+ 
+  @Get()
+  async getAvailableShifts(
+  @Query('specialization_id') specializationId: string,
+  @Query('doctor_id') doctorId : string,
+  @Query('date') date: string,
+) {
+  return this.shiftsService.getAvailableShifts(specializationId,doctorId ,date);
+}
+
+
 }

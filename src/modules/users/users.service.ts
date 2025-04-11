@@ -9,6 +9,7 @@ import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UsersService {
+  
   constructor(private readonly usersRepo: UsersRepository, private authService : AuthService) {}
 
   async create(dto: CreateUserDto): Promise<User> {
@@ -24,6 +25,7 @@ export class UsersService {
 
   async findAll(): Promise<UserResponseDto[]> {
     const users = await this.usersRepo.getAllUsers();
+    console.log(users);
     return plainToInstance(UserResponseDto, users, { excludeExtraneousValues: true });
   }
 
@@ -53,5 +55,10 @@ export class UsersService {
   async remove(id: string): Promise<void> {
     await this.findOne(id);
     return this.usersRepo.deleteUser(id);
+  }
+
+  async findUserBySpecialization(specialization: string) {
+    const user = await this.usersRepo.findUserBySpecialization(specialization);
+    return user;
   }
 }

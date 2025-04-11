@@ -11,6 +11,7 @@ export class DoctorShiftsService {
   constructor(private readonly doctorShiftRepository: DoctorShiftRepository) {}
 
   async create(createDoctorShiftDto: CreateDoctorShiftDto): Promise<DoctorShift> {
+    console.log(createDoctorShiftDto);
     return this.doctorShiftRepository.create(createDoctorShiftDto);
   }
 
