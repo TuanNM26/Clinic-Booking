@@ -1,10 +1,15 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Query, Put, Req } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
-import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { UpdateAppointmentDto } from './dto/update-appointment.dto';
+import { CreateAppointmentDto } from './dto';
+import { UpdateAppointmentDto } from './dto';
 import { Appointment } from './entities/appointment.entity';
-import { AppointmentResponseDto } from './dto/response-appointment.dto';
+import { AppointmentResponseDto } from './dto';
 import { CurrentUser } from 'src/common/decorator/currentUser.decorator';
+import { User } from '../users/entities/user.entity';
+import { Auth } from 'src/common/decorator/auth.decorator';
+import { UpdateAppointmentNotesDto } from './dto';
+import { UpdateAppointmentStatusDto } from './dto';
+import { AppointmentStatus } from 'src/common/enum/status.enum';
 
 @Controller('appointments')
 export class AppointmentsController {
@@ -32,15 +37,10 @@ export class AppointmentsController {
   }
 
   @Get('doctor/appointments')
+  @Auth()
   async getDoctorAppointments(@Query() query: any, @CurrentUser() doctor: any): Promise<Appointment[]> {
-    return this.appointmentsService.findAllForDoctor(query, doctor.id);
-  }
-
-  // Endpoint mới 2: GET /doctor/appointments/:id (Chi tiết lịch hẹn của bác sĩ - Yêu cầu token)
-  @Get('doctor/appointments/:id')
-  async getDoctorAppointmentById(@Param('id') id: string, @CurrentUser() doctor: any): Promise<Appointment> {
-    return this.appointmentsService.findOneForDoctor(id, doctor.id);
-    
+    console.log(doctor);
+    return this.appointmentsService.findAllForDoctor(query, doctor.sub);
   }
 
   @Put(':id')
@@ -49,12 +49,28 @@ export class AppointmentsController {
     return this.appointmentsService.update(id, updateAppointmentDto);
   }
 
+  @Patch('status/:id')
+  @Auth()
+  @UsePipes(new ValidationPipe())
+  async updateAppointmentStatus(
+    @Param('id') id: string,
+    @Body() updateAppointmentStatusDto: UpdateAppointmentStatusDto,
+  ): Promise<Appointment> {
+    return this.appointmentsService.updateAppointmentStatus(id, updateAppointmentStatusDto.status);
+  }
+
+  @Patch('notes/:id')
+  @Auth() 
+  @UsePipes(new ValidationPipe())
+  async updateAppointmentNotes(
+    @Param('id') id: string,
+    @Body() updateAppointmentNotesDto: UpdateAppointmentNotesDto,
+  ): Promise<Appointment> {
+    return this.appointmentsService.updateAppointmentNotes(id, updateAppointmentNotesDto.notes);
+  }
+  
   @Delete(':id')
   remove(@Param('id') id: string): Promise<void> {
     return this.appointmentsService.remove(id);
   }
-
- 
-
-
 }

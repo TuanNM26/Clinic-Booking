@@ -7,6 +7,8 @@ import { Auth } from 'src/common/decorator/auth.decorator';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/common/guards/authGuards';
 import { Specialization } from '../specializations/entities/specialization.entity';
+import { CurrentUser } from 'src/common/decorator/currentUser.decorator';
+import { User } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -19,7 +21,7 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @Get()
+  @Get('getAll')
   findAll()
    {
     return this.usersService.findAll();
@@ -34,6 +36,12 @@ export class UsersController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
+  }
+
+  @Get()
+  @Auth()
+  getProfiles(@CurrentUser() user : User) {
+    return this.usersService.findOne(user.id);
   }
 
   @Get('specialization/:specialization')

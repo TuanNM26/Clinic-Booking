@@ -13,7 +13,6 @@ export class SpecializationsService {
       createSpecializationDto.name,
     );
     if (existingSpecialization) {
-      // Bạn có thể throw một exception cụ thể hơn ở đây, ví dụ: ConflictException
       throw new Error(`Specialization with name "${createSpecializationDto.name}" already exists`);
     }
     return this.specializationRepository.create(createSpecializationDto);
@@ -44,10 +43,9 @@ export class SpecializationsService {
       updateSpecializationDto,
     );
     if (!updatedSpecialization) {
-      // Trường hợp cập nhật không thành công (có thể không cần thiết tùy logic)
       throw new Error(`Failed to update specialization with ID "${id}"`);
     }
-    return this.findOne(id); // Lấy lại bản ghi đã cập nhật
+    return this.findOne(id);
   }
 
   async remove(id: string): Promise<void> {
@@ -58,7 +56,7 @@ export class SpecializationsService {
     await this.specializationRepository.remove(id);
   }
 
-  async findByName(name: string): Promise<Specialization> { // Thêm phương thức findByName
+  async findByName(name: string): Promise<Specialization> { 
     const specialization = await this.specializationRepository.findByName(name);
     if (!specialization) {
       throw new NotFoundException(`Specialization with name "${name}" not found`);

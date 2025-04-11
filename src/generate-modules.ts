@@ -14,8 +14,6 @@ const folders = fs.readdirSync(basePath).filter(folder => {
 folders.forEach(folder => {
   const folderPath = path.join(basePath, folder);
   const className = folder.charAt(0).toUpperCase() + folder.slice(1);
-
-  // Create .dto directory if not exists
   const dtoPath = path.join(folderPath, `${folder}.dto`);
   if (!fs.existsSync(dtoPath)) fs.mkdirSync(dtoPath);
 

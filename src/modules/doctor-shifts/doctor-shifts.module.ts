@@ -8,9 +8,11 @@ import { AuthModule } from 'src/common/auth/auth.module';
 import { PermissionModule } from 'src/common/guards/permission.module';
 
 @Module({
-  imports:  [TypeOrmModule.forFeature([DoctorShift]),AuthModule,PermissionModule],
+  imports:  [TypeOrmModule.forFeature([DoctorShift]),
+             AuthModule,
+             PermissionModule],
   controllers: [DoctorShiftsController],
   providers: [DoctorShiftsService, DoctorShiftRepository],
-  exports:[DoctorShiftsService, DoctorShiftRepository]
+  exports:[DoctorShiftsService]
 })
 export class DoctorShiftsModule {}

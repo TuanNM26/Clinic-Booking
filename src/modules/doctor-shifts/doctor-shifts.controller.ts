@@ -5,6 +5,7 @@ import { UpdateDoctorShiftDto } from './dto/update-doctor-shift.dto';
 import { DoctorShift } from './entities/doctor-shift.entity';
 import { Auth } from 'src/common/decorator/auth.decorator';
 import { CurrentUser } from 'src/common/decorator/currentUser.decorator';
+import { User } from '../users/entities/user.entity';
 
 @Controller('doctor-shifts')
 export class DoctorShiftsController {
@@ -15,6 +16,21 @@ export class DoctorShiftsController {
   create(@Body() createDoctorShiftDto: CreateDoctorShiftDto) {
     return this.doctorShiftsService.create(createDoctorShiftDto);
   }
+
+  @Post('register')
+@Auth() 
+@UsePipes(new ValidationPipe())
+registerDoctorShift(
+  @Body('shiftId') shiftId: string, 
+  @CurrentUser() user: any          
+) {
+  const createDoctorShiftDto = new CreateDoctorShiftDto();
+  createDoctorShiftDto.shiftId = shiftId;
+  createDoctorShiftDto.doctorId = user.sub; 
+
+  return this.doctorShiftsService.create(createDoctorShiftDto);
+}
+
 
   @Get()
   findAll() {
@@ -54,10 +70,8 @@ export class DoctorShiftsController {
   return this.doctorShiftsService.getScheduleByDoctorIdWithFilter(user.sub, start, end);
 }
 
-
-
 @Get('schedule/:doctorId')
-@Auth(['view_schedule_statistics']) // Quyền cho admin
+@Auth(['view_schedule_statistics'])
 getDoctorSchedule(
   @Param('doctorId') doctorId: string,
   @Query('startDate') startDate?: string,

@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
-import { UpdateAppointmentDto } from './dto/update-appointment.dto';
+import { UpdateAppointmentDto } from './dto';
 import { AppointmentsRepository } from './appointments.repository';
 import { Appointment } from './entities/appointment.entity';
 import { FindManyOptions } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
-import { AppointmentResponseDto } from './dto/response-appointment.dto';
+import { AppointmentResponseDto } from './dto';
+import { AppointmentStatus } from 'src/common/enum/status.enum';
 
 @Injectable()
 export class AppointmentsService {
@@ -38,7 +39,6 @@ export class AppointmentsService {
     if (query.date) {
       findOptions.where = { ...findOptions.where, appointment_date: query.date };
     }
-    // Add more filtering options based on your needs
 
     return this.appointmentsRepository.findAllAppointments(findOptions);
   }
@@ -51,6 +51,22 @@ export class AppointmentsService {
     return this.appointmentsRepository.updateAppointment(id, updateAppointmentDto);
   }
 
+  async updateAppointmentStatus(id: string, status: AppointmentStatus): Promise<Appointment> {
+    const updatedAppointment = await this.appointmentsRepository.updateStatus(id, status);
+    if (!updatedAppointment) {
+      throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
+    }
+    return updatedAppointment;
+  }
+
+  async updateAppointmentNotes(id: string, notes: string): Promise<Appointment> {
+    const updatedAppointment = await this.appointmentsRepository.updateNotes(id, notes);
+    if (!updatedAppointment) {
+      throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
+    }
+    return updatedAppointment;
+  }
+
   async remove(id: string): Promise<void> {
     return this.appointmentsRepository.deleteAppointment(id);
   }
@@ -59,11 +75,7 @@ export class AppointmentsService {
     return this.appointmentsRepository.getStatusById(id);
   }
 
-  findAllForDoctor(query: any, id: any): Appointment[] | PromiseLike<Appointment[]> {
+  findAllForDoctor(query: any, id: string): Appointment[] | PromiseLike<Appointment[]> {
     return this.appointmentsRepository.findAllForDoctor(query, id);
-  }
-
-  findOneForDoctor(id: string, dotctorId: string): Appointment | PromiseLike<Appointment> {
-    return this.appointmentsRepository.findOneForDoctor(id, dotctorId);
   }
 }

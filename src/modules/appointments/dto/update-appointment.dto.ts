@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsOptional, IsString, IsDate, IsEnum } from 'class-validator';
+import { AppointmentStatus } from 'src/common/enum/status.enum';
 
 export class UpdateAppointmentDto {
   @IsOptional()
@@ -45,8 +46,8 @@ export class UpdateAppointmentDto {
   specialized_id?: string;
 
   @IsOptional()
-  @IsEnum(['pending', 'confirmed', 'cancelled', 'completed'])
-  status?: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+  @IsEnum(AppointmentStatus)
+  status?: AppointmentStatus;
 
   @IsOptional()
   @IsDate()

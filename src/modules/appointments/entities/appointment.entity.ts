@@ -3,6 +3,7 @@ import { User } from '../../users/entities/user.entity';
 import { Shift } from '../../shifts/entities/shift.entity';
 import { Specialization } from '../../specializations/entities/specialization.entity';
 import { BaseEntity } from 'src/common/database/base.entity';
+import { AppointmentStatus } from 'src/common/enum/status.enum';
 
 @Entity('appointments')
 export class Appointment extends BaseEntity{
@@ -51,8 +52,13 @@ export class Appointment extends BaseEntity{
   @JoinColumn({ name: 'specialized_id' })
   specialized: Specialization;
 
-  @Column({ type: 'enum', enum: ['pending', 'confirmed', 'cancelled', 'completed'], default: 'pending' })
-  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+  @Column({
+    type: 'enum',
+    enum: AppointmentStatus,
+    default: AppointmentStatus.PENDING,
+  })
+  status: AppointmentStatus; 
+
 
   @Column({ type: 'timestamp' })
   appointment_date: Date;

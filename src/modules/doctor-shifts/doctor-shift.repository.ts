@@ -13,10 +13,10 @@ export class DoctorShiftRepository {
   ) {}
 
   async create(createDoctorShiftDto: CreateDoctorShiftDto): Promise<DoctorShift> {
+    console.log(createDoctorShiftDto);
     const doctorShift = this.doctorShiftRepository.create({
-      doctor_id: createDoctorShiftDto.doctorId, // Map DTO property to entity property
-      shift_id: createDoctorShiftDto.shiftId,   // Map DTO property to entity property
-      // Các thuộc tính khác của DoctorShift nếu có và được cung cấp trong DTO
+      doctor_id: createDoctorShiftDto.doctorId, 
+      shift_id: createDoctorShiftDto.shiftId,   
     });
     return await this.doctorShiftRepository.save(doctorShift);
   }

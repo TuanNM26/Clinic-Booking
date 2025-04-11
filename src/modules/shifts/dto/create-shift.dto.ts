@@ -13,7 +13,7 @@ export class CreateShiftDto {
   @IsString()
   endTime: string;
 
-  @IsOptional() // Trường này không bắt buộc khi tạo mới (có thể có giá trị mặc định)
+  @IsOptional() 
   @IsEnum(['available', 'booked', 'completed'])
   status?: 'available' | 'booked' | 'completed';
 }

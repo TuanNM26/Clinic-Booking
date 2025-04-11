@@ -22,7 +22,7 @@ export class SpecializationsController {
     return this.specializationsService.findOne(id);
   }
 
-  @Get('name/:name') // Thêm endpoint get theo tên
+  @Get('name/:name') 
   findByName(@Param('name') name: string) {
     return this.specializationsService.findByName(name);
   }

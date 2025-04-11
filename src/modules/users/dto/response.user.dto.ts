@@ -52,16 +52,14 @@ export class UserResponseDto {
   @Expose()
   experience_years: number;
 
-  // Role name
   @Expose()
   @Type(() => RoleInfo)
   role: RoleInfo;
 
-  // Specialization name
   @Expose()
   @Type(() => SpecializationInfo)
   specialization: SpecializationInfo;
-  
+
 }
 
 

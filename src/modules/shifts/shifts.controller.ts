@@ -39,11 +39,8 @@ export class ShiftsController {
   @Query('doctor_id') doctorId : string,
   @Query('date') date: string,
 ) {
-  console.log('getAvailableShifts controller called'); // Thêm log này
-  console.log('specializationId:', specializationId);
-  console.log('doctorId:', doctorId);
-  console.log('date:', date);
   return this.shiftsService.getAvailableShifts(specializationId,doctorId ,date);
 }
+
 
 }

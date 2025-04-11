@@ -2,7 +2,7 @@ import { forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/c
 import { ConfigService } from "@nestjs/config";
 import  { SignOptions} from 'jsonwebtoken'; 
 import * as jwt from 'jsonwebtoken';
-import * as bcrypt from 'bcrypt'; // ✅ Đúng cú pháp CommonJS (NodeJS)
+import * as bcrypt from 'bcrypt'; 
 import { UsersService } from "src/modules/users/users.service";
 import { LoginDto } from "./dto/LoginDTO";
 
