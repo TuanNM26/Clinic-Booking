@@ -1,9 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Repository, UpdateResult } from 'typeorm';
 import { DoctorShift } from '../entities/doctor-shift.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDoctorShiftDto } from '../dto/create-doctor-shift.dto';
 import { UpdateDoctorShiftDto } from '../dto/update-doctor-shift.dto';
+import { Shift } from 'src/modules/shifts/entities/shift.entity';
+import { User } from 'src/modules/users/entities/user.entity';
 
 @Injectable()
 export class DoctorShiftRepository {
@@ -13,11 +15,49 @@ export class DoctorShiftRepository {
   ) {}
 
   async create(createDoctorShiftDto: CreateDoctorShiftDto): Promise<DoctorShift> {
-    console.log(createDoctorShiftDto);
-    const doctorShift = this.doctorShiftRepository.create({
-      doctor_id: createDoctorShiftDto.doctorId, 
-      shift_id: createDoctorShiftDto.shiftId,   
+    const { doctorId, shiftId } = createDoctorShiftDto;
+    const shift = await this.doctorShiftRepository.manager.findOne(Shift, {
+      where: { id: shiftId },
     });
+  
+    if (!shift) {
+      throw new NotFoundException('Ca làm không tồn tại.');
+    }
+  
+    const today = new Date();
+    const shiftDate = new Date(shift.date);
+    if (shiftDate < new Date(today.setHours(0, 0, 0, 0))) {
+      throw new BadRequestException('Không thể đăng ký ca làm trong quá khứ.');
+    }
+  
+    const doctor = await this.doctorShiftRepository.manager.findOne(User, {
+      where: { id: doctorId },
+    });
+  
+    if (!doctor || !doctor.is_active) {
+      throw new BadRequestException('Bác sĩ không tồn tại hoặc đã ngưng hoạt động.');
+    }
+  
+    const conflict = await this.doctorShiftRepository
+      .createQueryBuilder('doctor_shift')
+      .innerJoin('doctor_shift.shift', 's')
+      .where('doctor_shift.doctor_id = :doctorId', { doctorId })
+      .andWhere('s.date = :shiftDate', { shiftDate: shift.date })
+      .andWhere(':startTime < s.end_time AND :endTime > s.start_time', {
+        startTime: shift.start_time,
+        endTime: shift.end_time,
+      })
+      .getOne();
+  
+    if (conflict) {
+      throw new BadRequestException('Bác sĩ đã có ca làm trùng thời gian trong ngày này.');
+    }
+
+    const doctorShift = this.doctorShiftRepository.create({
+      doctor_id: doctorId,
+      shift_id: shiftId,
+    });
+  
     return await this.doctorShiftRepository.save(doctorShift);
   }
 

@@ -41,7 +41,6 @@ export class AppointmentsController {
   @Get('doctor/appointments')
   @Auth([`${Permission.GET_APPOINTMENTS}`]) 
   async getDoctorAppointments(@Query() query: any, @CurrentUser() doctor: any): Promise<Appointment[]> {
-    console.log(doctor);
     return this.appointmentsService.findAllForDoctor(query, doctor.sub);
   }
 
@@ -52,7 +51,7 @@ export class AppointmentsController {
   }
 
   @Patch('status/:id')
-  @Auth([`${Permission.CHANGE_APPOINTMENT_NOTE}`]) 
+  @Auth([`${Permission.CHANGE_APPOINTMENT_STATUS}`]) 
   @UsePipes(new ValidationPipe())
   async updateAppointmentStatus(
     @Param('id') id: string,
@@ -62,7 +61,7 @@ export class AppointmentsController {
   }
 
   @Patch('notes/:id')
-  @Auth([`${Permission.CHANGE_APPOINTMENT_STATUS}`]) 
+  @Auth([`${Permission.CHANGE_APPOINTMENT_NOTE}`]) 
   @UsePipes(new ValidationPipe())
   async updateAppointmentNotes(
     @Param('id') id: string,

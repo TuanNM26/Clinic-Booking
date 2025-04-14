@@ -6,6 +6,7 @@ export class ShiftDto {
   @Expose() start_time: string;
   @Expose() end_time: string;
   @Expose() status: string;
+  @Expose() id: string
 }
 
 export class DoctorShiftScheduleDto {
