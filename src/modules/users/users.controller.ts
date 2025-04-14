@@ -15,13 +15,13 @@ export class UsersController {
 
   
   @Post()
-  @Auth(['get_appointments'])
+  @Auth()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @Get('getAll')
-  @Auth(['head_doctor_register_shift'])
+  @Auth()
   findAll()
    {
     return this.usersService.findAll();
