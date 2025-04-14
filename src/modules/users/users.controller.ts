@@ -2,11 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/
 import { UsersService } from './services/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PermissionGuard } from 'src/common/guards/permissonGuard';
 import { Auth } from 'src/common/decorator/auth.decorator';
-import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from 'src/common/guards/authGuards';
-import { Specialization } from '../specializations/entities/specialization.entity';
 import { CurrentUser } from 'src/common/decorator/currentUser.decorator';
 import { User } from './entities/user.entity';
 
@@ -16,12 +12,13 @@ export class UsersController {
 
   
   @Post()
-  // @Auth(['view_schedule_statistics'])
+  @Auth()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @Get('getAll')
+  @Auth()
   findAll()
    {
     return this.usersService.findAll();

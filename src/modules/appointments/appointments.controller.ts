@@ -10,6 +10,7 @@ import { Auth } from 'src/common/decorator/auth.decorator';
 import { UpdateAppointmentNotesDto } from './dto';
 import { UpdateAppointmentStatusDto } from './dto';
 import { AppointmentStatus } from 'src/common/enum/status.enum';
+import { Permission } from 'src/common/enum/permission.enum';
 
 @Controller('appointments')
 export class AppointmentsController {
@@ -22,6 +23,7 @@ export class AppointmentsController {
   }
 
   @Get()
+  @Auth([`${Permission.GET_ALL_APPOINTMENTS}`]) 
   findAll(@Query() query): Promise<Appointment[]> {
     return this.appointmentsService.findAll(query);
   }
@@ -37,7 +39,7 @@ export class AppointmentsController {
   }
 
   @Get('doctor/appointments')
-  @Auth()
+  @Auth([`${Permission.GET_APPOINTMENTS}`]) 
   async getDoctorAppointments(@Query() query: any, @CurrentUser() doctor: any): Promise<Appointment[]> {
     console.log(doctor);
     return this.appointmentsService.findAllForDoctor(query, doctor.sub);
@@ -50,7 +52,7 @@ export class AppointmentsController {
   }
 
   @Patch('status/:id')
-  @Auth()
+  @Auth([`${Permission.CHANGE_APPOINTMENT_NOTE}`]) 
   @UsePipes(new ValidationPipe())
   async updateAppointmentStatus(
     @Param('id') id: string,
@@ -60,7 +62,7 @@ export class AppointmentsController {
   }
 
   @Patch('notes/:id')
-  @Auth() 
+  @Auth([`${Permission.CHANGE_APPOINTMENT_STATUS}`]) 
   @UsePipes(new ValidationPipe())
   async updateAppointmentNotes(
     @Param('id') id: string,

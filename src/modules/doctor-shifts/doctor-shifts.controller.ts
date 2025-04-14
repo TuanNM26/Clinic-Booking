@@ -6,33 +6,37 @@ import { DoctorShift } from './entities/doctor-shift.entity';
 import { Auth } from 'src/common/decorator/auth.decorator';
 import { CurrentUser } from 'src/common/decorator/currentUser.decorator';
 import { User } from '../users/entities/user.entity';
+import { Permission } from 'src/common/enum/permission.enum';
+
 
 @Controller('doctor-shifts')
 export class DoctorShiftsController {
   constructor(private readonly doctorShiftsService: DoctorShiftsService) {}
 
   @Post()
+  @Auth([`${Permission.HEAD_DOCTOR_REGISTER_SHIFT}`]) 
   @UsePipes(new ValidationPipe())
   create(@Body() createDoctorShiftDto: CreateDoctorShiftDto) {
     return this.doctorShiftsService.create(createDoctorShiftDto);
   }
 
   @Post('register')
-@Auth() 
-@UsePipes(new ValidationPipe())
-registerDoctorShift(
+  @Auth([`${Permission.REGISTER_SHIFT}`]) 
+  @UsePipes(new ValidationPipe())
+  registerDoctorShift(
   @Body('shiftId') shiftId: string, 
   @CurrentUser() user: any          
-) {
+  ) {
   const createDoctorShiftDto = new CreateDoctorShiftDto();
   createDoctorShiftDto.shiftId = shiftId;
   createDoctorShiftDto.doctorId = user.sub; 
 
   return this.doctorShiftsService.create(createDoctorShiftDto);
-}
+  }
 
 
   @Get()
+  @Auth([`${Permission.GET_ALL_DOCTOR_SHIFT}`]) 
   findAll() {
     return this.doctorShiftsService.findAll();
   }
@@ -54,12 +58,13 @@ registerDoctorShift(
 
   @Delete(':doctorId/:shiftId')
   @HttpCode(HttpStatus.OK)
+  @Auth([`${Permission.UNREGISTER_SHIFT}`]) 
   remove(@Param('doctorId') doctorId: string, @Param('shiftId') shiftId: string) {
     return this.doctorShiftsService.remove(doctorId, shiftId);
   }
 
   @Get('my-schedule')
-  @Auth(['confirm_schedule'])
+  @Auth([`${Permission.GET_SHIFT_DETAIL}`]) 
   getMySchedule(
   @CurrentUser() user: any,
   @Query('startDate') startDate?: string,
