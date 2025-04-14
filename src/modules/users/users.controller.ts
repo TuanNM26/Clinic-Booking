@@ -3,9 +3,6 @@ import { UsersService } from './services/users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Auth } from 'src/common/decorator/auth.decorator';
-import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from 'src/common/guards/authGuards';
-import { Specialization } from '../specializations/entities/specialization.entity';
 import { CurrentUser } from 'src/common/decorator/currentUser.decorator';
 import { User } from './entities/user.entity';
 
