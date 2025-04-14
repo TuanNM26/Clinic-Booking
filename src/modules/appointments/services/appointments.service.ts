@@ -7,17 +7,36 @@ import { FindManyOptions } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
 import { AppointmentResponseDto } from '../dto';
 import { AppointmentStatus } from 'src/common/enum/status.enum';
+import { MailService } from 'src/modules/mails/mail.service';
 
 @Injectable()
 export class AppointmentsService {
   
   
   constructor(
-    private readonly appointmentsRepository: AppointmentsRepository,
+    private readonly appointmentsRepository: AppointmentsRepository, private readonly mailService: MailService
   ) {}
 
   async create(createAppointmentDto: CreateAppointmentDto): Promise<AppointmentResponseDto> {
     const appointment =  this.appointmentsRepository.createAppointment(createAppointmentDto);
+    
+    const patientEmail = (await appointment).email; // Giả sử appointment có thuộc tính patient và patient có thuộc tính email
+    const doctorEmail = (await appointment).email;   // Giả sử appointment có thuộc tính doctor và doctor có thuộc tính email
+    const appointmentDetails = {
+      patientName: (await appointment).full_name, // Giả sử có thuộc tính name
+      doctorName: (await appointment).doctor_id,   // Giả sử có thuộc tính name
+      appointmentTime: (await appointment).address,
+      appointmentDate: (await appointment).appointment_date,
+      // ... các thông tin khác bạn muốn đưa vào email
+    };
+
+    await this.mailService.sendAppointmentNotification(
+      patientEmail,
+      'Xác nhận lịch hẹn khám',
+      appointmentDetails,
+      'patientConfirmShedule', // <--- Kiểm tra tên này
+    );
+
     return plainToInstance(AppointmentResponseDto,appointment, {excludeExtraneousValues : true})
   }
 
