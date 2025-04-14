@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Thông báo cập nhật lịch hẹn</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+    }
+    h2 {
+      color: #dc3545;
+    }
+    p {
+      margin-bottom: 10px;
+    }
+    .appointment-details {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #eee;
+      background-color: #fff3cd;
+    }
+    .appointment-details strong {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Cập nhật lịch hẹn khám</h2>
+    <p>Xin chào {{ patientName }},</p>
+    <p>Lịch hẹn khám của bạn đã được bác sĩ {{ doctorName }} cập nhật với các thông tin sau:</p>
+    <div class="appointment-details">
+      <p><strong>Trạng thái mới:</strong> {{ status }}</p>
+      {{#if doctorNote}}
+      <p><strong>Ghi chú từ bác sĩ:</strong> {{ doctorNote }}</p>
+      {{/if}}
+      <p><strong>Thời gian khám:</strong> {{ appointmentTime }}</p>
+      <p><strong>Ngày khám:</strong> {{ appointmentDate }}</p>
+    </div>
+    <p>Vui lòng kiểm tra lại lịch trình của bạn và liên hệ với phòng khám nếu cần hỗ trợ thêm.</p>
+    <p>Trân trọng,</p>
+    <p>Hệ thống đặt lịch phòng khám</p>
+  </div>
+</body>
+</html>

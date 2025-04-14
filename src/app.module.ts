@@ -1,8 +1,9 @@
 import { Module, OnModuleInit } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as path from 'path';
 
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
@@ -23,6 +24,8 @@ import { PermissionModule } from './common/guards/permission.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
 import { DoctorShiftsModule } from './modules/doctor-shifts/doctor-shifts.module';
 import { AppointmentsModule } from './modules/appointments/appointments.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { MailModule } from './modules/mails/mail.module';
 
 const envPath = path.join(__dirname, './configs/.env-dev');
 @Module({
@@ -50,6 +53,35 @@ const envPath = path.join(__dirname, './configs/.env-dev');
       migrations: ['dist/common/migrations/*.js'],
       migrationsRun: true,
     }),
+    MailerModule.forRootAsync({
+      imports: [ConfigModule], 
+      useFactory: async (configService: ConfigService) => ({
+        transport: {
+          host: configService.get<string>('MAIL_HOST'),
+          port: configService.get<number>('MAIL_PORT'),
+          secure: configService.get<boolean>('MAIL_SECURE'), 
+          auth: {
+            user: configService.get<string>('MAIL_USER'),
+            pass: configService.get<string>('MAIL_PASSWORD'),
+          },
+        },
+        tls: {
+          rejectUnauthorized: false, 
+        },
+        defaults: {
+          from: `${configService.get<string>('MAIL_FROM')}`,
+        },
+        template: {
+          dir: path.join(__dirname, 'common', 'templates'),
+          adapter: new HandlebarsAdapter(), 
+          options: {
+            strict: false,
+          },
+        },
+      }),
+      inject: [ConfigService],
+    }),
+    MailModule,
     UsersModule,
     RolesModule,
     AuthModule,
@@ -64,3 +96,6 @@ const envPath = path.join(__dirname, './configs/.env-dev');
 })
 export class AppModule {}
 
+
+// D:\TTSNODEJS\Project\clinic-booking\dist\common\templates\common\templates\patientConfirmShedule.hbs
+// D:\TTSNODEJS\Project\clinic-booking\dist\common\templates\patientConfirmShedule.hbs

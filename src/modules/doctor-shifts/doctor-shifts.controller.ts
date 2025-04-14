@@ -64,7 +64,7 @@ export class DoctorShiftsController {
   }
 
   @Get('my-schedule')
-  @Auth([`${Permission.GET_SHIFT_DETAIL}`]) 
+  @Auth() 
   getMySchedule(
   @CurrentUser() user: any,
   @Query('startDate') startDate?: string,
