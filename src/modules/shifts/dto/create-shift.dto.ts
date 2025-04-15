@@ -1,19 +1,12 @@
+// src/modules/shifts/dto/create-shift.dto.ts
 import { IsNotEmpty, IsString, IsDateString, IsEnum, IsOptional } from 'class-validator';
 
 export class CreateShiftDto {
   @IsNotEmpty()
-  @IsDateString()
-  date: string;
+  @IsString()
+  start_time: string; // Đổi thành snake_case
 
   @IsNotEmpty()
   @IsString()
-  startTime: string;
-
-  @IsNotEmpty()
-  @IsString()
-  endTime: string;
-
-  @IsOptional() 
-  @IsEnum(['available', 'booked', 'completed'])
-  status?: 'available' | 'booked' | 'completed';
+  end_time: string;   // Đổi thành snake_case
 }

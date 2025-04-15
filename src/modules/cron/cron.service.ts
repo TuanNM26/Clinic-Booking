@@ -43,7 +43,7 @@ export class CronService {
         );
 
         const timeDifference = appointmentDateTime.getTime() - now.getTime();
-        console.log("Day nhe tiem ady nhe " + timeDifference);
+        console.log("Day nhe time day nhe " + timeDifference);
         if (timeDifference > 0 && timeDifference <= reminderThreshold) {
           const context = {
             patientName: appointment.full_name,

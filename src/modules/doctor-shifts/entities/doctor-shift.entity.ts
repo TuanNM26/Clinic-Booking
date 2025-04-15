@@ -11,6 +11,9 @@ export class DoctorShift extends BaseEntity{
   @PrimaryColumn()
   shift_id: string;
 
+  @Column({ type: 'date' })
+  date: Date;
+
   @ManyToOne(() => User, user => user.doctorShifts)
   @JoinColumn({ name: 'doctor_id' })
   doctor: User;

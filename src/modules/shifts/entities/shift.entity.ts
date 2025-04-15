@@ -7,10 +7,7 @@ import { BaseEntity } from 'src/common/database/base.entity';
 export class Shift extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @Column({ type: 'date' })
-  date: string;
-
+  
   @Column({ type: 'time' })
   start_time: string;
 

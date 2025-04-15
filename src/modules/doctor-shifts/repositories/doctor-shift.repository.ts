@@ -15,40 +15,41 @@ export class DoctorShiftRepository {
   ) {}
 
   async create(createDoctorShiftDto: CreateDoctorShiftDto): Promise<DoctorShift> {
-    const { doctorId, shiftId } = createDoctorShiftDto;
+    const { doctorId, shiftId, date } = createDoctorShiftDto; // Lấy date từ DTO
+
     const shift = await this.doctorShiftRepository.manager.findOne(Shift, {
       where: { id: shiftId },
     });
-  
+
     if (!shift) {
       throw new NotFoundException('Ca làm không tồn tại.');
     }
-  
+
     const today = new Date();
-    const shiftDate = new Date(shift.date);
+    const shiftDate = new Date(date);
     if (shiftDate < new Date(today.setHours(0, 0, 0, 0))) {
       throw new BadRequestException('Không thể đăng ký ca làm trong quá khứ.');
     }
-  
+
     const doctor = await this.doctorShiftRepository.manager.findOne(User, {
       where: { id: doctorId },
     });
-  
+
     if (!doctor || !doctor.is_active) {
       throw new BadRequestException('Bác sĩ không tồn tại hoặc đã ngưng hoạt động.');
     }
-  
+
     const conflict = await this.doctorShiftRepository
       .createQueryBuilder('doctor_shift')
       .innerJoin('doctor_shift.shift', 's')
       .where('doctor_shift.doctor_id = :doctorId', { doctorId })
-      .andWhere('s.date = :shiftDate', { shiftDate: shift.date })
+      .andWhere('doctor_shift.date = :shiftDate', { shiftDate: date }) 
       .andWhere(':startTime < s.end_time AND :endTime > s.start_time', {
         startTime: shift.start_time,
         endTime: shift.end_time,
       })
       .getOne();
-  
+
     if (conflict) {
       throw new BadRequestException('Bác sĩ đã có ca làm trùng thời gian trong ngày này.');
     }
@@ -56,8 +57,9 @@ export class DoctorShiftRepository {
     const doctorShift = this.doctorShiftRepository.create({
       doctor_id: doctorId,
       shift_id: shiftId,
+      date: shiftDate, 
     });
-  
+
     return await this.doctorShiftRepository.save(doctorShift);
   }
 

@@ -38,7 +38,6 @@ export class ShiftSeeder {
         if (endHour <= 17) {
           shiftsToSeed.push(
             this.shiftRepository.create({
-              date: formattedDate,
               start_time: startTime,
               end_time: endTime,
             }),
@@ -49,7 +48,7 @@ export class ShiftSeeder {
 
     for (const shift of shiftsToSeed) {
       const existingShift = await this.shiftRepository.findOne({
-        where: { date: shift.date, start_time: shift.start_time },
+        // where: { date: shift.date, start_time: shift.start_time },
       });
       if (!existingShift) {
         await this.shiftRepository.save(shift);
