@@ -7,6 +7,7 @@ import { Auth } from 'src/common/decorator/auth.decorator';
 import { CurrentUser } from 'src/common/decorator/currentUser.decorator';
 import { User } from '../users/entities/user.entity';
 import { Permission } from 'src/common/enum/permission.enum';
+import { DoctorShiftDto } from './dto/response.doctorShift.dto';
 
 
 @Controller('doctor-shifts')
@@ -43,6 +44,7 @@ export class DoctorShiftsController {
 
   @Get(':doctorId/:shiftId')
   findOne(@Param('doctorId') doctorId: string, @Param('shiftId') shiftId: string) {
+    console.log(doctorId + ' tach ra ni oi ' + shiftId)
     return this.doctorShiftsService.findOne(doctorId, shiftId);
   }
 
@@ -52,7 +54,7 @@ export class DoctorShiftsController {
       @Param('doctorId') doctorId: string,
       @Param('shiftId') shiftId: string,
       @Body() updateDoctorShiftDto: UpdateDoctorShiftDto,
-    ): Promise<DoctorShift> {
+    ): Promise<DoctorShiftDto> {
       return this.doctorShiftsService.update(doctorId, shiftId, updateDoctorShiftDto);
   }
 
@@ -75,8 +77,8 @@ export class DoctorShiftsController {
   return this.doctorShiftsService.getScheduleByDoctorIdWithFilter(user.sub, start, end);
 }
 
-@Get('schedule/:doctorId')
-@Auth(['view_schedule_statistics'])
+@Get(':doctorId')
+@Auth()
 getDoctorSchedule(
   @Param('doctorId') doctorId: string,
   @Query('startDate') startDate?: string,

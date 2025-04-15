@@ -1,6 +1,6 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, FindOptionsWhere, Repository } from 'typeorm';
 import { Appointment } from '../entities/appointment.entity';
 import { CreateAppointmentDto } from '../dto/create-appointment.dto';
 import { UpdateAppointmentDto } from '../dto';
@@ -63,6 +63,7 @@ export class AppointmentsRepository {
     );
   }
   
+  
 
   async findAllAppointments(options: any): Promise<Appointment[]> {
     return this.appointmentRepository.find(options);
@@ -86,6 +87,9 @@ export class AppointmentsRepository {
     const appointment = await this.appointmentRepository.findOne({ where: { id }});
     if (!appointment) {
       return undefined;
+    }
+    if (appointment.status === AppointmentStatus.CONFIRMED && status === AppointmentStatus.CONFIRMED) {
+      throw new BadRequestException('Lịch hẹn này đã được xác nhận.');
     }
     appointment.status = status;
     return this.appointmentRepository.save(appointment);
@@ -118,5 +122,9 @@ export class AppointmentsRepository {
         doctor_id: doctorId,
       },
     });
+  }
+
+  async find(options: FindManyOptions<Appointment>): Promise<Appointment[]> {
+    return this.appointmentRepository.find(options);
   }
 }

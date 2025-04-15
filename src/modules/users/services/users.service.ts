@@ -59,6 +59,6 @@ export class UsersService {
 
   async findUserBySpecialization(specialization: string) {
     const user = await this.usersRepo.findUserBySpecialization(specialization);
-    return user;
+    return plainToInstance(UserResponseDto, user, { excludeExtraneousValues: true });
   }
 }

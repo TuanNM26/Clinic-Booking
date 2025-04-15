@@ -16,7 +16,7 @@ export class UsersRepository {
   findUserBySpecialization(specialization: string) {
     return this.repository.find({
       where : { specialization_id : specialization  },
-      relations : ['specialization']
+      relations : ['specialization', 'role']
     });
   }
 

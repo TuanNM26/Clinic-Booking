@@ -17,9 +17,6 @@ export class Shift extends BaseEntity {
   @Column({ type: 'time' })
   end_time: string;
 
-  @Column({ type: 'enum', enum: ['available', 'booked', 'completed'], default: 'available' })
-  status: 'available' | 'booked' | 'completed';
-
   @OneToMany(() => DoctorShift, ds => ds.shift)
   doctorShifts: DoctorShift[];
 

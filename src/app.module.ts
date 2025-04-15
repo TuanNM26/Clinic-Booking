@@ -26,6 +26,9 @@ import { DoctorShiftsModule } from './modules/doctor-shifts/doctor-shifts.module
 import { AppointmentsModule } from './modules/appointments/appointments.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MailModule } from './modules/mails/mail.module';
+import { SeederModule } from './common/database/seed/seed.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { CronService } from './modules/cron/cron.service';
 
 const envPath = path.join(__dirname, './configs/.env-dev');
 @Module({
@@ -34,6 +37,7 @@ const envPath = path.join(__dirname, './configs/.env-dev');
       envFilePath: path.join(__dirname, './configs/common/configs/.env-dev'), 
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST || 'localhost',
@@ -89,10 +93,11 @@ const envPath = path.join(__dirname, './configs/.env-dev');
     ShiftsModule,
     PermissionsModule,
     DoctorShiftsModule,
-    AppointmentsModule  
+    AppointmentsModule,
+    SeederModule  
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,CronService],
 })
 export class AppModule {}
 
