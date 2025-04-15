@@ -59,16 +59,9 @@ export class Appointment extends BaseEntity{
   })
   status: AppointmentStatus; 
 
-
   @Column({ type: 'timestamp' })
   appointment_date: Date;
 
   @Column({ type: 'text', nullable: true })
   notes: string;
-
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  created_at: Date;
-
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  updated_at: Date;
 }

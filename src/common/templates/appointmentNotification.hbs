@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Lời nhắc lịch hẹn khám bệnh</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+    }
+    h2 {
+      color: #007bff;
+    }
+    p {
+      margin-bottom: 10px;
+    }
+    .appointment-details {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #eee;
+      background-color: #f9f9f9;
+    }
+    .appointment-details strong {
+      font-weight: bold;
+    }
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Lời nhắc lịch hẹn khám bệnh</h2>
+    <p>Xin chào {{ patientName }},</p>
+    <p>Đây là lời nhắc về lịch hẹn khám bệnh sắp tới của bạn:</p>
+    <div class="appointment-details">
+      <p><strong>Thời gian:</strong> {{ appointmentTime }}</p>
+      <p><strong>Ngày:</strong> {{ appointmentDate }}</p>
+      {{#if doctorName}}
+      <p><strong>Bác sĩ:</strong> {{ doctorName }}</p>
+      {{/if}}
+      {{#if appointmentNote}}
+      <p><strong>Ghi chú:</strong> {{ appointmentNote }}</p>
+      {{/if}}
+    </div>
+    <p>Vui lòng đến phòng khám đúng giờ.</p>
+    {{#if appointmentAddress}}
+    <p><strong>Địa chỉ phòng khám:</strong> {{ appointmentAddress }}</p>
+    {{/if}}
+    <p>Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi.</p>
+    <p>Trân trọng,</p>
+    <p>Hệ thống đặt lịch phòng khám</p>
+  </div>
+</body>
+</html>

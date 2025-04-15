@@ -3,7 +3,7 @@ import { CreateAppointmentDto } from '../dto/create-appointment.dto';
 import { UpdateAppointmentDto } from '../dto';
 import { AppointmentsRepository } from '../repositories/appointments.repository';
 import { Appointment } from '../entities/appointment.entity';
-import { FindManyOptions } from 'typeorm';
+import { FindManyOptions, FindOptionsWhere } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
 import { AppointmentResponseDto } from '../dto';
 import { AppointmentStatus } from 'src/common/enum/status.enum';
@@ -121,7 +121,7 @@ export class AppointmentsService {
       (await appointment).email,
       'Cập nhật thông tin lịch khám',
       appointmentDetails,
-      'patientConfirmShedule', 
+      'doctorUpdateAppointment', 
     );
 
     return updatedAppointment;
@@ -154,7 +154,7 @@ export class AppointmentsService {
       (await appointment).email,
       'Cập nhật thông tin lịch khám',
       appointmentDetails,
-      'patientConfirmShedule', 
+      'doctorUpdateAppointment', 
     );
 
     return updatedAppointment;
@@ -170,5 +170,8 @@ export class AppointmentsService {
 
   findAllForDoctor(query: any, id: string): Appointment[] | PromiseLike<Appointment[]> {
     return this.appointmentsRepository.findAllForDoctor(query, id);
+  }
+  async find(options: FindManyOptions<Appointment>): Promise<Appointment[]> {
+    return this.appointmentsRepository.find(options);
   }
 }

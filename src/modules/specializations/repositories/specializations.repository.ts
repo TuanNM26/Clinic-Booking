@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Specialization } from '../entities/specialization.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UpdateSpecializationDto } from '../dto';
+import { SpecializationDto, UpdateSpecializationDto } from '../dto';
 import { CreateSpecializationDto } from '../dto';
 
 @Injectable()
@@ -17,19 +17,19 @@ export class SpecializationRepository {
     return await this.specializationRepository.save(specialization);
   }
 
-  async findAll(): Promise<Specialization[]> {
+  async findAll(): Promise<SpecializationDto[]> {
     return await this.specializationRepository.find();
   }
 
-  async findOne(id: string): Promise<Specialization | null> {
+  async findOne(id: string): Promise<SpecializationDto | null> {
     return await this.specializationRepository.findOneBy({ id });
   }
 
-  async findByName(name: string): Promise<Specialization | null> {
+  async findByName(name: string): Promise<SpecializationDto | null> {
     return await this.specializationRepository.findOneBy({ name });
   }
 
-  async update(id: string, updateSpecializationDto: UpdateSpecializationDto): Promise<Specialization | null> {
+  async update(id: string, updateSpecializationDto: UpdateSpecializationDto): Promise<SpecializationDto | null> {
     await this.specializationRepository.update(id, updateSpecializationDto);
     return await this.specializationRepository.findOneBy({ id });
   }

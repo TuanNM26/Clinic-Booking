@@ -3,6 +3,8 @@ import { CreateSpecializationDto } from '../dto/create-specialization.dto';
 import { UpdateSpecializationDto } from '../dto/update-specialization.dto';
 import { SpecializationRepository } from '../repositories/specializations.repository';
 import { Specialization } from '../entities/specialization.entity';
+import { SpecializationDto } from '../dto/response.specialization.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class SpecializationsService {
@@ -18,22 +20,27 @@ export class SpecializationsService {
     return this.specializationRepository.create(createSpecializationDto);
   }
 
-  async findAll(): Promise<Specialization[]> {
-    return this.specializationRepository.findAll();
+  async findAll(): Promise<SpecializationDto[]> {
+    const specializations = await this.specializationRepository.findAll();
+    return plainToInstance(SpecializationDto, specializations, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  async findOne(id: string): Promise<Specialization> {
+  async findOne(id: string): Promise<SpecializationDto> {
     const specialization = await this.specializationRepository.findOne(id);
     if (!specialization) {
-      throw new NotFoundException(`Specialization with ID "${id}" not found`);
+      return null; // Hoặc ném lỗi NotFoundException
     }
-    return specialization;
+    return plainToInstance(SpecializationDto, specialization, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async update(
     id: string,
     updateSpecializationDto: UpdateSpecializationDto,
-  ): Promise<Specialization> {
+  ): Promise<SpecializationDto> {
     const specialization = await this.specializationRepository.findOne(id);
     if (!specialization) {
       throw new NotFoundException(`Specialization with ID "${id}" not found`);
@@ -56,11 +63,13 @@ export class SpecializationsService {
     await this.specializationRepository.remove(id);
   }
 
-  async findByName(name: string): Promise<Specialization> { 
+  async findByName(name: string): Promise<SpecializationDto> { 
     const specialization = await this.specializationRepository.findByName(name);
     if (!specialization) {
       throw new NotFoundException(`Specialization with name "${name}" not found`);
     }
-    return specialization;
+    return plainToInstance(SpecializationDto, specialization, {
+      excludeExtraneousValues: true,
+    });
   }
 }

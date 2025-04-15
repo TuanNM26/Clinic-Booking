@@ -65,17 +65,18 @@ export class DoctorShiftRepository {
     return await this.doctorShiftRepository.find();
   }
 
-  async findOne(doctorId : string , shiftId : string) : Promise<DoctorShift | null> {
-       try {
-        const result = this.doctorShiftRepository.createQueryBuilder('doctor_shift')
-        .where('doctor_Shift.doctor_id = :doctorId' , { doctorId})
-        .andWhere('doctor_shift.shift_id = :shiftid', {shiftId})
-        .getOne();
-        return result
-       }
-       catch (error){
-        return null
-       }
+  async findOne(doctorId: string, shiftId: string): Promise<DoctorShift | null> {
+    try {
+      return await this.doctorShiftRepository.findOne({
+        where: {
+          doctor_id: doctorId,
+          shift_id: shiftId,
+        },
+      });
+    } catch (error) {
+      console.error('Error finding DoctorShift:', error);
+      throw error; 
+    }
   }
   
   async update(
