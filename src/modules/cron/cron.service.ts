@@ -31,7 +31,7 @@ export class CronService {
 
       if (appointment.shift && appointment.email && appointment.doctor) {
         const appointmentDate = new Date(appointment.appointment_date);
-        const [hours, minutes, seconds] = appointment.shift.start_time.split(':').map(Number);
+        const [hours, minutes, seconds = 0] = appointment.start_time.split(':').map(Number);
 
         const appointmentDateTime = new Date(
           appointmentDate.getFullYear(),

@@ -35,12 +35,14 @@ import { CancelShiftDto } from './dto/cancelShift.dto';
     @Auth([`${Permission.REGISTER_SHIFT}`]) 
     @UsePipes(new ValidationPipe())
     registerDoctorShift(
-    @Body('shiftId') shiftId: string, 
+    @Body('shiftId') shiftId: string,
+    @Body('date') date: string,  
     @CurrentUser() user: any          
     ) {
     const createDoctorShiftDto = new CreateDoctorShiftDto();
     createDoctorShiftDto.shiftId = shiftId;
     createDoctorShiftDto.doctorId = user.sub; 
+    createDoctorShiftDto.date = date;
 
     return this.doctorShiftsService.create(createDoctorShiftDto);
     }

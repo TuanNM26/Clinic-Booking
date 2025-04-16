@@ -169,7 +169,7 @@ export class DoctorShiftRepository {
       const next = new Date(current.getTime());
       next.setMinutes(current.getMinutes() + intervalMinutes);
   
-      const slot = `${this.formatTime(current)} - ${this.formatTime(next)}`;
+      const slot = `${this.formatTime(current)}`;
       slots.push(slot);
   
       current = next;  // Cập nhật lại current
