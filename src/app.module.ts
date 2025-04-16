@@ -29,6 +29,7 @@ import { MailModule } from './modules/mails/mail.module';
 import { SeederModule } from './common/database/seed/seed.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CronService } from './modules/cron/cron.service';
+import { CronModule } from './modules/cron/cron.module';
 
 const envPath = path.join(__dirname, './configs/.env-dev');
 @Module({
@@ -94,10 +95,11 @@ const envPath = path.join(__dirname, './configs/.env-dev');
     PermissionsModule,
     DoctorShiftsModule,
     AppointmentsModule,
-    SeederModule  
+    SeederModule,
+    CronModule
   ],
   controllers: [AppController],
-  providers: [AppService,CronService],
+  providers: [AppService],
 })
 export class AppModule {}
 
