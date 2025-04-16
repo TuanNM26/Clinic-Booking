@@ -91,6 +91,10 @@ export class AppointmentsService {
     return this.appointmentsRepository.findAppointmentById(id);
   }
 
+  async findAppointmentsByShift(doctorId: string, shiftId: string): Promise<Appointment[]> {
+    return this.appointmentsRepository.findAppointmentsByShift(doctorId,shiftId);
+  }
+
   async update(id: string, updateAppointmentDto: UpdateAppointmentDto): Promise<Appointment> {
     return this.appointmentsRepository.updateAppointment(id, updateAppointmentDto);
   }
@@ -122,6 +126,39 @@ export class AppointmentsService {
       'Cập nhật thông tin lịch khám',
       appointmentDetails,
       'doctorUpdateAppointment', 
+    );
+
+    return updatedAppointment;
+  }
+
+  async cancelAppointment(id: string, status: AppointmentStatus, reason:string): Promise<Appointment> {
+    const updatedAppointment = await this.appointmentsRepository.cancelAppointment(id, status,reason);
+    if (!updatedAppointment) {
+      throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
+    }
+    const appointment = this.findOne(id);
+
+    const doctor = await this.doctorService.findOne((await appointment).doctor_id);
+    const doctorName = doctor ? doctor.full_name : 'Không xác định';
+
+    const shift = await this.shiftService.findOne((await appointment).shift_id);
+    const appointmentTime = shift.start_time;
+
+    const appointmentDetails = {
+      patientName: (await appointment).full_name,
+      doctorName: doctorName,
+      appointmentTime: appointmentTime,
+      appointmentDate: (await appointment).appointment_date,
+      doctorNote: (await appointment).notes,
+      status: status,
+      reason: reason
+    };
+
+    await this.mailService.sendAppointmentNotification(
+      (await appointment).email,
+      'Cập nhật thông tin lịch khám',
+      appointmentDetails,
+      'cancel-appointment', 
     );
 
     return updatedAppointment;

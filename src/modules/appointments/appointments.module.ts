@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AppointmentsService } from './services/appointments.service';
 import { AppointmentsController } from './appointments.controller';
 import { AppointmentsRepository } from './repositories/appointments.repository';
@@ -21,7 +21,7 @@ import { DoctorShiftsModule } from '../doctor-shifts/doctor-shifts.module';
             MailModule,
             UsersModule,
             ShiftsModule,
-            DoctorShiftsModule],
+            forwardRef(() => DoctorShiftsModule)],
   controllers: [AppointmentsController],
   providers: [AppointmentsService,AppointmentsRepository],
   exports: [AppointmentsService]

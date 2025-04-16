@@ -2,6 +2,7 @@ import { Entity, PrimaryColumn, ManyToOne, JoinColumn, Column } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Shift } from '../../shifts/entities/shift.entity';
 import { BaseEntity } from 'src/common/database/base.entity';
+import { DoctorShiftStatus } from 'src/common/enum/doctorShift.status.enum';
 
 @Entity('doctor_shifts')
 export class DoctorShift extends BaseEntity{
@@ -13,6 +14,14 @@ export class DoctorShift extends BaseEntity{
 
   @Column({ type: 'date' })
   date: Date;
+
+  @Column({
+    type: 'enum',
+    enum: DoctorShiftStatus,
+    default: DoctorShiftStatus.ACTIVE,
+  })
+  status: DoctorShiftStatus;
+  
 
   @ManyToOne(() => User, user => user.doctorShifts)
   @JoinColumn({ name: 'doctor_id' })

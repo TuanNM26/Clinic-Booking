@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, forwardRef, HttpException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOptionsWhere, Repository } from 'typeorm';
 import { Appointment } from '../entities/appointment.entity';
@@ -15,8 +15,9 @@ export class AppointmentsRepository {
     @InjectRepository(Appointment)
     private readonly appointmentRepository: Repository<Appointment>,
     private readonly shiftService: ShiftsService,
-    private readonly doctorShiftService: DoctorShiftsService
-  ) {}
+    @Inject(forwardRef(() => DoctorShiftsService))
+    private readonly doctorShiftService: DoctorShiftsService,
+  ) {console.log('✅ AppointmentsRepository initialized');}
 
   async createAppointment(
     createAppointmentDto: CreateAppointmentDto,
@@ -62,8 +63,6 @@ export class AppointmentsRepository {
       this.appointmentRepository.create(createAppointmentDto),
     );
   }
-  
-  
 
   async findAllAppointments(options: any): Promise<Appointment[]> {
     return this.appointmentRepository.find(options);
@@ -76,6 +75,24 @@ export class AppointmentsRepository {
     }
     return appointment;
   }
+
+  async findAppointmentsByShift(
+    doctorId: string,
+    shiftId: string
+  ): Promise<Appointment[]> {
+    console.log(doctorId + shiftId)
+    const appointments = await this.appointmentRepository.find({
+      where: {
+        doctor_id: doctorId,
+        shift_id: shiftId
+      },
+    });
+    if (!appointments || appointments.length === 0) {
+      throw new NotFoundException(`Appointments for doctor ID "${doctorId}" and shift ID "${shiftId}" not found`);
+    }
+    return appointments;
+  }
+  
 
   async updateAppointment(id: string, updateAppointmentDto: UpdateAppointmentDto): Promise<Appointment> {
     const appointment = await this.findAppointmentById(id);
@@ -92,6 +109,19 @@ export class AppointmentsRepository {
       throw new BadRequestException('Lịch hẹn này đã được xác nhận.');
     }
     appointment.status = status;
+    return this.appointmentRepository.save(appointment);
+  }
+
+  async cancelAppointment(id: string, status: AppointmentStatus, reason: string): Promise<Appointment | undefined> {
+    const appointment = await this.appointmentRepository.findOne({ where: { id }});
+    if (!appointment) {
+      return undefined;
+    }
+    if (appointment.status === AppointmentStatus.CONFIRMED && status === AppointmentStatus.CONFIRMED) {
+      throw new BadRequestException('Lịch hẹn này đã được xác nhận.');
+    }
+    appointment.status = status;
+    appointment.reason_canceled = reason;
     return this.appointmentRepository.save(appointment);
   }
   
