@@ -1,4 +1,3 @@
-// src/modules/shifts/dto/shift.dto.ts
 import { Expose } from 'class-transformer';
 
 export class ResponseShiftDto {

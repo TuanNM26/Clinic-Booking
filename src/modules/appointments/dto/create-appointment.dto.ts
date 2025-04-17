@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { IsNotEmpty, IsString, IsOptional, IsDate, IsEnum } from 'class-validator';
 import { AppointmentStatus } from 'src/common/enum/status.enum';
 
@@ -53,6 +53,11 @@ export class CreateAppointmentDto {
   @IsDate()
   @Type(() => Date)
   appointment_date?: Date;
+
+  @IsNotEmpty()
+  @IsString()
+  start_time: string;
+
 
   @IsOptional()
   @IsString()

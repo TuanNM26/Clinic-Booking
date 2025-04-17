@@ -65,6 +65,9 @@ export class Appointment extends BaseEntity{
   @Column({ type: 'timestamp' })
   appointment_date: Date;
 
+  @Column({ type: 'time' })
+  start_time: string;
+
   @Column({ type: 'text', nullable: true })
   notes: string;
 }

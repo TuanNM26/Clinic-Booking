@@ -3,7 +3,6 @@ import * as path from 'path';
 
 const basePath = path.join(__dirname, 'modules');
 
-// Bỏ qua các folder không cần
 const exclude = ['database'];
 
 const folders = fs.readdirSync(basePath).filter(folder => {

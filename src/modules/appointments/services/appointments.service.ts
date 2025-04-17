@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAppointmentDto } from '../dto/create-appointment.dto';
 import { UpdateAppointmentDto } from '../dto';
 import { AppointmentsRepository } from '../repositories/appointments.repository';
@@ -13,6 +13,7 @@ import { UsersRepository } from 'src/modules/users/repositories/user.repository'
 import { ShiftRepository } from 'src/modules/shifts/repositories/shifts.repository';
 import { UsersService } from 'src/modules/users/services/users.service';
 import { ShiftsService } from 'src/modules/shifts/services/shifts.service';
+import { DoctorShiftsService } from 'src/modules/doctor-shifts/services/doctor-shifts.service';
 
 @Injectable()
 export class AppointmentsService {
@@ -22,8 +23,9 @@ export class AppointmentsService {
     private readonly appointmentsRepository: AppointmentsRepository, 
     private readonly mailService: MailService,
     private readonly doctorService: UsersService,
-    private readonly shiftService: ShiftsService
-
+    private readonly shiftService: ShiftsService,
+    @Inject(forwardRef(() => DoctorShiftsService))
+     private readonly doctorShiftService: DoctorShiftsService,
   ) {}
 
   async create(createAppointmentDto: CreateAppointmentDto): Promise<AppointmentResponseDto> {
@@ -205,10 +207,45 @@ export class AppointmentsService {
     return this.appointmentsRepository.getStatusById(id);
   }
 
-  findAllForDoctor(query: any, id: string): Appointment[] | PromiseLike<Appointment[]> {
-    return this.appointmentsRepository.findAllForDoctor(query, id);
+  async findAllForDoctor(query: any, id: string): Promise<AppointmentResponseDto[]> {
+    const appointments = await this.appointmentsRepository.findAllForDoctor(query, id);
+    return plainToInstance(AppointmentResponseDto, appointments, {
+      excludeExtraneousValues: true,
+    });
   }
+
   async find(options: FindManyOptions<Appointment>): Promise<Appointment[]> {
     return this.appointmentsRepository.find(options);
+  }
+
+  async getAppointmentStatistics() {
+    return this.appointmentsRepository.getStatistics();
+  }
+
+  async getShiftIdByTime(doctorId: string, startTime: string): Promise<string> {
+    const shifts = await this.doctorShiftService.findShiftsByDoctorAndDate(doctorId, new Date().toISOString().split('T')[0]); 
+    for (const shift of shifts) {
+      const shiftStart = shift.start_time;  
+      const shiftEnd = shift.end_time;     
+
+      if (this.isTimeInShiftRange(startTime, shiftStart, shiftEnd)) {
+        return shift.shift_id;
+      }
+    }
+
+    throw new BadRequestException('Giờ khám không hợp lệ');
+  }
+
+  private isTimeInShiftRange(startTime: string, shiftStart: string, shiftEnd: string): boolean {
+    const startTimeMinutes = this.convertTimeToMinutes(startTime);
+    const shiftStartMinutes = this.convertTimeToMinutes(shiftStart);
+    const shiftEndMinutes = this.convertTimeToMinutes(shiftEnd);
+
+    return startTimeMinutes >= shiftStartMinutes && startTimeMinutes < shiftEndMinutes;
+  }
+
+  private convertTimeToMinutes(time: string): number {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
   }
 }

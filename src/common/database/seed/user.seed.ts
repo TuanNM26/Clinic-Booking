@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from '../../../modules/users/entities/user.entity'; // Đường dẫn đến entity User của bạn
-import { Role } from '../../../modules/roles/entities/role.entity'; // Đường dẫn đến entity Role của bạn
+import { User } from '../../../modules/users/entities/user.entity'; 
+import { Role } from '../../../modules/roles/entities/role.entity'; 
 
 @Injectable()
 export class UserSeeder {
@@ -19,7 +19,7 @@ export class UserSeeder {
     if (adminRole) {
       const users = [
         { username: 'admin', password: 'password', role: adminRole },
-        { username: 'doctor1', password: 'password', role: adminRole }, // Giả sử Doctor cũng có role Admin cho mục đích demo
+        { username: 'doctor1', password: 'password', role: adminRole },
       ];
 
       for (const userData of users) {

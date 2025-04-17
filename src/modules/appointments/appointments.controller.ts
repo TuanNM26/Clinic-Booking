@@ -11,6 +11,7 @@ import { UpdateAppointmentNotesDto } from './dto';
 import { UpdateAppointmentStatusDto } from './dto';
 import { AppointmentStatus } from 'src/common/enum/status.enum';
 import { Permission } from 'src/common/enum/permission.enum';
+import { AppointmentStatisticsDto } from './dto/appointment-statistics.dto';
 
 @Controller('appointments')
 export class AppointmentsController {
@@ -18,8 +19,12 @@ export class AppointmentsController {
 
   @Post()
   @UsePipes(new ValidationPipe())
-  create(@Body() createAppointmentDto: CreateAppointmentDto): Promise<AppointmentResponseDto> {
-    return this.appointmentsService.create(createAppointmentDto);
+  async create(@Body() createAppointmentDto: CreateAppointmentDto): Promise<AppointmentResponseDto> {
+    const shiftId = await this.appointmentsService.getShiftIdByTime(createAppointmentDto.doctor_id, createAppointmentDto.start_time);
+  
+  createAppointmentDto.shift_id = shiftId;
+  console.log(shiftId);
+  return this.appointmentsService.create(createAppointmentDto);
   }
 
   @Get()
@@ -27,6 +32,12 @@ export class AppointmentsController {
   findAll(@Query() query): Promise<Appointment[]> {
     return this.appointmentsService.findAll(query);
   }
+
+  @Get('statistics')
+  async getStatistics() {
+    return this.appointmentsService.getAppointmentStatistics();
+  }
+  
 
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Appointment> {
@@ -39,8 +50,8 @@ export class AppointmentsController {
   }
 
   @Get('doctor/appointments')
-  @Auth([`${Permission.GET_APPOINTMENTS}`]) 
-  async getDoctorAppointments(@Query() query: any, @CurrentUser() doctor: any): Promise<Appointment[]> {
+  @Auth([`${Permission.GET_APPOINTMENTS}`])
+  async getDoctorAppointments(@Query() query: any, @CurrentUser() doctor: any): Promise<AppointmentResponseDto[]> {
     return this.appointmentsService.findAllForDoctor(query, doctor.sub);
   }
 
@@ -74,4 +85,8 @@ export class AppointmentsController {
   remove(@Param('id') id: string): Promise<void> {
     return this.appointmentsService.remove(id);
   }
+
+  
+
+
 }

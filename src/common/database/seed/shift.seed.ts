@@ -19,7 +19,7 @@ export class ShiftSeeder {
     startOfWeek.setHours(0, 0, 0, 0);
 
     const shiftsToSeed: Shift[] = [];
-    const shiftTimes = ['08:00', '11:00', '14:00']; // Các giờ bắt đầu ca làm việc
+    const shiftTimes = ['08:00', '11:00', '14:00'];
 
     for (let i = 0; i < 7; i++) {
       const currentDate = new Date(startOfWeek);
@@ -29,12 +29,9 @@ export class ShiftSeeder {
       for (const startTime of shiftTimes) {
         let endTime: string;
         const [startHour, startMinute] = startTime.split(':').map(Number);
-
-        // Tính giờ kết thúc (ví dụ: mỗi ca 3 tiếng)
         const endHour = startHour + 3;
         endTime = `${String(endHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`;
 
-        // Đảm bảo giờ kết thúc không vượt quá cuối ngày làm việc (ví dụ: 17:00)
         if (endHour <= 17) {
           shiftsToSeed.push(
             this.shiftRepository.create({

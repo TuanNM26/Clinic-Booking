@@ -5,18 +5,20 @@ import { DoctorShiftRepository } from '../repositories/doctor-shift.repository';
 import { DoctorShift } from '../entities/doctor-shift.entity';
 import { plainToInstance } from 'class-transformer';
 import { DoctorShiftScheduleDto } from '../dto/DoctorShiftSchedule.dto';
-import { DoctorShiftDto } from '../dto/response.doctorShift.dto'; // Đảm bảo import đúng DTO bạn muốn cho response
+import { DoctorShiftDto } from '../dto/response.doctorShift.dto'; 
 import { CancelShiftDto } from '../dto/cancelShift.dto';
 import { AppointmentsService } from 'src/modules/appointments/services/appointments.service';
 import { AppointmentStatus } from 'src/common/enum/status.enum';
 import { MailService } from 'src/modules/mails/mail.service';
 import { DoctorShiftStatus } from 'src/common/enum/doctorShift.status.enum';
+import { ShiftsService } from 'src/modules/shifts/services/shifts.service';
 
 @Injectable()
 export class DoctorShiftsService {
   constructor(private readonly doctorShiftRepository: DoctorShiftRepository , 
               private readonly appointmentService: AppointmentsService, 
-              private readonly mailService: MailService) {}
+              private readonly mailService: MailService,
+              private readonly shiftService: ShiftsService) {}
 
   async create(createDoctorShiftDto: CreateDoctorShiftDto): Promise<DoctorShiftDto> {
     const createdDoctorShift = await this.doctorShiftRepository.create(createDoctorShiftDto);
@@ -52,7 +54,6 @@ export class DoctorShiftsService {
     doctorId: string,
     date: string
   ): Promise<string[]> {
-    // Gọi trực tiếp repository để lấy các slot của bác sĩ theo ngày
     const slots = await this.doctorShiftRepository.getDoctorTimeSlots(doctorId, date);
 
     if (!slots || slots.length === 0) {
@@ -105,21 +106,50 @@ export class DoctorShiftsService {
     cancelShiftDto: CancelShiftDto,
   ) {
     const { reason } = cancelShiftDto;
-
-    // Cập nhật trạng thái ca làm việc của bác sĩ thành 'canceled'
+  
+    // 1. Tìm ca làm của bác sĩ theo doctorId và shiftId
+    const doctorShift = await this.doctorShiftRepository.findOne(doctorId,shiftId);
+  
+    if (!doctorShift) {
+      throw new Error('Ca làm không tồn tại');
+    }
+  
+    // 2. Lấy thông tin shift để lấy giờ bắt đầu
+    const shift = await this.shiftService.findOne(shiftId);
+  
+    if (!shift || !shift.start_time) {
+      throw new Error('Thông tin ca làm không hợp lệ');
+    }
+  
+    // 3. Tính thời điểm bắt đầu của ca làm (kết hợp date + start_time)
+    const [hours, minutes, seconds = 0] = shift.start_time.split(':').map(Number);
+    const shiftStartDateTime = new Date(doctorShift.date);
+    shiftStartDateTime.setHours(hours);
+    shiftStartDateTime.setMinutes(minutes);
+    shiftStartDateTime.setSeconds(seconds);
+  
+    const now = new Date();
+    const timeDifference = shiftStartDateTime.getTime() - now.getTime();
+  
+    // 4. Kiểm tra nếu còn dưới 1 giờ thì không cho hủy
+    if (timeDifference < 60 * 60 * 1000) {
+      throw new Error('Không thể hủy ca làm vì thời gian còn lại quá ít');
+    }
+  
+    // 5. Cập nhật trạng thái ca làm
     await this.doctorShiftRepository.updateShiftStatus(
       doctorId,
       shiftId,
       DoctorShiftStatus.CANCELLED,
     );
-
+  
+    // 6. Lấy và hủy các lịch hẹn liên quan
     const appointments = await this.appointmentService.findAppointmentsByShift(
       doctorId,
       shiftId,
     );
-
+  
     for (const appointment of appointments) {
-      // Cập nhật lịch hẹn của bệnh nhân thành 'canceled'
       await this.appointmentService.cancelAppointment(
         appointment.id,
         AppointmentStatus.CANCELLED,
@@ -127,4 +157,6 @@ export class DoctorShiftsService {
       );
     }
   }
+  
+  
 }

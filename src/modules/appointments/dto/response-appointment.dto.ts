@@ -41,5 +41,8 @@ export class AppointmentResponseDto {
   appointment_date?: Date;
 
   @Expose()
+  start_time?: string;
+
+  @Expose()
   notes?: string;
 }

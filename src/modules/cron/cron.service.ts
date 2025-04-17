@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { MailService } from '../mails/mail.service'; // Đảm bảo đường dẫn này đúng với vị trí file mail.service.ts của bạn
+import { MailService } from '../mails/mail.service'; 
 import { AppointmentsService } from '../appointments/services/appointments.service';
 import { Between, In } from 'typeorm';
 @Injectable()
@@ -11,12 +11,12 @@ export class CronService {
               private readonly appointmentService: AppointmentsService,
   ) {}
 
-  @Cron(CronExpression.EVERY_10_HOURS) 
+  @Cron(CronExpression.EVERY_30_MINUTES) 
   async sendPatientAppointmentReminders() {
     this.logger.debug('Checking and sending appointment reminders to patients...');
 
     const now = new Date();
-    const reminderThreshold = 30 * 60 * 1000; // 30 phút trong milliseconds
+    const reminderThreshold = 30 * 60 * 1000; 
     const reminderTimeThreshold = new Date(now.getTime() + reminderThreshold);
 
     const upcomingAppointments = await this.appointmentService.find({
@@ -27,11 +27,11 @@ export class CronService {
     });
 
     for (const appointment of upcomingAppointments) {
-      this.logger.log(`Checking appointment: ID=${appointment.id}, Patient=${appointment.full_name}, Date=${appointment.appointment_date}, Start Time=${appointment.shift?.start_time}, Doctor=${appointment.doctor?.full_name}, Status=${appointment.status}`);
+      this.logger.log(`Checking appointment: ID=${appointment.id}, Patient=${appointment.full_name}, Date=${appointment.appointment_date}, Start Time=${appointment.start_time}, Doctor=${appointment.doctor?.full_name}, Status=${appointment.status}`);
 
       if (appointment.shift && appointment.email && appointment.doctor) {
         const appointmentDate = new Date(appointment.appointment_date);
-        const [hours, minutes, seconds] = appointment.shift.start_time.split(':').map(Number);
+        const [hours, minutes, seconds = 0] = appointment.start_time.split(':').map(Number);
 
         const appointmentDateTime = new Date(
           appointmentDate.getFullYear(),
@@ -47,7 +47,7 @@ export class CronService {
         if (timeDifference > 0 && timeDifference <= reminderThreshold) {
           const context = {
             patientName: appointment.full_name,
-            appointmentTime: appointment.shift.start_time,
+            appointmentTime: appointment.start_time,
             appointmentDate: appointment.appointment_date,
             appointmentAddress: appointment.address,
             appointmentNote: appointment.notes,

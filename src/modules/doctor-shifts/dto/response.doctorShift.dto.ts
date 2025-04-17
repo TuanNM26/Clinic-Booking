@@ -1,5 +1,4 @@
-// src/modules/doctor-shifts/dto/doctor-shift.dto.ts
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 
 export class DoctorShiftDto {
   @Expose()
@@ -10,4 +9,15 @@ export class DoctorShiftDto {
 
   @Expose()
   assigned_at: Date;
+
+  @Expose()
+  date: Date;
+
+  @Expose()
+  @Transform(({ obj }) => obj.shift?.start_time)
+  start_time: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.shift?.end_time)
+  end_time: string;
 }

@@ -16,7 +16,7 @@ export class DoctorShiftRepository {
   ) {}
 
   async create(createDoctorShiftDto: CreateDoctorShiftDto): Promise<DoctorShift> {
-    const { doctorId, shiftId, date } = createDoctorShiftDto; // Lấy date từ DTO
+    const { doctorId, shiftId, date } = createDoctorShiftDto;
 
     const shift = await this.doctorShiftRepository.manager.findOne(Shift, {
       where: { id: shiftId },
@@ -65,7 +65,9 @@ export class DoctorShiftRepository {
   }
 
   async findAll(): Promise<DoctorShift[]> {
-    return await this.doctorShiftRepository.find();
+    return await await this.doctorShiftRepository.find({
+      relations: ['shift'],
+    });
   }
 
   async findOne(doctorId: string, shiftId: string): Promise<DoctorShift | null> {
@@ -126,11 +128,11 @@ export class DoctorShiftRepository {
 
   async findShiftsByDoctorAndDate(doctorId: string, date: string): Promise<DoctorShift[]> {
     const query = this.doctorShiftRepository.createQueryBuilder('doctorShift')
-  .leftJoinAndSelect('doctorShift.shift', 'shift') // Ensure you join the 'shift' table correctly
+  .leftJoinAndSelect('doctorShift.shift', 'shift') 
   .where('doctorShift.doctor_id = :doctorId', { doctorId })
   .andWhere('doctorShift.date = :date', { date })
   .andWhere('doctorShift.deletedAt IS NULL')
-  .andWhere('shift.deletedAt IS NULL') // Ensure the 'shift' table is not deleted
+  .andWhere('shift.deletedAt IS NULL') 
   .getMany();
     return query
   }
@@ -143,7 +145,7 @@ export class DoctorShiftRepository {
     await this.doctorShiftRepository
       .createQueryBuilder()
       .update(DoctorShift)
-      .set({ status: status }) // giá trị bây giờ đã đúng kiểu
+      .set({ status: status })
       .where('doctor_id = :doctorId', { doctorId })
       .andWhere('shift_id = :shiftId', { shiftId })
       .execute();
@@ -152,27 +154,23 @@ export class DoctorShiftRepository {
   generateTimeSlots(startTime: string, endTime: string, intervalMinutes = 30): string[] {
     const slots: string[] = [];
     console.log(startTime + endTime)
-    // Chuyển đổi startTime và endTime sang Date
     const startDate = new Date(`2025-01-01T${startTime}`);
     const endDate = new Date(`2025-01-01T${endTime}`);
   
-    // Kiểm tra nếu startTime và endTime hợp lệ
     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
       throw new BadRequestException('Thời gian bắt đầu hoặc kết thúc không hợp lệ');
     }
   
     let current = startDate;
   
-    // Lặp qua các thời gian, mỗi lần cộng thêm intervalMinutes (30 phút)
     while (current <= endDate) {
-      // Tính thời gian kết thúc của slot
       const next = new Date(current.getTime());
       next.setMinutes(current.getMinutes() + intervalMinutes);
   
-      const slot = `${this.formatTime(current)} - ${this.formatTime(next)}`;
+      const slot = `${this.formatTime(current)}`;
       slots.push(slot);
   
-      current = next;  // Cập nhật lại current
+      current = next; 
     }
   
     return slots;
@@ -184,24 +182,17 @@ export class DoctorShiftRepository {
     return `${hours}:${minutes}`;
   }
   
-  // Trả về toàn bộ time slot trong ngày của bác sĩ
-  // Trả về toàn bộ time slot trong ngày của bác sĩ
 async getDoctorTimeSlots(doctorId: string, date: string): Promise<string[]> {
-  // Lấy tất cả các ca làm việc của bác sĩ trong ngày
   const shifts = await this.findShiftsByDoctorAndDate(doctorId, date);
   let allSlots: string[] = [];
 
-  // Duyệt qua tất cả các ca làm việc
   for (const shift of shifts) {
-    const startTime = shift.shift.start_time; // kiểu '08:00:00'
-    const endTime = shift.shift.end_time;     // kiểu '12:00:00'
+    const startTime = shift.shift.start_time;
+    const endTime = shift.shift.end_time; 
     console.log(shift);
-    // Tạo các time slot cho từng ca làm việc
     const slots = this.generateTimeSlots(startTime, endTime);
-    allSlots = allSlots.concat(slots); // Nối các slots lại với nhau
+    allSlots = allSlots.concat(slots);
   }
-
-  return allSlots; // Trả về tất cả các time slot
+  return allSlots;
 }
-
 }

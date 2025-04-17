@@ -35,12 +35,14 @@ import { CancelShiftDto } from './dto/cancelShift.dto';
     @Auth([`${Permission.REGISTER_SHIFT}`]) 
     @UsePipes(new ValidationPipe())
     registerDoctorShift(
-    @Body('shiftId') shiftId: string, 
+    @Body('shiftId') shiftId: string,
+    @Body('date') date: string,  
     @CurrentUser() user: any          
     ) {
     const createDoctorShiftDto = new CreateDoctorShiftDto();
     createDoctorShiftDto.shiftId = shiftId;
     createDoctorShiftDto.doctorId = user.sub; 
+    createDoctorShiftDto.date = date;
 
     return this.doctorShiftsService.create(createDoctorShiftDto);
     }
@@ -68,8 +70,7 @@ import { CancelShiftDto } from './dto/cancelShift.dto';
 
     @Delete(':doctorId/:shiftId')
     @HttpCode(HttpStatus.OK)
-    @Auth([`${Permission.UNREGISTER_SHIFT}`]) 
-    remove(@Param('doctorId') doctorId: string, @Param('shiftId') shiftId: string) {
+       remove(@Param('doctorId') doctorId: string, @Param('shiftId') shiftId: string) {
       return this.doctorShiftsService.remove(doctorId, shiftId);
     }
 
@@ -98,6 +99,7 @@ import { CancelShiftDto } from './dto/cancelShift.dto';
   }
 
   @Post(':doctorId/:shiftId/cancel')
+  @Auth([`${Permission.UNREGISTER_SHIFT}`]) 
   async cancelDoctorShift(
     @Param('doctorId') doctorId: string,
     @Param('shiftId') shiftId: string,
@@ -109,5 +111,4 @@ import { CancelShiftDto } from './dto/cancelShift.dto';
       cancelShiftDto,
     );
   }
-
   }

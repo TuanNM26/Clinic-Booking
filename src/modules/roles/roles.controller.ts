@@ -34,4 +34,20 @@ export class RolesController {
   remove(@Param('id') id: string) {
     return this.rolesService.remove(id);
   }
+
+@Patch(':roleId/permissions/:permissionId')
+async addPermissionToRole(
+  @Param('roleId') roleId: string,
+  @Param('permissionId') permissionId: string,
+) {
+  return await this.rolesService.addPermission(roleId, permissionId);
+}
+
+@Delete(':roleId/permissions/:permissionId')
+async removePermissionFromRole(
+  @Param('roleId') roleId: string,
+  @Param('permissionId') permissionId: string,
+) {
+  return this.rolesService.removePermissionFromRole(roleId, permissionId);
+}
 }
