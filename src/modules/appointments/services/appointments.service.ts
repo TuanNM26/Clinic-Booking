@@ -208,7 +208,12 @@ export class AppointmentsService {
   findAllForDoctor(query: any, id: string): Appointment[] | PromiseLike<Appointment[]> {
     return this.appointmentsRepository.findAllForDoctor(query, id);
   }
+
   async find(options: FindManyOptions<Appointment>): Promise<Appointment[]> {
     return this.appointmentsRepository.find(options);
+  }
+
+  async getAppointmentStatistics() {
+    return this.appointmentsRepository.getStatistics();
   }
 }

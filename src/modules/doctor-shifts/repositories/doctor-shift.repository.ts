@@ -65,7 +65,9 @@ export class DoctorShiftRepository {
   }
 
   async findAll(): Promise<DoctorShift[]> {
-    return await this.doctorShiftRepository.find();
+    return await await this.doctorShiftRepository.find({
+      relations: ['shift'],
+    });
   }
 
   async findOne(doctorId: string, shiftId: string): Promise<DoctorShift | null> {

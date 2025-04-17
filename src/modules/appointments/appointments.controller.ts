@@ -11,6 +11,7 @@ import { UpdateAppointmentNotesDto } from './dto';
 import { UpdateAppointmentStatusDto } from './dto';
 import { AppointmentStatus } from 'src/common/enum/status.enum';
 import { Permission } from 'src/common/enum/permission.enum';
+import { AppointmentStatisticsDto } from './dto/appointment-statistics.dto';
 
 @Controller('appointments')
 export class AppointmentsController {
@@ -27,6 +28,12 @@ export class AppointmentsController {
   findAll(@Query() query): Promise<Appointment[]> {
     return this.appointmentsService.findAll(query);
   }
+
+  @Get('statistics')
+  async getStatistics() {
+    return this.appointmentsService.getAppointmentStatistics();
+  }
+  
 
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Appointment> {
@@ -74,4 +81,8 @@ export class AppointmentsController {
   remove(@Param('id') id: string): Promise<void> {
     return this.appointmentsService.remove(id);
   }
+
+  
+
+
 }

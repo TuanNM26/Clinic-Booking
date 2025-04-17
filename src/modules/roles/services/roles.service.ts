@@ -45,4 +45,13 @@ export class RolesService {
     await this.roleRepository.remove(id);
     return { message: `Role with ID "${id}" has been successfully deleted` };
   }
+
+  async addPermission(roleId: string, permissionId: string): Promise<Role> {
+    return await this.roleRepository.addPermissionToRole(roleId, permissionId);
+  }
+
+  async removePermissionFromRole(roleId: string, permissionId: string) {
+    const role = await this.roleRepository.removePermissionFromRole(roleId, permissionId);
+    return role;
+  }
 }

@@ -8,9 +8,10 @@ import { ShiftsService } from '../shifts/services/shifts.service';
 import { ShiftRepository } from '../shifts/repositories/shifts.repository';
 import { Role } from './entities/role.entity';
 import { RoleRepository } from './repostitories/role.repository';
+import { PermissionsModule } from '../permissions/permissions.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Role])],
+    imports: [TypeOrmModule.forFeature([Role]), PermissionsModule],
     controllers: [RolesController],
     providers: [RolesService,RoleRepository],
     exports: [RolesService]
