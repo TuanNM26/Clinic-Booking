@@ -20,8 +20,7 @@ export class PermissionGuard implements CanActivate {
               'permissions',
               context.getHandler(),
           );
-  
-          // 1. Xác thực (AuthGuard logic)
+
           if (!bearerToken) {
               throw new UnauthorizedException('Missing authorization token');
           }
@@ -35,15 +34,14 @@ export class PermissionGuard implements CanActivate {
               );
               request.user = decoded;
   
-              // 2. Ủy quyền (PermissionGuard logic)
               if (!requiredPermissions || requiredPermissions.length === 0) {
-                  return true; // Cho phép truy cập nếu không có quyền cụ thể nào được yêu cầu
+                  return true;
               }
   
               const roleId = request.user?.role;
   
               if (!roleId) {
-                  return false; // Không có role, không có quyền
+                  return false; 
               }
   
               const allowedRoleIds = new Set<string>();

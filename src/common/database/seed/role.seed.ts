@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Role } from '../../../modules/roles/entities/role.entity'; // Đường dẫn đến entity Role của bạn
+import { Role } from '../../../modules/roles/entities/role.entity';
 
 @Injectable()
 export class RoleSeeder {

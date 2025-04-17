@@ -56,7 +56,7 @@ export class CreateAppointmentDto {
 
   @IsNotEmpty()
   @IsString()
-  start_time: string; // "08:00"
+  start_time: string;
 
 
   @IsOptional()

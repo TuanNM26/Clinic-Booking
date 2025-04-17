@@ -11,5 +11,5 @@ export class CreateDoctorShiftDto {
 
   @IsNotEmpty()
   @IsDateString()
-  date: string; // Hoặc Date nếu bạn muốn nhận kiểu Date từ request
+  date: string;
 }

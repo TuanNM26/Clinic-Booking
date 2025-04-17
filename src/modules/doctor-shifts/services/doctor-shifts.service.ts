@@ -5,7 +5,7 @@ import { DoctorShiftRepository } from '../repositories/doctor-shift.repository';
 import { DoctorShift } from '../entities/doctor-shift.entity';
 import { plainToInstance } from 'class-transformer';
 import { DoctorShiftScheduleDto } from '../dto/DoctorShiftSchedule.dto';
-import { DoctorShiftDto } from '../dto/response.doctorShift.dto'; // Đảm bảo import đúng DTO bạn muốn cho response
+import { DoctorShiftDto } from '../dto/response.doctorShift.dto'; 
 import { CancelShiftDto } from '../dto/cancelShift.dto';
 import { AppointmentsService } from 'src/modules/appointments/services/appointments.service';
 import { AppointmentStatus } from 'src/common/enum/status.enum';
@@ -52,7 +52,6 @@ export class DoctorShiftsService {
     doctorId: string,
     date: string
   ): Promise<string[]> {
-    // Gọi trực tiếp repository để lấy các slot của bác sĩ theo ngày
     const slots = await this.doctorShiftRepository.getDoctorTimeSlots(doctorId, date);
 
     if (!slots || slots.length === 0) {
@@ -105,8 +104,6 @@ export class DoctorShiftsService {
     cancelShiftDto: CancelShiftDto,
   ) {
     const { reason } = cancelShiftDto;
-
-    // Cập nhật trạng thái ca làm việc của bác sĩ thành 'canceled'
     await this.doctorShiftRepository.updateShiftStatus(
       doctorId,
       shiftId,
@@ -119,7 +116,6 @@ export class DoctorShiftsService {
     );
 
     for (const appointment of appointments) {
-      // Cập nhật lịch hẹn của bệnh nhân thành 'canceled'
       await this.appointmentService.cancelAppointment(
         appointment.id,
         AppointmentStatus.CANCELLED,

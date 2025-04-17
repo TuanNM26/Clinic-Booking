@@ -23,43 +23,51 @@ export class AppointmentsRepository {
   async createAppointment(
     createAppointmentDto: CreateAppointmentDto,
   ): Promise<Appointment> {
-    const { doctor_id, shift_id, appointment_date } = createAppointmentDto;
+    const { doctor_id, shift_id, appointment_date, start_time } = createAppointmentDto;
+  
   
     const shift = await this.shiftService.findOne(shift_id);
     if (!shift) {
       throw new HttpException('Ca làm không tồn tại.', HttpStatus.NOT_FOUND);
     }
   
-    const isDoctorAssigned = await this.doctorShiftService.findOne(doctor_id,shift_id)
+    const isDoctorAssigned = await this.doctorShiftService.findOne(doctor_id, shift_id);
     if (!isDoctorAssigned) {
-      throw new HttpException(
-        'Bác sĩ chưa được phân ca làm này.',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Bác sĩ chưa được phân ca làm này.', HttpStatus.BAD_REQUEST);
     }
   
     const now = new Date();
     const shiftDateTime = new Date(`${shift.date}T${shift.start_time}`);
     if (shiftDateTime < now) {
-      throw new HttpException(
-        'Không thể đặt lịch khám trong ca đã qua.',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('Không thể đặt lịch khám trong ca đã qua.', HttpStatus.BAD_REQUEST);
     }
-    const existingAppointment = await this.appointmentRepository.findOne({
+  
+    const existingAppointments = await this.appointmentRepository.find({
       where: {
         doctor_id,
-        shift_id,
         appointment_date,
       },
     });
   
-    if (existingAppointment) {
+    const [newHour, newMinute] = start_time.split(':').map(Number);
+    const newStartMinutes = newHour * 60 + newMinute;
+
+    const hasConflict = existingAppointments.some((appointment) => {
+      const [existingHour, existingMinute] = appointment.start_time.split(':').map(Number);
+      const existingStartMinutes = existingHour * 60 + existingMinute;
+  
+      const diffInMinutes = Math.abs(existingStartMinutes - newStartMinutes);
+      console.log("day nhe tuan oi" + diffInMinutes);
+      return diffInMinutes < 30;
+    });
+  
+    if (hasConflict) {
       throw new HttpException(
-        'Đã có lịch hẹn trùng lặp vào thời gian này.',
+        'Đã có lịch hẹn khác gần thời gian này (dưới 30 phút).',
         HttpStatus.CONFLICT,
       );
     }
+  
     return this.appointmentRepository.save(
       this.appointmentRepository.create(createAppointmentDto),
     );
@@ -160,67 +168,63 @@ export class AppointmentsRepository {
   }
 
   async getStatistics(): Promise<AppointmentStatisticsDto> {
-    const appointments = await this.appointmentRepository.find({
-      relations: ['doctor'], // Load thông tin bác sĩ luôn
-    });
-  
-    const totalAppointments = appointments.length;
-    const confirmedAppointments = appointments.filter(a => a.status === AppointmentStatus.CONFIRMED).length;
-    const pendingAppointments = appointments.filter(a => a.status === AppointmentStatus.PENDING).length;
-    const canceledAppointments = appointments.filter(a => a.status === AppointmentStatus.CANCELLED).length;
-  
-    const appointmentsPerDoctorRaw: Record<string, number> = {};
-    const patientVisitMap: Record<string, number> = {};
-    let totalConfirmationDelayInHours = 0;
-    let confirmedCount = 0;
-  
-    for (const appt of appointments) {
-      // Đếm số lượng lịch theo bác sĩ
-      if (appt.doctor_id) {
-        appointmentsPerDoctorRaw[appt.doctor_id] = (appointmentsPerDoctorRaw[appt.doctor_id] || 0) + 1;
-      }
-  
-      // Đếm theo identity_number
-      const identity = appt.identity_number;
-      if (identity) {
-        patientVisitMap[identity] = (patientVisitMap[identity] || 0) + 1;
-      }
-  
-      // Tính thời gian xác nhận
-      if (appt.status === AppointmentStatus.CONFIRMED && appt.createdAt && appt.updatedAt) {
-        const delayInHours = (appt.updatedAt.getTime() - appt.createdAt.getTime()) / (1000 * 60 * 60);
-        totalConfirmationDelayInHours += delayInHours;
-        confirmedCount++;
-      }
+  const appointments = await this.appointmentRepository.find({
+    relations: ['doctor'], 
+  });
+
+  const totalAppointments = appointments.length;
+  const confirmedAppointments = appointments.filter(a => a.status === AppointmentStatus.CONFIRMED).length;
+  const pendingAppointments = appointments.filter(a => a.status === AppointmentStatus.PENDING).length;
+  const canceledAppointments = appointments.filter(a => a.status === AppointmentStatus.CANCELLED).length;
+
+  const appointmentsPerDoctorRaw: Record<string, number> = {};
+  const patientVisitMap: Record<string, number> = {};
+  let totalConfirmationDelayInHours = 0;
+  let confirmedCount = 0;
+
+  for (const appt of appointments) {
+    if (appt.doctor_id) {
+      appointmentsPerDoctorRaw[appt.doctor_id] = (appointmentsPerDoctorRaw[appt.doctor_id] || 0) + 1;
     }
-  
-    // Chuyển doctor_id sang doctor.full_name
-    const appointmentsPerDoctor: Record<string, number> = {};
-    for (const appt of appointments) {
-      if (appt.doctor && appointmentsPerDoctorRaw[appt.doctor_id]) {
-        const doctorName = appt.doctor.full_name || 'Không rõ tên bác sĩ';
-        appointmentsPerDoctor[doctorName] = appointmentsPerDoctorRaw[appt.doctor_id];
-      }
+
+    const identity = appt.identity_number;
+    if (identity) {
+      patientVisitMap[identity] = (patientVisitMap[identity] || 0) + 1;
     }
-  
-    const confirmationRate = totalAppointments ? confirmedAppointments / totalAppointments : 0;
-    const cancellationRate = totalAppointments ? canceledAppointments / totalAppointments : 0;
-    const newPatientCount = Object.values(patientVisitMap).filter(v => v === 1).length;
-    const returningPatientCount = Object.values(patientVisitMap).filter(v => v > 1).length;
-    const averageConfirmationTimeInHours = confirmedCount ? totalConfirmationDelayInHours / confirmedCount : 0;
-  
-    return {
-      totalAppointments,
-      confirmedAppointments,
-      pendingAppointments,
-      canceledAppointments,
-      confirmationRate: +confirmationRate.toFixed(2),
-      cancellationRate: +cancellationRate.toFixed(2),
-      appointmentsPerDoctor,
-      newPatientCount,
-      returningPatientCount,
-      averageConfirmationTimeInHours: +averageConfirmationTimeInHours.toFixed(2),
-    };
+
+    if (appt.status === AppointmentStatus.CONFIRMED && appt.createdAt && appt.updatedAt) {
+      const delayInHours = (appt.updatedAt.getTime() - appt.createdAt.getTime()) / (1000 * 60 * 60);
+      totalConfirmationDelayInHours += delayInHours;
+      confirmedCount++;
+    }
   }
-  
+
+  const appointmentsPerDoctor: Record<string, number> = {};
+  for (const appt of appointments) {
+    if (appt.doctor && appointmentsPerDoctorRaw[appt.doctor_id]) {
+      const doctorName = appt.doctor.full_name || 'Không rõ tên bác sĩ';
+      appointmentsPerDoctor[doctorName] = appointmentsPerDoctorRaw[appt.doctor_id];
+    }
+  }
+
+  const confirmationRate = totalAppointments ? confirmedAppointments / totalAppointments : 0;
+  const cancellationRate = totalAppointments ? canceledAppointments / totalAppointments : 0;
+  const newPatientCount = Object.values(patientVisitMap).filter(v => v === 1).length;
+  const returningPatientCount = Object.values(patientVisitMap).filter(v => v > 1).length;
+  const averageConfirmationTimeInHours = confirmedCount ? totalConfirmationDelayInHours / confirmedCount : 0;
+
+  return {
+    totalAppointments,
+    confirmedAppointments,
+    pendingAppointments,
+    canceledAppointments,
+    confirmationRate: +confirmationRate.toFixed(2),
+    cancellationRate: +cancellationRate.toFixed(2),
+    appointmentsPerDoctor,
+    newPatientCount,
+    returningPatientCount,
+    averageConfirmationTimeInHours: +averageConfirmationTimeInHours.toFixed(2),
+  };
+}
+
 }

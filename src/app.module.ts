@@ -102,7 +102,3 @@ const envPath = path.join(__dirname, './configs/.env-dev');
   providers: [AppService],
 })
 export class AppModule {}
-
-
-// D:\TTSNODEJS\Project\clinic-booking\dist\common\templates\common\templates\patientConfirmShedule.hbs
-// D:\TTSNODEJS\Project\clinic-booking\dist\common\templates\patientConfirmShedule.hbs

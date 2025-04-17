@@ -12,7 +12,7 @@ export class RoleRepository {
   constructor(
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
-    private readonly permissionService: PermissionsService, // Đảm bảo inject Permission repository
+    private readonly permissionService: PermissionsService,
   ) {}
 
   async create(createRoleDto: CreateRoleDto): Promise<Role> {
@@ -41,11 +41,10 @@ export class RoleRepository {
     await this.roleRepository.softDelete(id);
   }
 
-  // Sửa lại phương thức addPermissionToRole
   async addPermissionToRole(roleId: string, permissionId: string): Promise<Role> {
     const role = await this.roleRepository.findOne({
       where: { id: roleId },
-      relations: ['permissions'], // Đảm bảo rằng bạn tải danh sách permissions
+      relations: ['permissions'],
     });
 
     if (!role) {

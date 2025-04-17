@@ -30,7 +30,7 @@ export class SpecializationsService {
   async findOne(id: string): Promise<SpecializationDto> {
     const specialization = await this.specializationRepository.findOne(id);
     if (!specialization) {
-      return null; // Hoặc ném lỗi NotFoundException
+      return null; 
     }
     return plainToInstance(SpecializationDto, specialization, {
       excludeExtraneousValues: true,
