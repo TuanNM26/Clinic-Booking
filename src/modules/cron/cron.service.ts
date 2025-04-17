@@ -47,7 +47,7 @@ export class CronService {
         if (timeDifference > 0 && timeDifference <= reminderThreshold) {
           const context = {
             patientName: appointment.full_name,
-            appointmentTime: appointment.shift.start_time,
+            appointmentTime: appointment.start_time,
             appointmentDate: appointment.appointment_date,
             appointmentAddress: appointment.address,
             appointmentNote: appointment.notes,

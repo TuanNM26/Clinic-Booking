@@ -8,13 +8,15 @@ import { AuthModule } from 'src/common/auth/auth.module';
 import { PermissionModule } from 'src/common/guards/permission.module';
 import { AppointmentsModule } from '../appointments/appointments.module';
 import { MailModule } from '../mails/mail.module';
+import { ShiftsModule } from '../shifts/shifts.module';
 
 @Module({
   imports:  [TypeOrmModule.forFeature([DoctorShift]),
              AuthModule,
              PermissionModule,
              forwardRef(() => AppointmentsModule),
-             MailModule],
+             MailModule,
+             ShiftsModule],
   controllers: [DoctorShiftsController],
   providers: [DoctorShiftsService, DoctorShiftRepository],
   exports:[DoctorShiftsService]
