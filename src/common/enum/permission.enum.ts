@@ -10,4 +10,5 @@ export enum Permission {
     GET_ALL_APPOINTMENTS = 'get_all_appointments',
     DELETE_SHIFT = 'delete_shift',
     GET_ALL_DOCTOR_SHIFT = 'get_all_doctor_shift',
+    SHOW_APPOINTMENT_STATISTIC = 'show_appointment_statistic'
   }

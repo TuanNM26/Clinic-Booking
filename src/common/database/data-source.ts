@@ -9,12 +9,12 @@ const envPath2 = path.resolve(__dirname, '../../configs/common/configs/.env-dev'
 dotenv.config({ path: envPath2 });
 
 import { User } from '../../modules/users/entities/user.entity';
-import { Role } from 'src/modules/roles/entities/role.entity';
-import { DoctorShift } from 'src/modules/doctor-shifts/entities/doctor-shift.entity';
-import { Specialization } from 'src/modules/specializations/entities/specialization.entity';
-import { Appointment } from 'src/modules/appointments/entities/appointment.entity';
-import { Permission } from 'src/modules/permissions/entities/permission.entity';
-import { Shift } from 'src/modules/shifts/entities/shift.entity';
+import { Role } from '../../modules/roles/entities/role.entity';
+import { DoctorShift } from '../../modules/doctor-shifts/entities/doctor-shift.entity';
+import { Specialization } from '../../modules/specializations/entities/specialization.entity';
+import { Appointment } from '../../modules/appointments/entities/appointment.entity';
+import { Permission } from '../../modules/permissions/entities/permission.entity';
+import { Shift } from '../../modules/shifts/entities/shift.entity';
 
 
 

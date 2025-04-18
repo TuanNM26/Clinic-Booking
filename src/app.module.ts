@@ -26,10 +26,11 @@ import { DoctorShiftsModule } from './modules/doctor-shifts/doctor-shifts.module
 import { AppointmentsModule } from './modules/appointments/appointments.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MailModule } from './modules/mails/mail.module';
-import { SeederModule } from './common/database/seed/seed.module';
+// import { SeederModule } from './common/database/seed/seed.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CronService } from './modules/cron/cron.service';
 import { CronModule } from './modules/cron/cron.module';
+import { BullModule } from '@nestjs/bull';
 
 const envPath = path.join(__dirname, './configs/.env-dev');
 @Module({
@@ -57,6 +58,12 @@ const envPath = path.join(__dirname, './configs/.env-dev');
       synchronize: false,
       migrations: ['dist/common/migrations/*.js'],
       migrationsRun: true,
+    }),
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
     }),
     MailerModule.forRootAsync({
       imports: [ConfigModule], 
@@ -95,7 +102,7 @@ const envPath = path.join(__dirname, './configs/.env-dev');
     PermissionsModule,
     DoctorShiftsModule,
     AppointmentsModule,
-    SeederModule,
+    // SeederModule,
     CronModule
   ],
   controllers: [AppController],

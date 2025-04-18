@@ -57,7 +57,6 @@ export class AppointmentsRepository {
       const existingStartMinutes = existingHour * 60 + existingMinute;
   
       const diffInMinutes = Math.abs(existingStartMinutes - newStartMinutes);
-      console.log("day nhe tuan oi" + diffInMinutes);
       return diffInMinutes < 30;
     });
   

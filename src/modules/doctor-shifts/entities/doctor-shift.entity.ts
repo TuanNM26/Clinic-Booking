@@ -1,8 +1,8 @@
 import { Entity, PrimaryColumn, ManyToOne, JoinColumn, Column } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Shift } from '../../shifts/entities/shift.entity';
-import { BaseEntity } from 'src/common/database/base.entity';
-import { DoctorShiftStatus } from 'src/common/enum/doctorShift.status.enum';
+import { BaseEntity } from '../../../common/database/base.entity';
+import { DoctorShiftStatus } from '../../../common/enum/doctorShift.status.enum';
 
 @Entity('doctor_shifts')
 export class DoctorShift extends BaseEntity{

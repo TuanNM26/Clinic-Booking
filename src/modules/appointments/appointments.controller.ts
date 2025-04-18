@@ -34,6 +34,7 @@ export class AppointmentsController {
   }
 
   @Get('statistics')
+  @Auth([`${Permission.SHOW_APPOINTMENT_STATISTIC}`]) 
   async getStatistics() {
     return this.appointmentsService.getAppointmentStatistics();
   }

@@ -2,8 +2,8 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 't
 import { User } from '../../users/entities/user.entity';
 import { Shift } from '../../shifts/entities/shift.entity';
 import { Specialization } from '../../specializations/entities/specialization.entity';
-import { BaseEntity } from 'src/common/database/base.entity';
-import { AppointmentStatus } from 'src/common/enum/status.enum';
+import { BaseEntity } from '../../../common/database/base.entity';
+import { AppointmentStatus } from '../../../common/enum/status.enum';
 
 @Entity('appointments')
 export class Appointment extends BaseEntity{

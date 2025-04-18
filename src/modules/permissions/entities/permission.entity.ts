@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany } from 'typeorm';
 import { Role } from '../../roles/entities/role.entity';
-import { BaseEntity } from 'src/common/database/base.entity';
+import { BaseEntity } from '../../../common/database/base.entity';
 
 @Entity('permissions')
 export class Permission extends BaseEntity {
