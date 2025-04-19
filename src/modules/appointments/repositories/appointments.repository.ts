@@ -8,7 +8,7 @@ import { AppointmentStatus } from 'src/common/enum/status.enum';
 import { ShiftsService } from 'src/modules/shifts/services/shifts.service';
 import { DoctorShiftsService } from 'src/modules/doctor-shifts/services/doctor-shifts.service';
 import { AppointmentStatisticsDto } from '../dto/appointment-statistics.dto';
-
+import dayjs from 'dayjs';
 @Injectable()
 export class AppointmentsRepository {
   
@@ -37,7 +37,8 @@ export class AppointmentsRepository {
     }
   
     const now = new Date();
-    const shiftDateTime = new Date(`${shift.date}T${shift.start_time}`);
+    const dateOnly = appointment_date.toISOString().split('T')[0]; // "2025-04-18"
+    const shiftDateTime = new Date(`${dateOnly}T${shift.start_time}`);
     if (shiftDateTime < now) {
       throw new HttpException('Không thể đặt lịch khám trong ca đã qua.', HttpStatus.BAD_REQUEST);
     }

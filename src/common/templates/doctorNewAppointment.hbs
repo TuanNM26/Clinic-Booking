@@ -30,6 +30,24 @@
     .appointment-details strong {
       font-weight: bold;
     }
+    .button-container {
+      margin-top: 20px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      margin-right: 10px;
+      font-size: 14px;
+      text-decoration: none;
+      border-radius: 5px;
+      color: #fff;
+    }
+    .btn-approve {
+      background-color: #28a745;
+    }
+    .btn-cancel {
+      background-color: #dc3545;
+    }
   </style>
 </head>
 <body>
@@ -46,6 +64,12 @@
       {{/if}}
     </div>
     <p>Vui lòng xem chi tiết lịch trình của bạn.</p>
+
+    <div class="button-container">
+      <a href="http://localhost:3000/appointments/status/confirm/{{appointmentId}}" class="btn btn-approve">Duyệt lịch</a>
+      <a href="http://localhost:3000/appointments/status/cancel/{{appointmentId}}" class="btn btn-cancel">Hủy lịch</a>
+    </div>
+
     <p>Trân trọng,</p>
     <p>Hệ thống đặt lịch phòng khám</p>
   </div>
