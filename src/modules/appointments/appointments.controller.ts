@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Query, Put, Req, Res, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Query, Put, Req, Res, HttpException, HttpStatus, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { AppointmentsService } from './services/appointments.service';
 import { CreateAppointmentDto } from './dto';
 import { UpdateAppointmentDto } from './dto';
@@ -69,7 +69,16 @@ export class AppointmentsController {
   async ConfirmAppointmentStatus(
     @Param('id') id: string,
     @Body() updateAppointmentStatusDto: UpdateAppointmentStatusDto,
+    @CurrentUser() user: any,
   ): Promise<Appointment> {
+    const appointment = await this.appointmentsService.findOne(id);
+    if (!appointment) {
+      throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
+    }
+
+    if (appointment.doctor_id !== user.id) {
+      throw new ForbiddenException('Bạn không có quyền thực hiện hành động này trên lịch hẹn này.');
+    }
     updateAppointmentStatusDto.status = AppointmentStatus.CONFIRMED;
     return this.appointmentsService.updateAppointmentStatus(id, updateAppointmentStatusDto.status);
   }
@@ -80,7 +89,16 @@ export class AppointmentsController {
   async CancelAppointmentStatus(
     @Param('id') id: string,
     @Body() updateAppointmentStatusDto: UpdateAppointmentStatusDto,
+    @CurrentUser() user: any,
   ): Promise<Appointment> {
+    const appointment = await this.appointmentsService.findOne(id);
+    if (!appointment) {
+      throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
+    }
+
+    if (appointment.doctor_id !== user.id) {
+      throw new ForbiddenException('Bạn không có quyền thực hiện hành động này trên lịch hẹn này.');
+    }
     updateAppointmentStatusDto.status = AppointmentStatus.CANCELLED;
     return this.appointmentsService.updateAppointmentStatus(id, updateAppointmentStatusDto.status);
   }
@@ -104,6 +122,7 @@ export class AppointmentsController {
   async redirectToPatch(
     @Param('action') action: string,
     @Param('appointmentId') id: string,
+    @CurrentUser() user: any,
     // @Res() res: Response,
     @Res({ passthrough: false }) res: Response,
   ) {
@@ -112,14 +131,20 @@ export class AppointmentsController {
     }
 
     try {
-      // Gọi PATCH nội bộ thông qua service
-      if (action === 'confirm') {
-        console.log("oke lich nhe")
+      const appointment = await this.appointmentsService.findOne(id);
+    if (!appointment) {
+      throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
+    }
+
+    if (appointment.doctor_id !== user.id) {
+      throw new ForbiddenException('Bạn không có quyền thực hiện hành động này trên lịch hẹn này.');
+    }
+
+    if (action === 'confirm') {
         await this.appointmentsService.updateAppointmentStatus(id, AppointmentStatus.CONFIRMED);
-      } else if (action === 'cancel') {
-        console.log("huy lich nhe")
+    } else if (action === 'cancel') {
         await this.appointmentsService.updateAppointmentStatus(id, AppointmentStatus.CANCELLED);
-      }
+    }
 
       res.setHeader('Content-Type', 'text/html');
       res.send(`
