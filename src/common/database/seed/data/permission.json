@@ -1,0 +1,10 @@
+[
+    {
+      "name": "show_appointment_statistic",
+      "description": "allow head doctor see statistic of system"
+    },
+    {
+        "name": "show_all_shift",
+        "description": "allow head doctor see all shift of system"
+    }
+  ]

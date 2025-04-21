@@ -44,6 +44,7 @@ export class AppointmentsService {
     const appointmentTime = shift.start_time;
 
     const appointmentDetails = {
+      appointmentId: appointment.id,
       patientName: patientName,
       doctorName: doctorName,
       appointmentTime: appointmentTime,

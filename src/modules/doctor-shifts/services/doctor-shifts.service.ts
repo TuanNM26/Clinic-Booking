@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDoctorShiftDto } from '../dto/create-doctor-shift.dto';
 import { UpdateDoctorShiftDto } from '../dto/update-doctor-shift.dto';
 import { DoctorShiftRepository } from '../repositories/doctor-shift.repository';
@@ -133,7 +133,7 @@ export class DoctorShiftsService {
   
     // 4. Kiểm tra nếu còn dưới 1 giờ thì không cho hủy
     if (timeDifference < 60 * 60 * 1000) {
-      throw new Error('Không thể hủy ca làm vì thời gian còn lại quá ít');
+      throw new BadRequestException('Không thể hủy ca làm vì thời gian còn lại quá ít');
     }
   
     // 5. Cập nhật trạng thái ca làm

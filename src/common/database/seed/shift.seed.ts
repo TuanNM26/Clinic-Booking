@@ -45,7 +45,7 @@ export class ShiftSeeder {
 
     for (const shift of shiftsToSeed) {
       const existingShift = await this.shiftRepository.findOne({
-        // where: { date: shift.date, start_time: shift.start_time },
+        where: { start_time: shift.start_time },
       });
       if (!existingShift) {
         await this.shiftRepository.save(shift);
