@@ -39,6 +39,7 @@ export class DoctorShiftsService {
   }
 
   async findShiftsByDoctorAndDate(doctorId: string, date: string): Promise<DoctorShiftDto[]> { 
+    console.log(date)
     const doctorShifts = await this.doctorShiftRepository.findShiftsByDoctorAndDate(doctorId, date); 
 
     if (!doctorShifts || doctorShifts.length === 0) {
@@ -103,13 +104,13 @@ export class DoctorShiftsService {
   async cancelShift(
     doctorId: string,
     shiftId: string,
+    date:Date,
     cancelShiftDto: CancelShiftDto,
   ) {
     const { reason } = cancelShiftDto;
   
     // 1. Tìm ca làm của bác sĩ theo doctorId và shiftId
-    const doctorShift = await this.doctorShiftRepository.findOne(doctorId,shiftId);
-  
+    const doctorShift = await this.doctorShiftRepository.findOneByDate(doctorId,shiftId,date);
     if (!doctorShift) {
       throw new Error('Ca làm không tồn tại');
     }
@@ -140,6 +141,7 @@ export class DoctorShiftsService {
     await this.doctorShiftRepository.updateShiftStatus(
       doctorId,
       shiftId,
+      date,
       DoctorShiftStatus.CANCELLED,
     );
   

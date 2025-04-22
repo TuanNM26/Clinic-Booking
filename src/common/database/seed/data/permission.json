@@ -50,5 +50,25 @@
   {
     "name": "get_all_doctor_shift",
     "description": "allow head doctor to see all shifts of doctors"
+  },
+  {
+    "name": "manage_doctor_shifts",
+    "description": "allow admin to manage doctor shifts"
+  },
+  {
+    "name": "manage_appointments",
+    "description": "allow admin to manage appointments"
+  },
+  {
+    "name": "manage_users",
+    "description": "allow admin to manage users"
+  },
+  {
+    "name": "manage_roles",
+    "description": "allow admin to manage roles"
+  },
+  {
+    "name": "manage_permissions",
+    "description": "allow admin to manage permissions"
   }
 ]

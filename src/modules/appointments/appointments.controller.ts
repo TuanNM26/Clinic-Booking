@@ -21,7 +21,7 @@ export class AppointmentsController {
   @Post()
   @UsePipes(new ValidationPipe())
   async create(@Body() createAppointmentDto: CreateAppointmentDto): Promise<AppointmentResponseDto> {
-  const shiftId = await this.appointmentsService.getShiftIdByTime(createAppointmentDto.doctor_id, createAppointmentDto.start_time);
+  const shiftId = await this.appointmentsService.getShiftIdByTime(createAppointmentDto.doctor_id, createAppointmentDto.start_time, createAppointmentDto.appointment_date);
   createAppointmentDto.shift_id = shiftId;
   return this.appointmentsService.create(createAppointmentDto);
   }
@@ -74,7 +74,7 @@ export class AppointmentsController {
       throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
     }
 
-    if (appointment.doctor_id !== user.id) {
+    if (appointment.doctor_id !== user.sub) {
       throw new ForbiddenException('Bạn không có quyền thực hiện hành động này trên lịch hẹn này.');
     }
     updateAppointmentStatusDto.status = AppointmentStatus.CONFIRMED;
@@ -93,8 +93,7 @@ export class AppointmentsController {
     if (!appointment) {
       throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
     }
-
-    if (appointment.doctor_id !== user.id) {
+    if (appointment.doctor_id !== user.sub) {
       throw new ForbiddenException('Bạn không có quyền thực hiện hành động này trên lịch hẹn này.');
     }
     updateAppointmentStatusDto.status = AppointmentStatus.CANCELLED;
@@ -107,7 +106,16 @@ export class AppointmentsController {
   async updateAppointmentNotes(
     @Param('id') id: string,
     @Body() updateAppointmentNotesDto: UpdateAppointmentNotesDto,
+    @CurrentUser() user: any,
   ): Promise<Appointment> {
+
+      const appointment = await this.appointmentsService.findOne(id);
+    if (!appointment) {
+      throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
+    }
+    if (appointment.doctor_id !== user.sub) {
+      throw new ForbiddenException('Bạn không có quyền thực hiện hành động này trên lịch hẹn này.');
+    }
     return this.appointmentsService.updateAppointmentNotes(id, updateAppointmentNotesDto.notes);
   }
   
@@ -132,10 +140,6 @@ export class AppointmentsController {
       const appointment = await this.appointmentsService.findOne(id);
     if (!appointment) {
       throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
-    }
-
-    if (appointment.doctor_id !== user.id) {
-      throw new ForbiddenException('Bạn không có quyền thực hiện hành động này trên lịch hẹn này.');
     }
 
     if (action === 'confirm') {

@@ -26,7 +26,7 @@ import { CancelShiftDto } from './dto/cancelShift.dto';
 
     @Post()
     @Auth([`${Permission.HEAD_DOCTOR_REGISTER_SHIFT}`]) 
-    @UsePipes(new ValidationPipe())
+    @UsePipes(new ValidationPipe()) 
     create(@Body() createDoctorShiftDto: CreateDoctorShiftDto) {
       return this.doctorShiftsService.create(createDoctorShiftDto);
     }
@@ -98,16 +98,18 @@ import { CancelShiftDto } from './dto/cancelShift.dto';
     return this.doctorShiftsService.getScheduleByDoctorIdWithFilter(doctorId, start, end);
   }
 
-  @Post(':doctorId/:shiftId/cancel')
+  @Post(':doctorId/:shiftId/:date/cancel')
   @Auth([`${Permission.UNREGISTER_SHIFT}`]) 
   async cancelDoctorShift(
     @Param('doctorId') doctorId: string,
     @Param('shiftId') shiftId: string,
+    @Param('date') date: string,
     @Body() cancelShiftDto: CancelShiftDto,
   ) {
     await this.doctorShiftsService.cancelShift(
       doctorId,
       shiftId,
+      new Date(date),
       cancelShiftDto,
     );
   }
