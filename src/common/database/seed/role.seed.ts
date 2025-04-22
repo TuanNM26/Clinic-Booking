@@ -1,30 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { Role } from '../../../modules/roles/entities/role.entity';
+import * as fs from 'fs';
+import * as path from 'path';
 
-@Injectable()
-export class RoleSeeder {
-  constructor(
-    @InjectRepository(Role)
-    private roleRepository: Repository<Role>,
-  ) {}
+export const seedRoles = async (dataSource: DataSource): Promise<void> => {
+  const roleRepository = dataSource.getRepository(Role);
 
-  async seed(): Promise<void> {
-    const roles = [
-      { name: 'Admin' },
-      { name: 'Doctor' },
-      { name: 'Patient' },
-      { name: 'Nurse'}
-    ];
+  const filePath = path.resolve(__dirname, '../seed/data/role.json');
+  const rawData = fs.readFileSync(filePath, 'utf-8');
+  const roles = JSON.parse(rawData);
 
-    for (const roleData of roles) {
-      const existingRole = await this.roleRepository.findOne({ where: { name: roleData.name } });
-      if (!existingRole) {
-        await this.roleRepository.save(roleData);
-      }
+  for (const role of roles) {
+    const exists = await roleRepository.findOne({ where: { name: role.name } });
+    if (!exists) {
+      const newRole = roleRepository.create(role);
+      await roleRepository.save(newRole);
     }
-
-    console.log('Role data seeded!');
   }
-}
+
+  console.log('✅ Roles seeded successfully.');
+};

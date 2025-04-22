@@ -12,13 +12,11 @@ export class UsersController {
 
   
   @Post()
-  @Auth()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @Get('getAll')
-  @Auth()
   findAll()
    {
     return this.usersService.findAll();

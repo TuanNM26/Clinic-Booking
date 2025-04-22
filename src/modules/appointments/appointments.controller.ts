@@ -21,10 +21,8 @@ export class AppointmentsController {
   @Post()
   @UsePipes(new ValidationPipe())
   async create(@Body() createAppointmentDto: CreateAppointmentDto): Promise<AppointmentResponseDto> {
-    const shiftId = await this.appointmentsService.getShiftIdByTime(createAppointmentDto.doctor_id, createAppointmentDto.start_time);
-  
+  const shiftId = await this.appointmentsService.getShiftIdByTime(createAppointmentDto.doctor_id, createAppointmentDto.start_time);
   createAppointmentDto.shift_id = shiftId;
-  console.log(shiftId);
   return this.appointmentsService.create(createAppointmentDto);
   }
 
