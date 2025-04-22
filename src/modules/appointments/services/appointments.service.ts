@@ -41,7 +41,7 @@ export class AppointmentsService {
     const doctorName = doctor ? doctor.full_name : 'Không xác định';
 
     const shift = await this.shiftService.findOne(shiftId);
-    const appointmentTime = shift.start_time;
+    const appointmentTime = appointment.start_time;
 
     const appointmentDetails = {
       appointmentId: appointment.id,
@@ -145,7 +145,7 @@ export class AppointmentsService {
     const doctorName = doctor ? doctor.full_name : 'Không xác định';
 
     const shift = await this.shiftService.findOne((await appointment).shift_id);
-    const appointmentTime = shift.start_time;
+    const appointmentTime = (await appointment).start_time;
 
     const appointmentDetails = {
       patientName: (await appointment).full_name,
@@ -223,19 +223,27 @@ export class AppointmentsService {
     return this.appointmentsRepository.getStatistics();
   }
 
-  async getShiftIdByTime(doctorId: string, startTime: string): Promise<string> {
-    const shifts = await this.doctorShiftService.findShiftsByDoctorAndDate(doctorId, new Date().toISOString().split('T')[0]); 
+  async getShiftIdByTime(doctorId: string, startTime: string, date: Date): Promise<string> {
+    if (isNaN(date.getTime())) {
+      throw new BadRequestException('Ngày không hợp lệ.');
+    }
+  
+    const formattedDate = date.toISOString().split('T')[0]; // 'YYYY-MM-DD'
+  
+    const shifts = await this.doctorShiftService.findShiftsByDoctorAndDate(doctorId, formattedDate); 
+  
     for (const shift of shifts) {
       const shiftStart = shift.start_time;  
       const shiftEnd = shift.end_time;     
-
+  
       if (this.isTimeInShiftRange(startTime, shiftStart, shiftEnd)) {
         return shift.shift_id;
       }
     }
-
+  
     throw new BadRequestException('Giờ khám không hợp lệ');
   }
+  
 
   private isTimeInShiftRange(startTime: string, shiftStart: string, shiftEnd: string): boolean {
     const startTimeMinutes = this.convertTimeToMinutes(startTime);

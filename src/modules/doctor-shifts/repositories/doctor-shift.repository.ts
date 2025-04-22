@@ -17,52 +17,55 @@ export class DoctorShiftRepository {
 
   async create(createDoctorShiftDto: CreateDoctorShiftDto): Promise<DoctorShift> {
     const { doctorId, shiftId, date } = createDoctorShiftDto;
-
+  
     const shift = await this.doctorShiftRepository.manager.findOne(Shift, {
       where: { id: shiftId },
     });
-
+  
     if (!shift) {
       throw new NotFoundException('Ca làm không tồn tại.');
     }
-
+  
     const today = new Date();
     const shiftDate = new Date(date);
     if (shiftDate < new Date(today.setHours(0, 0, 0, 0))) {
       throw new BadRequestException('Không thể đăng ký ca làm trong quá khứ.');
     }
-
+  
     const doctor = await this.doctorShiftRepository.manager.findOne(User, {
       where: { id: doctorId },
     });
-
+  
     if (!doctor || !doctor.is_active) {
       throw new BadRequestException('Bác sĩ không tồn tại hoặc đã ngưng hoạt động.');
     }
-
+  
+    // Kiểm tra xung đột dựa trên bác sĩ, ngày và giờ làm việc
     const conflict = await this.doctorShiftRepository
       .createQueryBuilder('doctor_shift')
       .innerJoin('doctor_shift.shift', 's')
       .where('doctor_shift.doctor_id = :doctorId', { doctorId })
+      .where('doctor_shift.shift_id = :shiftId', {shiftId})
       .andWhere('doctor_shift.date = :shiftDate', { shiftDate: date }) 
       .andWhere(':startTime < s.end_time AND :endTime > s.start_time', {
         startTime: shift.start_time,
         endTime: shift.end_time,
       })
       .getOne();
-
+  
     if (conflict) {
       throw new BadRequestException('Bác sĩ đã có ca làm trùng thời gian trong ngày này.');
     }
-
+  
     const doctorShift = this.doctorShiftRepository.create({
       doctor_id: doctorId,
       shift_id: shiftId,
-      date: shiftDate, 
+      date: shiftDate,
     });
-
+  
     return await this.doctorShiftRepository.save(doctorShift);
   }
+  
 
   async findAll(): Promise<DoctorShift[]> {
     return await await this.doctorShiftRepository.find({
@@ -76,6 +79,20 @@ export class DoctorShiftRepository {
         where: {
           doctor_id: doctorId,
           shift_id: shiftId,
+        },
+      });
+    } catch (error) {
+      console.error('Error finding DoctorShift:', error);
+      throw error; 
+    }
+  }
+  async findOneByDate(doctorId: string, shiftId: string,date:Date): Promise<DoctorShift | null> {
+    try {
+      return await this.doctorShiftRepository.findOne({
+        where: {
+          doctor_id: doctorId,
+          shift_id: shiftId,
+          date: date
         },
       });
     } catch (error) {
@@ -127,6 +144,7 @@ export class DoctorShiftRepository {
   }
 
   async findShiftsByDoctorAndDate(doctorId: string, date: string): Promise<DoctorShift[]> {
+    console.log(date);
     const query = this.doctorShiftRepository.createQueryBuilder('doctorShift')
   .leftJoinAndSelect('doctorShift.shift', 'shift') 
   .where('doctorShift.doctor_id = :doctorId', { doctorId })
@@ -140,6 +158,7 @@ export class DoctorShiftRepository {
   async updateShiftStatus(
     doctorId: string,
     shiftId: string,
+    date:Date,
     status: DoctorShiftStatus,
   ) {
     await this.doctorShiftRepository
@@ -148,6 +167,7 @@ export class DoctorShiftRepository {
       .set({ status: status })
       .where('doctor_id = :doctorId', { doctorId })
       .andWhere('shift_id = :shiftId', { shiftId })
+      .andWhere('date = :date', {date})
       .execute();
   }
 
@@ -193,6 +213,14 @@ async getDoctorTimeSlots(doctorId: string, date: string): Promise<string[]> {
     const slots = this.generateTimeSlots(startTime, endTime);
     allSlots = allSlots.concat(slots);
   }
+
+  // Sort the time slots in ascending order
+  allSlots.sort((a, b) => {
+    const [hoursA, minutesA] = a.split(':').map(Number);
+    const [hoursB, minutesB] = b.split(':').map(Number);
+    return hoursA * 60 + minutesA - (hoursB * 60 + minutesB);
+  });
+
   return allSlots;
 }
 }

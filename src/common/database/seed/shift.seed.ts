@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Shift } from '../../../modules/shifts/entities/shift.entity';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class ShiftSeeder {
@@ -11,47 +13,20 @@ export class ShiftSeeder {
   ) {}
 
   async seed(): Promise<void> {
-    const now = new Date();
-    const startOfWeek = new Date(now);
-    const dayOfWeek = startOfWeek.getDay();
-    const diff = startOfWeek.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-    startOfWeek.setDate(diff);
-    startOfWeek.setHours(0, 0, 0, 0);
+    const filePath = path.resolve(__dirname, '../data/shift.json');
+    const rawData = fs.readFileSync(filePath, 'utf-8');
+    const shifts: Shift[] = JSON.parse(rawData);
 
-    const shiftsToSeed: Shift[] = [];
-    const shiftTimes = ['08:00', '11:00', '14:00'];
-
-    for (let i = 0; i < 7; i++) {
-      const currentDate = new Date(startOfWeek);
-      currentDate.setDate(startOfWeek.getDate() + i);
-      const formattedDate = currentDate.toISOString().split('T')[0];
-
-      for (const startTime of shiftTimes) {
-        let endTime: string;
-        const [startHour, startMinute] = startTime.split(':').map(Number);
-        const endHour = startHour + 3;
-        endTime = `${String(endHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`;
-
-        if (endHour <= 17) {
-          shiftsToSeed.push(
-            this.shiftRepository.create({
-              start_time: startTime,
-              end_time: endTime,
-            }),
-          );
-        }
-      }
-    }
-
-    for (const shift of shiftsToSeed) {
-      const existingShift = await this.shiftRepository.findOne({
-        where: { start_time: shift.start_time },
+    for (const shift of shifts) {
+      const existing = await this.shiftRepository.findOne({
+        where: { id: shift.id },
       });
-      if (!existingShift) {
-        await this.shiftRepository.save(shift);
+      if (!existing) {
+        const newShift = this.shiftRepository.create(shift);
+        await this.shiftRepository.save(newShift);
       }
     }
 
-    console.log('Shift data seeded successfully for the current week with smaller shifts!');
+    console.log('✅ Shift data seeded from JSON file successfully!');
   }
 }

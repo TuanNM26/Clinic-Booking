@@ -1,5 +1,6 @@
 import { AppDataSource } from '.././data-source'; // Đảm bảo đường dẫn chính xác
-import { seedPermissions } from './seed..permission';
+import { seedPermissions ,seedRoles, seedUsers } from './index';
+
 
 const runSeeder = async () => {
   try {

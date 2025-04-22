@@ -12,7 +12,7 @@ export class DoctorShift extends BaseEntity{
   @PrimaryColumn()
   shift_id: string;
 
-  @Column({ type: 'date' })
+  @PrimaryColumn({ type: 'date' })
   date: Date;
 
   @Column({

@@ -1,10 +1,74 @@
 [
-    {
-      "name": "show_appointment_statistic",
-      "description": "allow head doctor see statistic of system"
-    },
-    {
-        "name": "show_all_shift",
-        "description": "allow head doctor see all shift of system"
-    }
-  ]
+  {
+    "name": "show_appointment_statistic",
+    "description": "allow head doctor see statistic of system"
+  },
+  {
+    "name": "show_all_shift",
+    "description": "allow head doctor see all shift of system"
+  },
+  {
+    "name": "register_shift",
+    "description": "allow user to register a shift"
+  },
+  {
+    "name": "unregister_shift",
+    "description": "allow user to unregister a shift"
+  },
+  {
+    "name": "change_appointment_note",
+    "description": "allow user to change notes of an appointment"
+  },
+  {
+    "name": "get_appointments",
+    "description": "allow user to get appointments"
+  },
+  {
+    "name": "update_shift",
+    "description": "allow user to update shift information"
+  },
+  {
+    "name": "change_appointment_status",
+    "description": "allow user to change the status of an appointment"
+  },
+  {
+    "name": "get_shift_detail",
+    "description": "allow user to get detailed information of a shift"
+  },
+  {
+    "name": "head_doctor_register_shift",
+    "description": "allow head doctor to register a shift"
+  },
+  {
+    "name": "get_all_appointments",
+    "description": "allow head doctor to see all appointments"
+  },
+  {
+    "name": "delete_shift",
+    "description": "allow user to delete a shift"
+  },
+  {
+    "name": "get_all_doctor_shift",
+    "description": "allow head doctor to see all shifts of doctors"
+  },
+  {
+    "name": "manage_doctor_shifts",
+    "description": "allow admin to manage doctor shifts"
+  },
+  {
+    "name": "manage_appointments",
+    "description": "allow admin to manage appointments"
+  },
+  {
+    "name": "manage_users",
+    "description": "allow admin to manage users"
+  },
+  {
+    "name": "manage_roles",
+    "description": "allow admin to manage roles"
+  },
+  {
+    "name": "manage_permissions",
+    "description": "allow admin to manage permissions"
+  }
+]

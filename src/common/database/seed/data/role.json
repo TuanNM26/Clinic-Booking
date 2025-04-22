@@ -1,0 +1,21 @@
+[
+    {
+      "id": "692b9735-7e2a-41fd-8247-e9213cc4d000",
+      "name": "Admin",
+      "createdAt": "2025-04-10T10:22:42.217Z",
+      "updatedAt": "2025-04-10T10:22:42.217Z"
+    },
+    {
+      "id": "a4a27fc6-960d-4f2b-94ae-4dbe1811a002",
+      "name": "Head Doctor",
+      "createdAt": "2025-04-10T10:22:42.217Z",
+      "updatedAt": "2025-04-10T10:22:42.217Z"
+    },
+    {
+      "id": "bc68f2d4-a101-497f-bd75-5d34be268001",
+      "name": "Doctor",
+      "createdAt": "2025-04-10T10:22:42.217Z",
+      "updatedAt": "2025-04-10T10:22:42.217Z"
+    }
+  ]
+  

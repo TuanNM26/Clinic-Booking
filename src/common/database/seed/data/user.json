@@ -1,0 +1,51 @@
+[
+    {
+      "username": "admin_hospital",
+      "password": "123",
+      "email": "nguyenmminhtuans@gmail.com",
+      "full_name": "Trần Văn Admin",
+      "phone_number": "0909000000",
+      "address": "Số 1 Lý Thường Kiệt, Hà Nội",
+      "identify_number": "999888777666",
+      "dob": "1985-03-15",
+      "gender": "other",
+      "role_id": "692b9735-7e2a-41fd-8247-e9213cc4d000", 
+      "specialization_id": "29e693e7-915d-45d7-bfd7-7c30a793bdc5", 
+      "description": "Quản trị viên toàn hệ thống.",
+      "experience_years": 8,
+      "is_active": true
+    },
+    {
+      "username": "doctor_tranvan",
+      "password": "123",
+      "email": "tuannm26.work@gmail.com",
+      "full_name": "Bác sĩ Trần Văn",
+      "phone_number": "0912121212",
+      "address": "123 Đường 3/2, TP.HCM",
+      "identify_number": "888777666555",
+      "dob": "1990-07-21",
+      "gender": "male",
+      "role_id": "a4a27fc6-960d-4f2b-94ae-4dbe1811a002",
+      "specialization_id": "35c6a1f5-5832-4bfe-8bb7-b52dade5a40a", 
+      "description": "Bác sĩ chuyên khoa tim mạch.",
+      "experience_years": 5,
+      "is_active": true
+    },
+    {
+      "username": "doctor_lethanh",
+      "password": "123",
+      "email": "nguyenminhtuanqwee@gmail.com",
+      "full_name": "BS. Lê Thành",
+      "phone_number": "0933666888",
+      "address": "456 Hoàng Văn Thụ, Đà Nẵng",
+      "identify_number": "777666555444",
+      "dob": "1975-11-05",
+      "gender": "male",
+      "role_id": "bc68f2d4-a101-497f-bd75-5d34be268001",
+      "specialization_id": "3dd035aa-55d3-4383-9a9b-c9c3a1846b76", 
+      "description": "Trưởng chuyên khoa",
+      "experience_years": 20,
+      "is_active": true
+    }
+  ]
+  
