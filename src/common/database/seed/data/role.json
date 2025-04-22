@@ -2,18 +2,28 @@
     {
       "id": "692b9735-7e2a-41fd-8247-e9213cc4d000",
       "name": "Admin",
+      "description": "Quản trị viên hệ thống",
       "createdAt": "2025-04-10T10:22:42.217Z",
       "updatedAt": "2025-04-10T10:22:42.217Z"
     },
     {
       "id": "a4a27fc6-960d-4f2b-94ae-4dbe1811a002",
       "name": "Head Doctor",
+      "description": "Trưởng khoa",
       "createdAt": "2025-04-10T10:22:42.217Z",
       "updatedAt": "2025-04-10T10:22:42.217Z"
     },
     {
       "id": "bc68f2d4-a101-497f-bd75-5d34be268001",
       "name": "Doctor",
+      "description": "Bác sĩ",
+      "createdAt": "2025-04-10T10:22:42.217Z",
+      "updatedAt": "2025-04-10T10:22:42.217Z"
+    },
+    {
+      "id": "d5e8f2a1-b3c4-4d5e-8f2a-1b3c4d5e8f2a",
+      "name": "Patient",
+      "description": "Bệnh nhân",
       "createdAt": "2025-04-10T10:22:42.217Z",
       "updatedAt": "2025-04-10T10:22:42.217Z"
     }

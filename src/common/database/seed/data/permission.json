@@ -1,74 +1,114 @@
 [
   {
-    "name": "show_appointment_statistic",
-    "description": "allow head doctor see statistic of system"
+    "name": "create_user",
+    "description": "Tạo tài khoản người dùng mới"
   },
   {
-    "name": "show_all_shift",
-    "description": "allow head doctor see all shift of system"
+    "name": "get_all_users",
+    "description": "Xem danh sách tất cả người dùng"
   },
   {
-    "name": "register_shift",
-    "description": "allow user to register a shift"
+    "name": "update_user",
+    "description": "Cập nhật thông tin người dùng"
   },
   {
-    "name": "unregister_shift",
-    "description": "allow user to unregister a shift"
-  },
-  {
-    "name": "change_appointment_note",
-    "description": "allow user to change notes of an appointment"
-  },
-  {
-    "name": "get_appointments",
-    "description": "allow user to get appointments"
-  },
-  {
-    "name": "update_shift",
-    "description": "allow user to update shift information"
-  },
-  {
-    "name": "change_appointment_status",
-    "description": "allow user to change the status of an appointment"
-  },
-  {
-    "name": "get_shift_detail",
-    "description": "allow user to get detailed information of a shift"
-  },
-  {
-    "name": "head_doctor_register_shift",
-    "description": "allow head doctor to register a shift"
-  },
-  {
-    "name": "get_all_appointments",
-    "description": "allow head doctor to see all appointments"
-  },
-  {
-    "name": "delete_shift",
-    "description": "allow user to delete a shift"
-  },
-  {
-    "name": "get_all_doctor_shift",
-    "description": "allow head doctor to see all shifts of doctors"
-  },
-  {
-    "name": "manage_doctor_shifts",
-    "description": "allow admin to manage doctor shifts"
-  },
-  {
-    "name": "manage_appointments",
-    "description": "allow admin to manage appointments"
-  },
-  {
-    "name": "manage_users",
-    "description": "allow admin to manage users"
+    "name": "delete_user",
+    "description": "Xóa người dùng"
   },
   {
     "name": "manage_roles",
-    "description": "allow admin to manage roles"
+    "description": "Quản lý các vai trò trong hệ thống"
   },
   {
     "name": "manage_permissions",
-    "description": "allow admin to manage permissions"
+    "description": "Quản lý các quyền trong hệ thống"
+  },
+  {
+    "name": "create_doctor",
+    "description": "Tạo tài khoản bác sĩ mới"
+  },
+  {
+    "name": "get_all_doctors",
+    "description": "Xem danh sách bác sĩ"
+  },
+  {
+    "name": "update_doctor",
+    "description": "Cập nhật thông tin bác sĩ"
+  },
+  {
+    "name": "delete_doctor",
+    "description": "Xóa bác sĩ"
+  },
+  {
+    "name": "register_shift",
+    "description": "Đăng ký ca làm việc"
+  },
+  {
+    "name": "unregister_shift",
+    "description": "Hủy đăng ký ca làm việc"
+  },
+  {
+    "name": "update_shift",
+    "description": "Cập nhật thông tin ca làm việc"
+  },
+  {
+    "name": "get_all_shifts",
+    "description": "Xem danh sách ca làm việc"
+  },
+  {
+    "name": "get_shift_detail",
+    "description": "Xem chi tiết ca làm việc"
+  },
+  {
+    "name": "create_appointment",
+    "description": "Đặt lịch khám"
+  },
+  {
+    "name": "get_all_appointments",
+    "description": "Xem tất cả lịch khám"
+  },
+  {
+    "name": "get_my_appointments",
+    "description": "Xem lịch khám của mình"
+  },
+  {
+    "name": "update_appointment",
+    "description": "Cập nhật lịch khám"
+  },
+  {
+    "name": "cancel_appointment",
+    "description": "Hủy lịch khám"
+  },
+  {
+    "name": "change_appointment_status",
+    "description": "Thay đổi trạng thái lịch khám"
+  },
+  {
+    "name": "change_appointment_note",
+    "description": "Thay đổi ghi chú lịch khám"
+  },
+  {
+    "name": "show_appointment_statistic",
+    "description": "Xem thống kê lịch khám"
+  },
+  {
+    "name": "show_all_shift",
+    "description": "Xem tất cả ca làm việc"
+  },
+  {
+    "name": "get_all_doctor_shift",
+    "description": "Xem ca làm việc của bác sĩ"
+  },
+  {
+    "name": "manage_doctor_shifts",
+    "description": "Quản lý ca làm việc của bác sĩ"
+  },
+  {
+    "name": "manage_appointments",
+    "description": "Quản lý lịch khám"
+  },
+  {
+    "name": "manage_users",
+    "description": "Quản lý người dùng"
   }
 ]
