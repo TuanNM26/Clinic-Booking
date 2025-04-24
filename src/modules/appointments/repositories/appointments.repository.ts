@@ -36,12 +36,14 @@ export class AppointmentsRepository {
       throw new HttpException('Bác sĩ chưa được phân ca làm này.', HttpStatus.BAD_REQUEST);
     }
   
-    const now = new Date();
-    const dateOnly = appointment_date.toISOString().split('T')[0]; // "2025-04-18"
-    const shiftDateTime = new Date(`${dateOnly}T${shift.start_time}`);
-    if (shiftDateTime < now) {
-      throw new HttpException('Không thể đặt lịch khám trong ca đã qua.', HttpStatus.BAD_REQUEST);
-    }
+    const now = new Date(); // UTC
+const dateOnly = appointment_date.toISOString().split('T')[0]; // "2025-04-24"
+const shiftDateTimeUTC = new Date(`${dateOnly}T${shift.start_time}Z`); // thêm "Z" để chỉ rõ UTC
+
+if (shiftDateTimeUTC < now) {
+  throw new HttpException('Không thể đặt lịch khám trong ca đã qua.', HttpStatus.BAD_REQUEST);
+}
+
   
     const existingAppointments = await this.appointmentRepository.find({
       where: {
@@ -171,6 +173,73 @@ export class AppointmentsRepository {
   const appointments = await this.appointmentRepository.find({
     relations: ['doctor'], 
   });
+
+  const totalAppointments = appointments.length;
+  const confirmedAppointments = appointments.filter(a => a.status === AppointmentStatus.CONFIRMED).length;
+  const pendingAppointments = appointments.filter(a => a.status === AppointmentStatus.PENDING).length;
+  const canceledAppointments = appointments.filter(a => a.status === AppointmentStatus.CANCELLED).length;
+
+  const appointmentsPerDoctorRaw: Record<string, number> = {};
+  const patientVisitMap: Record<string, number> = {};
+  let totalConfirmationDelayInHours = 0;
+  let confirmedCount = 0;
+
+  for (const appt of appointments) {
+    if (appt.doctor_id) {
+      appointmentsPerDoctorRaw[appt.doctor_id] = (appointmentsPerDoctorRaw[appt.doctor_id] || 0) + 1;
+    }
+
+    const identity = appt.identity_number;
+    if (identity) {
+      patientVisitMap[identity] = (patientVisitMap[identity] || 0) + 1;
+    }
+
+    if (appt.status === AppointmentStatus.CONFIRMED && appt.createdAt && appt.updatedAt) {
+      const delayInHours = (appt.updatedAt.getTime() - appt.createdAt.getTime()) / (1000 * 60 * 60);
+      totalConfirmationDelayInHours += delayInHours;
+      confirmedCount++;
+    }
+  }
+
+  const appointmentsPerDoctor: Record<string, number> = {};
+  for (const appt of appointments) {
+    if (appt.doctor && appointmentsPerDoctorRaw[appt.doctor_id]) {
+      const doctorName = appt.doctor.full_name || 'Không rõ tên bác sĩ';
+      appointmentsPerDoctor[doctorName] = appointmentsPerDoctorRaw[appt.doctor_id];
+    }
+  }
+
+  const confirmationRate = totalAppointments ? confirmedAppointments / totalAppointments : 0;
+  const cancellationRate = totalAppointments ? canceledAppointments / totalAppointments : 0;
+  const newPatientCount = Object.values(patientVisitMap).filter(v => v === 1).length;
+  const returningPatientCount = Object.values(patientVisitMap).filter(v => v > 1).length;
+  const averageConfirmationTimeInHours = confirmedCount ? totalConfirmationDelayInHours / confirmedCount : 0;
+
+  return {
+    totalAppointments,
+    confirmedAppointments,
+    pendingAppointments,
+    canceledAppointments,
+    confirmationRate: +confirmationRate.toFixed(2),
+    cancellationRate: +cancellationRate.toFixed(2),
+    appointmentsPerDoctor,
+    newPatientCount,
+    returningPatientCount,
+    averageConfirmationTimeInHours: +averageConfirmationTimeInHours.toFixed(2),
+  };
+}
+
+async getStatisticsBySpecialty(specialtyId: string): Promise<AppointmentStatisticsDto> {
+  const appointments = await this.find({
+    relations: ['doctor'],
+    where: {
+      doctor: {
+        specialization_id: specialtyId,
+      },
+    },
+  });
+
+  console.log(appointments);
 
   const totalAppointments = appointments.length;
   const confirmedAppointments = appointments.filter(a => a.status === AppointmentStatus.CONFIRMED).length;

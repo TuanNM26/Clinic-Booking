@@ -11,6 +11,7 @@ export enum Permission {
   DELETE_SHIFT = 'delete_shift',
   GET_ALL_DOCTOR_SHIFT = 'get_all_doctor_shift',
   SHOW_APPOINTMENT_STATISTIC = 'show_appointment_statistic',
+  SHOW_APPOINTMENT_STATISTIC_BY_SPECIALIZATION = 'show_appointment_statistic_by_specialization',
 
   // Đã có sẵn
   CREATE_APPOINTMENT = 'create_appointment',

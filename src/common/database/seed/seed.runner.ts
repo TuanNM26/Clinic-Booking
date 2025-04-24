@@ -18,8 +18,8 @@ const runSeeder = async () => {
     await seedRolePermissions(AppDataSource);
     
     // Then seed users
-    // console.log('Seeding users...');
-    // await seedUsers(AppDataSource);
+    console.log('Seeding users...');
+    await seedUsers(AppDataSource);
     
     console.log('✅ All seeds completed successfully!');
     await AppDataSource.destroy();

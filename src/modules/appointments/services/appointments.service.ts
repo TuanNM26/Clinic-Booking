@@ -227,6 +227,11 @@ export class AppointmentsService {
     return this.appointmentsRepository.getStatistics();
   }
 
+  async getAppointmentStatisticsBySpecialty(specialtyId: string){
+    return this.appointmentsRepository.getStatisticsBySpecialty(specialtyId);
+  }
+  
+
   async getShiftIdByTime(doctorId: string, startTime: string, date: Date): Promise<string> {
     if (isNaN(date.getTime())) {
       throw new BadRequestException('Ngày không hợp lệ.');

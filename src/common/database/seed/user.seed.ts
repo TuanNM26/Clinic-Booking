@@ -3,6 +3,7 @@ import { User } from '../../../modules/users/entities/user.entity';
 import { Role } from '../../../modules/roles/entities/role.entity';
 import { Specialization } from '../../../modules/specializations/entities/specialization.entity';
 import * as fs from 'fs';
+import * as bcrypt from 'bcrypt';
 import * as path from 'path';
 
 export const seedUsers = async (dataSource: DataSource): Promise<void> => {
@@ -15,7 +16,7 @@ export const seedUsers = async (dataSource: DataSource): Promise<void> => {
   const users = JSON.parse(rawData);
 
   for (const user of users) {
-    const { username, role_id, specialization_id } = user;
+    const { username, role_id, specialization_id,email } = user;
 
     // Kiểm tra xem Role và Specialization có tồn tại không
     const role = await roleRepository.findOne({ where: { id: role_id } });
@@ -32,18 +33,22 @@ export const seedUsers = async (dataSource: DataSource): Promise<void> => {
     }
 
     // Kiểm tra xem người dùng đã tồn tại chưa
-    const existingUser = await userRepository.findOne({ where: { username } });
-
+    const existingUser = await userRepository.findOne({ where: { email } });
+    
     if (!existingUser) {
-      const newUser = userRepository.create({
-        ...user,
-        role,
-        specialization,
-      });
+    const hashedPassword = await bcrypt.hash(user.password, 10);
 
-      await userRepository.save(newUser);
-      console.log(`User ${username} seeded successfully!`);
-    } else {
+    const newUser = userRepository.create({
+    ...user,
+    password: hashedPassword,
+    role,
+    specialization,
+  });
+
+  await userRepository.save(newUser);
+  console.log(`User ${username} seeded successfully!`);
+}
+ else {
       console.log(`User ${username} already exists, skipping.`);
     }
   }

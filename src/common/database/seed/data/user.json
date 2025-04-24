@@ -32,6 +32,22 @@
       "is_active": true
     },
     {
+      "username": "doctor_MINHTUAN2",
+      "password": "123",
+      "email": "tuannm26.work2@gmail.com",
+      "full_name": "Bác sĩ Tuấn",
+      "phone_number": "0912121212",
+      "address": "123 Đường 3/2, TP.HCM",
+      "identify_number": "888777666555",
+      "dob": "1990-07-21",
+      "gender": "male",
+      "role_id": "a4a27fc6-960d-4f2b-94ae-4dbe1811a002",
+      "specialization_id": "3dd035aa-55d3-4383-9a9b-c9c3a1846b76", 
+      "description": "Bác sĩ chuyên khoa tâm thần.",
+      "experience_years": 5,
+      "is_active": true
+    },
+    {
       "username": "doctor_lethanh",
       "password": "123",
       "email": "nguyenminhtuanqwee@gmail.com",
@@ -44,6 +60,22 @@
       "role_id": "bc68f2d4-a101-497f-bd75-5d34be268001",
       "specialization_id": "3dd035aa-55d3-4383-9a9b-c9c3a1846b76", 
       "description": "Trưởng chuyên khoa",
+      "experience_years": 20,
+      "is_active": true
+    },
+    {
+      "username": "doctor_minhtuan",
+      "password": "123",
+      "email": "nguyenminhtuanqwee1@gmail.com",
+      "full_name": "BS. Minh Tuấn",
+      "phone_number": "0933666888",
+      "address": "456 Hoàng Văn Thụ, Đà Nẵng",
+      "identify_number": "777666555444",
+      "dob": "1975-11-05",
+      "gender": "male",
+      "role_id": "bc68f2d4-a101-497f-bd75-5d34be268001",
+      "specialization_id": "35c6a1f5-5832-4bfe-8bb7-b52dade5a40a", 
+      "description": "Trưởng chuyên khoa Cardiology",
       "experience_years": 20,
       "is_active": true
     }

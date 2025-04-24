@@ -47,6 +47,17 @@ export class UsersRepository {
     });
   }
   
+  async findManagedSpecialtyIdByHead(headId: string): Promise<string | null> {
+    const user = await this.repository.findOne({
+      where: {
+        id: headId,
+      },
+      select: ['specialization_id'],
+    });
+    console.log(user);
+    return user?.specialization_id || null;
+  }
+  
 
   getByEmail(email: string): Promise<User> {
     return this.repository.findOne({ where: { email } });

@@ -39,19 +39,22 @@ export class DoctorShiftRepository {
     if (!doctor || !doctor.is_active) {
       throw new BadRequestException('Bác sĩ không tồn tại hoặc đã ngưng hoạt động.');
     }
-  
+    console.log(doctorId)
+    console.log(shiftId)
+    console.log(shiftDate)
     // Kiểm tra xung đột dựa trên bác sĩ, ngày và giờ làm việc
     const conflict = await this.doctorShiftRepository
       .createQueryBuilder('doctor_shift')
       .innerJoin('doctor_shift.shift', 's')
       .where('doctor_shift.doctor_id = :doctorId', { doctorId })
-      .where('doctor_shift.shift_id = :shiftId', {shiftId})
+      .andWhere('doctor_shift.shift_id = :shiftId', {shiftId})
       .andWhere('doctor_shift.date = :shiftDate', { shiftDate: date }) 
       .andWhere(':startTime < s.end_time AND :endTime > s.start_time', {
         startTime: shift.start_time,
         endTime: shift.end_time,
       })
       .getOne();
+    console.log(conflict)
   
     if (conflict) {
       throw new BadRequestException('Bác sĩ đã có ca làm trùng thời gian trong ngày này.');

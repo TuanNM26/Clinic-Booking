@@ -110,5 +110,9 @@
   {
     "name": "manage_users",
     "description": "Quản lý người dùng"
+  },
+  {
+    "name": "show_appointment_statistic_by_specialization",
+    "description": "xem thống kê theo chuyên khoa"
   }
 ]

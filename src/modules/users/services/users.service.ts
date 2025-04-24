@@ -61,4 +61,14 @@ export class UsersService {
     const user = await this.usersRepo.findUserBySpecialization(specialization);
     return plainToInstance(UserResponseDto, user, { excludeExtraneousValues: true });
   }
+
+  async getManagedSpecialtyIdByHead(userId: string): Promise<string> {
+    const specialtyId = await this.usersRepo.findManagedSpecialtyIdByHead(userId);
+  
+    if (!specialtyId) {
+      throw new NotFoundException('Không tìm thấy chuyên khoa bạn đang quản lý');
+    }
+  
+    return specialtyId;
+  }
 }

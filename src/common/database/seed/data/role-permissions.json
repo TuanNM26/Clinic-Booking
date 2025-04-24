@@ -10,6 +10,8 @@
   { "roleId": "692b9735-7e2a-41fd-8247-e9213cc4d000", "permissionId": "manage_roles" },
   { "roleId": "692b9735-7e2a-41fd-8247-e9213cc4d000", "permissionId": "get_all_appointments" },
   { "roleId": "692b9735-7e2a-41fd-8247-e9213cc4d000", "permissionId": "get_all_shifts" },
+  { "roleId": "692b9735-7e2a-41fd-8247-e9213cc4d000", "permissionId": "show_appointment_statistic" },
+
   { "roleId": "a4a27fc6-960d-4f2b-94ae-4dbe1811a002", "permissionId": "change_appointment_status" },
   { "roleId": "a4a27fc6-960d-4f2b-94ae-4dbe1811a002", "permissionId": "cancel_appointment" },
   { "roleId": "a4a27fc6-960d-4f2b-94ae-4dbe1811a002", "permissionId": "change_appointment_note" },
@@ -19,12 +21,22 @@
   { "roleId": "a4a27fc6-960d-4f2b-94ae-4dbe1811a002", "permissionId": "get_appointments_by_doctor_id" },
   { "roleId": "a4a27fc6-960d-4f2b-94ae-4dbe1811a002", "permissionId": "get_list_of_doctor_shifts" },
   { "roleId": "a4a27fc6-960d-4f2b-94ae-4dbe1811a002", "permissionId": "get_all_shifts" },
+
+  { "roleId": "bc68f2d4-a101-497f-bd75-5d34be268001", "permissionId": "change_appointment_status" },
+  { "roleId": "bc68f2d4-a101-497f-bd75-5d34be268001", "permissionId": "cancel_appointment" },
+  { "roleId": "bc68f2d4-a101-497f-bd75-5d34be268001", "permissionId": "change_appointment_note" },
+  { "roleId": "bc68f2d4-a101-497f-bd75-5d34be268001", "permissionId": "register_shift" },
+  { "roleId": "bc68f2d4-a101-497f-bd75-5d34be268001", "permissionId": "get_my_appointments" },
+  { "roleId": "bc68f2d4-a101-497f-bd75-5d34be268001", "permissionId": "unregister_shift" },
+  { "roleId": "bc68f2d4-a101-497f-bd75-5d34be268001", "permissionId": "get_appointments_by_doctor_id" },
+  { "roleId": "bc68f2d4-a101-497f-bd75-5d34be268001", "permissionId": "get_list_of_doctor_shifts" },
+
   { "roleId": "bc68f2d4-a101-497f-bd75-5d34be268001", "permissionId": "get_all_appointments" },
   { "roleId": "bc68f2d4-a101-497f-bd75-5d34be268001", "permissionId": "get_all_doctor_shift" },
   { "roleId": "bc68f2d4-a101-497f-bd75-5d34be268001", "permissionId": "get_all_shifts" },
   { "roleId": "bc68f2d4-a101-497f-bd75-5d34be268001", "permissionId": "head_doctor_register_shift" },
   { "roleId": "bc68f2d4-a101-497f-bd75-5d34be268001", "permissionId": "update_shift" },
   { "roleId": "bc68f2d4-a101-497f-bd75-5d34be268001", "permissionId": "delete_shift" },
-  { "roleId": "bc68f2d4-a101-497f-bd75-5d34be268001", "permissionId": "show_appointment_statistic" },
-  { "roleId": "bc68f2d4-a101-497f-bd75-5d34be268001", "permissionId": "get_shift_detail" }
+  { "roleId": "bc68f2d4-a101-497f-bd75-5d34be268001", "permissionId": "get_shift_detail" },
+  { "roleId": "bc68f2d4-a101-497f-bd75-5d34be268001", "permissionId": "show_appointment_statistic_by_specialization" }
 ]
