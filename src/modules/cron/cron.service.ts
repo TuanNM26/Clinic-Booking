@@ -43,7 +43,6 @@ export class CronService {
         );
 
         const timeDifference = appointmentDateTime.getTime() - now.getTime();
-        console.log("Day nhe time day nhe " + timeDifference);
         if (timeDifference > 0 && timeDifference <= reminderThreshold) {
           const context = {
             patientName: appointment.full_name,
@@ -58,6 +57,13 @@ export class CronService {
           const template = 'appointmentNotification';
 
           try {
+            await this.mailService.sendAppointmentNotification(
+              appointment.doctor.email,
+              subject,
+              context,
+              template,
+            );
+
             await this.mailService.sendAppointmentNotification(
               appointment.email,
               subject,
