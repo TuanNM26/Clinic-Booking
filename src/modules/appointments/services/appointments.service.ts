@@ -14,6 +14,7 @@ import { ShiftRepository } from 'src/modules/shifts/repositories/shifts.reposito
 import { UsersService } from 'src/modules/users/services/users.service';
 import { ShiftsService } from 'src/modules/shifts/services/shifts.service';
 import { DoctorShiftsService } from 'src/modules/doctor-shifts/services/doctor-shifts.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AppointmentsService {
@@ -23,6 +24,7 @@ export class AppointmentsService {
     private readonly appointmentsRepository: AppointmentsRepository, 
     private readonly mailService: MailService,
     private readonly doctorService: UsersService,
+    private readonly configService: ConfigService,
     private readonly shiftService: ShiftsService,
     @Inject(forwardRef(() => DoctorShiftsService))
      private readonly doctorShiftService: DoctorShiftsService,
@@ -42,13 +44,15 @@ export class AppointmentsService {
 
     const shift = await this.shiftService.findOne(shiftId);
     const appointmentTime = appointment.start_time;
-
+    const baseUrl = this.configService.get<string>('BASE_URL')
+    console.log("url mới đây nhé " + baseUrl)
     const appointmentDetails = {
       appointmentId: appointment.id,
       patientName: patientName,
       doctorName: doctorName,
       appointmentTime: appointmentTime,
       appointmentDate: appointmentDate,
+      baseUrl: baseUrl
     };
 
     await this.mailService.sendAppointmentNotification(
@@ -222,6 +226,11 @@ export class AppointmentsService {
   async getAppointmentStatistics() {
     return this.appointmentsRepository.getStatistics();
   }
+
+  async getAppointmentStatisticsBySpecialty(specialtyId: string){
+    return this.appointmentsRepository.getStatisticsBySpecialty(specialtyId);
+  }
+  
 
   async getShiftIdByTime(doctorId: string, startTime: string, date: Date): Promise<string> {
     if (isNaN(date.getTime())) {

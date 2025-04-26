@@ -95,7 +95,6 @@ export class DoctorShiftsService {
     endDate?: Date,
   ) {
     const data = await this.doctorShiftRepository.findByDoctorIdWithTimeFilter(doctorId, startDate, endDate);
-
     return plainToInstance(DoctorShiftScheduleDto, data, {
       excludeExtraneousValues: true,
     });

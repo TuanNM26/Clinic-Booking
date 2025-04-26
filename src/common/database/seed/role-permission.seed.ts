@@ -1,41 +1,39 @@
 import { DataSource } from 'typeorm';
 import { Role } from '../../../modules/roles/entities/role.entity';
 import { Permission } from '../../../modules/permissions/entities/permission.entity';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export const seedRolePermissions = async (dataSource: DataSource): Promise<void> => {
   const roleRepository = dataSource.getRepository(Role);
   const permissionRepository = dataSource.getRepository(Permission);
 
-  // Find admin role with its current permissions
-  const adminRole = await roleRepository.findOne({ 
-    where: { name: 'admin' },
-    relations: ['permissions']
-  });
-  
-  if (!adminRole) {
-    console.log('❌ Admin role not found');
-    return;
+  const filePath = path.resolve(__dirname, '../seed/data/role-permissions.json');
+  const rawData = fs.readFileSync(filePath, 'utf-8');
+  const rolePermissions = JSON.parse(rawData);
+
+  for (const rolePermission of rolePermissions) {
+    const { roleId, permissionId } = rolePermission;
+
+    const role = await roleRepository.findOne({ 
+      where: { id: roleId },
+      relations: ['permissions'] // Load existing permissions
+    });
+    
+    const permission = await permissionRepository.findOne({ 
+      where: { name: permissionId }
+    });
+
+    if (role && permission) {
+      // Check if permission already exists for this role
+      const permissionExists = role.permissions.some(p => p.name === permissionId);
+      
+      if (!permissionExists) {
+        role.permissions = [...role.permissions, permission];
+        await roleRepository.save(role);
+      }
+    }
   }
 
-  // Get all permissions
-  const allPermissions = await permissionRepository.find();
-  
-  // Get current permission IDs that admin role has
-  const currentPermissionIds = adminRole.permissions.map(p => p.id);
-  
-  // Find new permissions that admin role doesn't have yet
-  const newPermissions = allPermissions.filter(
-    permission => !currentPermissionIds.includes(permission.id)
-  );
-
-  if (newPermissions.length === 0) {
-    console.log('✅ No new permissions to assign to admin role');
-    return;
-  }
-
-  // Add new permissions to admin role
-  adminRole.permissions = [...adminRole.permissions, ...newPermissions];
-  await roleRepository.save(adminRole);
-
-  console.log(`✅ ${newPermissions.length} new permissions assigned to admin role successfully.`);
-}; 
+  console.log('✅ Role-Permission seeded successfully.');
+};

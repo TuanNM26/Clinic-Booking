@@ -13,10 +13,12 @@ import { AppointmentStatus } from 'src/common/enum/status.enum';
 import { Permission } from 'src/common/enum/permission.enum';
 import { Response } from 'express';
 import { AppointmentStatisticsDto } from './dto/appointment-statistics.dto';
+import { SpecializationsService } from '../specializations/services/specializations.service';
+import { UsersService } from '../users/services/users.service';
 
 @Controller('appointments')
 export class AppointmentsController {
-  constructor(private readonly appointmentsService: AppointmentsService) {}
+  constructor(private readonly appointmentsService: AppointmentsService, private readonly userService: UsersService) {}
 
   @Post()
   @UsePipes(new ValidationPipe())
@@ -37,6 +39,15 @@ export class AppointmentsController {
   async getStatistics() {
     return this.appointmentsService.getAppointmentStatistics();
   }
+
+  @Get('statistics/by-specialty')
+  @Auth([`${Permission.SHOW_APPOINTMENT_STATISTIC_BY_SPECIALIZATION}`])
+  async getStatisticsBySpecialty(@CurrentUser() user: any) {
+  const specialtyId = await this.userService.getManagedSpecialtyIdByHead(user.sub);
+  console.log(specialtyId);
+  return this.appointmentsService.getAppointmentStatisticsBySpecialty(specialtyId);
+}
+
   
 
   @Get(':id')
@@ -129,7 +140,6 @@ export class AppointmentsController {
     @Param('action') action: string,
     @Param('appointmentId') id: string,
     @CurrentUser() user: any,
-    // @Res() res: Response,
     @Res({ passthrough: false }) res: Response,
   ) {
     if (!['confirm', 'cancel'].includes(action)) {

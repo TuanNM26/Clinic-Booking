@@ -13,6 +13,7 @@ import { UsersModule } from '../users/users.module';
 import { ShiftsModule } from '../shifts/shifts.module';
 import { DoctorShiftsService } from '../doctor-shifts/services/doctor-shifts.service';
 import { DoctorShiftsModule } from '../doctor-shifts/doctor-shifts.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Appointment]), 
@@ -21,6 +22,7 @@ import { DoctorShiftsModule } from '../doctor-shifts/doctor-shifts.module';
             MailModule,
             UsersModule,
             ShiftsModule,
+            ConfigModule,
             forwardRef(() => DoctorShiftsModule)],
   controllers: [AppointmentsController],
   providers: [AppointmentsService,AppointmentsRepository],

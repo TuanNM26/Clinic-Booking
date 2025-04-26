@@ -10,6 +10,7 @@ export class ShiftDto {
 }
 
 export class DoctorShiftScheduleDto {
+  @Expose() date:string
   @Expose()
   @Type(() => ShiftDto)
   shift: ShiftDto;

@@ -1,14 +1,40 @@
 export enum Permission {
-    REGISTER_SHIFT = 'register_shift',
-    UNREGISTER_SHIFT = 'unregister_shift',
-    CHANGE_APPOINTMENT_NOTE = 'change_appointment_note',
-    GET_APPOINTMENTS = 'get_appointments',
-    UPDATE_SHIFT = 'update_shift',
-    CHANGE_APPOINTMENT_STATUS = 'change_appointment_status',
-    GET_SHIFT_DETAIL = 'get_shift_detail',
-    HEAD_DOCTOR_REGISTER_SHIFT = 'head_doctor_register_shift',
-    GET_ALL_APPOINTMENTS = 'get_all_appointments',
-    DELETE_SHIFT = 'delete_shift',
-    GET_ALL_DOCTOR_SHIFT = 'get_all_doctor_shift',
-    SHOW_APPOINTMENT_STATISTIC = 'show_appointment_statistic'
-  }
+  REGISTER_SHIFT = 'register_shift',
+  UNREGISTER_SHIFT = 'unregister_shift',
+  CHANGE_APPOINTMENT_NOTE = 'change_appointment_note',
+  GET_APPOINTMENTS = 'get_my_appointments',
+  UPDATE_SHIFT = 'update_shift',
+  CHANGE_APPOINTMENT_STATUS = 'change_appointment_status',
+  GET_SHIFT_DETAIL = 'get_shift_detail',
+  HEAD_DOCTOR_REGISTER_SHIFT = 'head_doctor_register_shift',
+  GET_ALL_APPOINTMENTS = 'get_all_appointments',
+  DELETE_SHIFT = 'delete_shift',
+  GET_ALL_DOCTOR_SHIFT = 'get_all_doctor_shift',
+  SHOW_APPOINTMENT_STATISTIC = 'show_appointment_statistic',
+  SHOW_APPOINTMENT_STATISTIC_BY_SPECIALIZATION = 'show_appointment_statistic_by_specialization',
+
+  // Đã có sẵn
+  CREATE_APPOINTMENT = 'create_appointment',
+  CANCEL_APPOINTMENT = 'cancel_appointment',
+  APPROVE_APPOINTMENT = 'approve_appointment',
+  VIEW_PATIENT_DETAIL = 'view_patient_detail',
+  MANAGE_USERS = 'manage_users',
+  MANAGE_DOCTORS = 'manage_doctors',
+  VIEW_SCHEDULE = 'view_schedule',
+  MANAGE_SPECIALIZATIONS = 'manage_specializations',
+  EXPORT_APPOINTMENTS = 'export_appointments',
+  VIEW_DASHBOARD = 'view_dashboard',
+
+  // 👇 Các quyền mới được bổ sung từ dữ liệu JSON
+  CREATE_USER = 'create_user',
+  MANAGE_APPOINTMENTS = 'manage_appointments',
+  GET_ALL_USERS = 'get_all_users',
+  MANAGE_DOCTOR_SHIFTS = 'manage_doctor_shifts',
+  UPDATE_USER = 'update_user',
+  MANAGE_PERMISSIONS = 'manage_permissions',
+  DELETE_USER = 'delete_user',
+  MANAGE_ROLES = 'manage_roles',
+  GET_ALL_SHIFTS = 'get_all_shifts',
+  GET_APPOINTMENTS_BY_DOCTOR_ID = 'get_appointments_by_doctor_id',
+  GET_LIST_OF_DOCTOR_SHIFTS = 'get_list_of_doctor_shifts'
+}
