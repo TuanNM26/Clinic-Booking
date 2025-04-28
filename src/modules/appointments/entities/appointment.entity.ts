@@ -34,7 +34,7 @@ export class Appointment extends BaseEntity{
   @Column()
   doctor_id: string;
 
-  @Column()
+  @Column({ nullable: true })
   reason_canceled: string;
 
   @ManyToOne(() => User, user => user.appointments)

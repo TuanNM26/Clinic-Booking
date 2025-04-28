@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { Repository, UpdateResult } from 'typeorm';
+import { Between, Repository, UpdateResult } from 'typeorm';
 import { DoctorShift } from '../entities/doctor-shift.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDoctorShiftDto } from '../dto/create-doctor-shift.dto';
@@ -7,6 +7,8 @@ import { UpdateDoctorShiftDto } from '../dto/update-doctor-shift.dto';
 import { Shift } from 'src/modules/shifts/entities/shift.entity';
 import { User } from 'src/modules/users/entities/user.entity';
 import { DoctorShiftStatus } from 'src/common/enum/doctorShift.status.enum';
+import { Appointment } from 'src/modules/appointments/entities/appointment.entity';
+import { AppointmentStatus } from 'src/common/enum/status.enum';
 
 @Injectable()
 export class DoctorShiftRepository {
@@ -42,7 +44,6 @@ export class DoctorShiftRepository {
     console.log(doctorId)
     console.log(shiftId)
     console.log(shiftDate)
-    // Kiểm tra xung đột dựa trên bác sĩ, ngày và giờ làm việc
     const conflict = await this.doctorShiftRepository
       .createQueryBuilder('doctor_shift')
       .innerJoin('doctor_shift.shift', 's')
@@ -205,25 +206,52 @@ export class DoctorShiftRepository {
     return `${hours}:${minutes}`;
   }
   
-async getDoctorTimeSlots(doctorId: string, date: string): Promise<string[]> {
-  const shifts = await this.findShiftsByDoctorAndDate(doctorId, date);
-  let allSlots: string[] = [];
-
-  for (const shift of shifts) {
-    const startTime = shift.shift.start_time;
-    const endTime = shift.shift.end_time; 
-    console.log(shift);
-    const slots = this.generateTimeSlots(startTime, endTime);
-    allSlots = allSlots.concat(slots);
+  async getDoctorTimeSlots(doctorId: string, date: string): Promise<string[]> {
+    const shifts = await this.findShiftsByDoctorAndDate(doctorId, date);
+    let allSlots: string[] = [];
+  
+    for (const shift of shifts) {
+      const startTime = shift.shift.start_time;
+      const endTime = shift.shift.end_time; 
+      const slots = this.generateTimeSlots(startTime, endTime);
+      allSlots = allSlots.concat(slots);
+    }
+  
+    const bookedSlots = await this.getBookedAppointments(doctorId, date);
+    const availableSlots = allSlots.filter(slot => !bookedSlots.includes(slot));
+  
+    availableSlots.sort((a, b) => {
+      const [hoursA, minutesA] = a.split(':').map(Number);
+      const [hoursB, minutesB] = b.split(':').map(Number);
+      return hoursA * 60 + minutesA - (hoursB * 60 + minutesB);
+    });
+  
+    return availableSlots;
   }
-
-  // Sort the time slots in ascending order
-  allSlots.sort((a, b) => {
-    const [hoursA, minutesA] = a.split(':').map(Number);
-    const [hoursB, minutesB] = b.split(':').map(Number);
-    return hoursA * 60 + minutesA - (hoursB * 60 + minutesB);
-  });
-
-  return allSlots;
-}
+  
+  
+  async getBookedAppointments(doctorId: string, date: string): Promise<string[]> {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+  
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+  
+    const appointments = await this.doctorShiftRepository.manager.find(Appointment, {
+      where: {
+        doctor_id: doctorId,
+        appointment_date: Between(startOfDay, endOfDay),
+        status: AppointmentStatus.CONFIRMED,
+      },
+      select: ['start_time'],
+    });
+    console.log(appointments)
+  
+    return appointments.map(app => {
+      const [hours, minutes] = app.start_time.split(':');
+      return `${hours}:${minutes}`; 
+    });
+  }
+  
+  
 }

@@ -107,21 +107,16 @@ export class DoctorShiftsService {
     cancelShiftDto: CancelShiftDto,
   ) {
     const { reason } = cancelShiftDto;
-  
-    // 1. Tìm ca làm của bác sĩ theo doctorId và shiftId
     const doctorShift = await this.doctorShiftRepository.findOneByDate(doctorId,shiftId,date);
     if (!doctorShift) {
       throw new Error('Ca làm không tồn tại');
     }
   
-    // 2. Lấy thông tin shift để lấy giờ bắt đầu
     const shift = await this.shiftService.findOne(shiftId);
   
     if (!shift || !shift.start_time) {
       throw new Error('Thông tin ca làm không hợp lệ');
     }
-  
-    // 3. Tính thời điểm bắt đầu của ca làm (kết hợp date + start_time)
     const [hours, minutes, seconds = 0] = shift.start_time.split(':').map(Number);
     const shiftStartDateTime = new Date(doctorShift.date);
     shiftStartDateTime.setHours(hours);
@@ -131,12 +126,9 @@ export class DoctorShiftsService {
     const now = new Date();
     const timeDifference = shiftStartDateTime.getTime() - now.getTime();
   
-    // 4. Kiểm tra nếu còn dưới 1 giờ thì không cho hủy
     if (timeDifference < 60 * 60 * 1000) {
       throw new BadRequestException('Không thể hủy ca làm vì thời gian còn lại quá ít');
     }
-  
-    // 5. Cập nhật trạng thái ca làm
     await this.doctorShiftRepository.updateShiftStatus(
       doctorId,
       shiftId,
@@ -144,7 +136,6 @@ export class DoctorShiftsService {
       DoctorShiftStatus.CANCELLED,
     );
   
-    // 6. Lấy và hủy các lịch hẹn liên quan
     const appointments = await this.appointmentService.findAppointmentsByShift(
       doctorId,
       shiftId,

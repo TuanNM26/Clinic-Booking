@@ -17,8 +17,6 @@ export const seedUsers = async (dataSource: DataSource): Promise<void> => {
 
   for (const user of users) {
     const { username, role_id, specialization_id,email } = user;
-
-    // Kiểm tra xem Role và Specialization có tồn tại không
     const role = await roleRepository.findOne({ where: { id: role_id } });
     const specialization = await specializationRepository.findOne({ where: { id: specialization_id } });
 
@@ -32,9 +30,7 @@ export const seedUsers = async (dataSource: DataSource): Promise<void> => {
       continue;
     }
 
-    // Kiểm tra xem người dùng đã tồn tại chưa
-    const existingUser = await userRepository.findOne({ where: { email } });
-    
+    const existingUser = await userRepository.findOne({ where: { email } }); 
     if (!existingUser) {
     const hashedPassword = await bcrypt.hash(user.password, 10);
 

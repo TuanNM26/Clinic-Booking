@@ -12,8 +12,6 @@ export enum Permission {
   GET_ALL_DOCTOR_SHIFT = 'get_all_doctor_shift',
   SHOW_APPOINTMENT_STATISTIC = 'show_appointment_statistic',
   SHOW_APPOINTMENT_STATISTIC_BY_SPECIALIZATION = 'show_appointment_statistic_by_specialization',
-
-  // Đã có sẵn
   CREATE_APPOINTMENT = 'create_appointment',
   CANCEL_APPOINTMENT = 'cancel_appointment',
   APPROVE_APPOINTMENT = 'approve_appointment',
@@ -24,8 +22,6 @@ export enum Permission {
   MANAGE_SPECIALIZATIONS = 'manage_specializations',
   EXPORT_APPOINTMENTS = 'export_appointments',
   VIEW_DASHBOARD = 'view_dashboard',
-
-  // 👇 Các quyền mới được bổ sung từ dữ liệu JSON
   CREATE_USER = 'create_user',
   MANAGE_APPOINTMENTS = 'manage_appointments',
   GET_ALL_USERS = 'get_all_users',

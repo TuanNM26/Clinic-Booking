@@ -4,23 +4,13 @@ export class UpdateDoctorShiftsCompositeKeyWithDate1745294026689 implements Migr
   name = 'UpdateDoctorShiftsCompositeKeyWithDate1745294026689'
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // Xóa khóa chính cũ
     await queryRunner.query(`ALTER TABLE "doctor_shifts" DROP CONSTRAINT "PK_531d465137f8fe13294df607c14"`);
-
-    // Thêm khóa chính mới gồm: doctor_id + shift_id + date
     await queryRunner.query(`ALTER TABLE "doctor_shifts" ADD CONSTRAINT "PK_doctor_shift_date" PRIMARY KEY ("doctor_id", "shift_id", "date")`);
-
-    // Đảm bảo cột date là NOT NULL
     await queryRunner.query(`ALTER TABLE "doctor_shifts" ALTER COLUMN "date" SET NOT NULL`);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    // Xóa khóa chính mới
     await queryRunner.query(`ALTER TABLE "doctor_shifts" DROP CONSTRAINT "PK_doctor_shift_date"`);
-
-    // Phục hồi lại khóa chính cũ: doctor_id + shift_id
     await queryRunner.query(`ALTER TABLE "doctor_shifts" ADD CONSTRAINT "PK_531d465137f8fe13294df607c14" PRIMARY KEY ("doctor_id", "shift_id")`);
-
-    // (Không cần sửa lại NOT NULL vì ban đầu có thể đã là NOT NULL)
   }
 }

@@ -37,8 +37,8 @@ export class AppointmentsRepository {
     }
   
     const now = new Date(); // UTC
-const dateOnly = appointment_date.toISOString().split('T')[0]; // "2025-04-24"
-const shiftDateTimeUTC = new Date(`${dateOnly}T${shift.start_time}Z`); // thêm "Z" để chỉ rõ UTC
+const dateOnly = appointment_date.toISOString().split('T')[0];
+const shiftDateTimeUTC = new Date(`${dateOnly}T${shift.start_time}Z`);
 
 if (shiftDateTimeUTC < now) {
   throw new HttpException('Không thể đặt lịch khám trong ca đã qua.', HttpStatus.BAD_REQUEST);

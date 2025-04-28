@@ -17,7 +17,7 @@ export const seedRolePermissions = async (dataSource: DataSource): Promise<void>
 
     const role = await roleRepository.findOne({ 
       where: { id: roleId },
-      relations: ['permissions'] // Load existing permissions
+      relations: ['permissions'] 
     });
     
     const permission = await permissionRepository.findOne({ 
@@ -25,7 +25,6 @@ export const seedRolePermissions = async (dataSource: DataSource): Promise<void>
     });
 
     if (role && permission) {
-      // Check if permission already exists for this role
       const permissionExists = role.permissions.some(p => p.name === permissionId);
       
       if (!permissionExists) {

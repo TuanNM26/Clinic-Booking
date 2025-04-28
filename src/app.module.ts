@@ -56,14 +56,18 @@ const envPath = path.join(__dirname, './configs/.env-dev');
         Appointment,Specialization
       ],
       synchronize: false,
-      migrations: ['dist/common/migrations/*.(js|ts)'],
+      migrations: [path.join(__dirname, 'migrations', '*.{js,ts}')],
       migrationsRun: true,
     }),
-    BullModule.forRoot({
+    BullModule.forRootAsync({
+      imports: [ConfigModule], // Import ConfigModule to access configuration
+      useFactory: async (configService: ConfigService) => ({
       redis: {
-        host: 'localhost',
-        port: 6379,
+        host: configService.get<string>('REDIS_HOST'), 
+        port: configService.get<number>('REDIS_PORT'),
       },
+      }),
+      inject: [ConfigService],
     }),
     MailerModule.forRootAsync({
       imports: [ConfigModule], 
