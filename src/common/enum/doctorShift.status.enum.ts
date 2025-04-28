@@ -1,5 +1,4 @@
 export enum DoctorShiftStatus {
-    ACTIVE = 'active',
-    CANCELLED = 'cancelled',
-  }
-  
+  ACTIVE = 'active',
+  CANCELLED = 'cancelled',
+}

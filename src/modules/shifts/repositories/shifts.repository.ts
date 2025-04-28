@@ -25,7 +25,10 @@ export class ShiftRepository {
     return await this.shiftRepository.findOneBy({ id });
   }
 
-  async update(id: string, updateShiftDto: UpdateShiftDto): Promise<Shift | null> {
+  async update(
+    id: string,
+    updateShiftDto: UpdateShiftDto,
+  ): Promise<Shift | null> {
     await this.shiftRepository.update(id, updateShiftDto);
     return await this.shiftRepository.findOneBy({ id });
   }
@@ -34,7 +37,11 @@ export class ShiftRepository {
     await this.shiftRepository.softDelete(id);
   }
 
-  async getAvailableShifts(specializationId: string, doctorId: string, date: string) {
+  async getAvailableShifts(
+    specializationId: string,
+    doctorId: string,
+    date: string,
+  ) {
     return this.shiftRepository
       .createQueryBuilder('shift')
       .leftJoinAndSelect('shift.doctorShifts', 'doctorShift')
@@ -42,9 +49,7 @@ export class ShiftRepository {
       .leftJoinAndSelect('doctor.specialization', 'specialization')
       .where('shift.date = :date', { date })
       .andWhere('specialization.id = :specializationId', { specializationId })
-      .andWhere('doctor.id = :doctorId', {doctorId})
+      .andWhere('doctor.id = :doctorId', { doctorId })
       .getMany();
   }
-  
-  
 }

@@ -11,14 +11,16 @@ import { MailModule } from '../mails/mail.module';
 import { ShiftsModule } from '../shifts/shifts.module';
 
 @Module({
-  imports:  [TypeOrmModule.forFeature([DoctorShift]),
-             AuthModule,
-             PermissionModule,
-             forwardRef(() => AppointmentsModule),
-             MailModule,
-             ShiftsModule],
+  imports: [
+    TypeOrmModule.forFeature([DoctorShift]),
+    AuthModule,
+    PermissionModule,
+    forwardRef(() => AppointmentsModule),
+    MailModule,
+    ShiftsModule,
+  ],
   controllers: [DoctorShiftsController],
   providers: [DoctorShiftsService, DoctorShiftRepository],
-  exports:[DoctorShiftsService]
+  exports: [DoctorShiftsService],
 })
 export class DoctorShiftsModule {}

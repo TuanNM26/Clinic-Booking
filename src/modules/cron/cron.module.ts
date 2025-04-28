@@ -4,8 +4,8 @@ import { MailModule } from '../mails/mail.module';
 import { AppointmentsModule } from '../appointments/appointments.module';
 
 @Module({
-  imports: [MailModule,AppointmentsModule], 
+  imports: [MailModule, AppointmentsModule],
   providers: [CronService],
-  exports: [CronService], 
+  exports: [CronService],
 })
 export class CronModule {}

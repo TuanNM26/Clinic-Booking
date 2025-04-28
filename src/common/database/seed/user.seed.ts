@@ -16,9 +16,11 @@ export const seedUsers = async (dataSource: DataSource): Promise<void> => {
   const users = JSON.parse(rawData);
 
   for (const user of users) {
-    const { username, role_id, specialization_id,email } = user;
+    const { username, role_id, specialization_id, email } = user;
     const role = await roleRepository.findOne({ where: { id: role_id } });
-    const specialization = await specializationRepository.findOne({ where: { id: specialization_id } });
+    const specialization = await specializationRepository.findOne({
+      where: { id: specialization_id },
+    });
 
     if (!role) {
       console.warn(`Role with id ${role_id} not found.`);
@@ -30,21 +32,20 @@ export const seedUsers = async (dataSource: DataSource): Promise<void> => {
       continue;
     }
 
-    const existingUser = await userRepository.findOne({ where: { email } }); 
+    const existingUser = await userRepository.findOne({ where: { email } });
     if (!existingUser) {
-    const hashedPassword = await bcrypt.hash(user.password, 10);
+      const hashedPassword = await bcrypt.hash(user.password, 10);
 
-    const newUser = userRepository.create({
-    ...user,
-    password: hashedPassword,
-    role,
-    specialization,
-  });
+      const newUser = userRepository.create({
+        ...user,
+        password: hashedPassword,
+        role,
+        specialization,
+      });
 
-  await userRepository.save(newUser);
-  console.log(`User ${username} seeded successfully!`);
-}
- else {
+      await userRepository.save(newUser);
+      console.log(`User ${username} seeded successfully!`);
+    } else {
       console.log(`User ${username} already exists, skipping.`);
     }
   }

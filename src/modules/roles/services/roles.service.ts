@@ -9,7 +9,9 @@ export class RolesService {
   constructor(private readonly roleRepository: RoleRepository) {}
 
   async create(createRoleDto: CreateRoleDto): Promise<Role> {
-    const existingRole = await this.roleRepository.findByName(createRoleDto.name);
+    const existingRole = await this.roleRepository.findByName(
+      createRoleDto.name,
+    );
     if (existingRole) {
       throw new Error(`Role with name "${createRoleDto.name}" already exists`);
     }
@@ -51,7 +53,10 @@ export class RolesService {
   }
 
   async removePermissionFromRole(roleId: string, permissionId: string) {
-    const role = await this.roleRepository.removePermissionFromRole(roleId, permissionId);
+    const role = await this.roleRepository.removePermissionFromRole(
+      roleId,
+      permissionId,
+    );
     return role;
   }
 }

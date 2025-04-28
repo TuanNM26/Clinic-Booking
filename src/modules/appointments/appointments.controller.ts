@@ -1,4 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Query, Put, Req, Res, HttpException, HttpStatus, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UsePipes,
+  ValidationPipe,
+  Query,
+  Put,
+  Req,
+  Res,
+  HttpException,
+  HttpStatus,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { AppointmentsService } from './services/appointments.service';
 import { CreateAppointmentDto } from './dto';
 import { UpdateAppointmentDto } from './dto';
@@ -18,24 +36,33 @@ import { UsersService } from '../users/services/users.service';
 
 @Controller('appointments')
 export class AppointmentsController {
-  constructor(private readonly appointmentsService: AppointmentsService, private readonly userService: UsersService) {}
+  constructor(
+    private readonly appointmentsService: AppointmentsService,
+    private readonly userService: UsersService,
+  ) {}
 
   @Post()
   @UsePipes(new ValidationPipe())
-  async create(@Body() createAppointmentDto: CreateAppointmentDto): Promise<AppointmentResponseDto> {
-  const shiftId = await this.appointmentsService.getShiftIdByTime(createAppointmentDto.doctor_id, createAppointmentDto.start_time, createAppointmentDto.appointment_date);
-  createAppointmentDto.shift_id = shiftId;
-  return this.appointmentsService.create(createAppointmentDto);
+  async create(
+    @Body() createAppointmentDto: CreateAppointmentDto,
+  ): Promise<AppointmentResponseDto> {
+    const shiftId = await this.appointmentsService.getShiftIdByTime(
+      createAppointmentDto.doctor_id,
+      createAppointmentDto.start_time,
+      createAppointmentDto.appointment_date,
+    );
+    createAppointmentDto.shift_id = shiftId;
+    return this.appointmentsService.create(createAppointmentDto);
   }
 
   @Get()
-  @Auth([`${Permission.GET_ALL_APPOINTMENTS}`]) 
+  @Auth([`${Permission.GET_ALL_APPOINTMENTS}`])
   findAll(@Query() query): Promise<Appointment[]> {
     return this.appointmentsService.findAll(query);
   }
 
   @Get('statistics')
-  @Auth([`${Permission.SHOW_APPOINTMENT_STATISTIC}`]) 
+  @Auth([`${Permission.SHOW_APPOINTMENT_STATISTIC}`])
   async getStatistics() {
     return this.appointmentsService.getAppointmentStatistics();
   }
@@ -43,12 +70,14 @@ export class AppointmentsController {
   @Get('statistics/by-specialty')
   @Auth([`${Permission.SHOW_APPOINTMENT_STATISTIC_BY_SPECIALIZATION}`])
   async getStatisticsBySpecialty(@CurrentUser() user: any) {
-  const specialtyId = await this.userService.getManagedSpecialtyIdByHead(user.sub);
-  console.log(specialtyId);
-  return this.appointmentsService.getAppointmentStatisticsBySpecialty(specialtyId);
-}
-
-  
+    const specialtyId = await this.userService.getManagedSpecialtyIdByHead(
+      user.sub,
+    );
+    console.log(specialtyId);
+    return this.appointmentsService.getAppointmentStatisticsBySpecialty(
+      specialtyId,
+    );
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Appointment> {
@@ -57,23 +86,29 @@ export class AppointmentsController {
 
   @Get('status/:id')
   async getAppointmentStatus(@Param('id') id: string) {
-  return this.appointmentsService.getStatus(id);
+    return this.appointmentsService.getStatus(id);
   }
 
   @Get('doctor/appointments')
   @Auth([`${Permission.GET_APPOINTMENTS}`])
-  async getDoctorAppointments(@Query() query: any, @CurrentUser() doctor: any): Promise<AppointmentResponseDto[]> {
+  async getDoctorAppointments(
+    @Query() query: any,
+    @CurrentUser() doctor: any,
+  ): Promise<AppointmentResponseDto[]> {
     return this.appointmentsService.findAllForDoctor(query, doctor.sub);
   }
 
   @Put(':id')
   @UsePipes(new ValidationPipe())
-  update(@Param('id') id: string, @Body() updateAppointmentDto: UpdateAppointmentDto): Promise<Appointment> {
+  update(
+    @Param('id') id: string,
+    @Body() updateAppointmentDto: UpdateAppointmentDto,
+  ): Promise<Appointment> {
     return this.appointmentsService.update(id, updateAppointmentDto);
   }
 
   @Patch('status/confirm/:id')
-  @Auth([`${Permission.CHANGE_APPOINTMENT_STATUS}`]) 
+  @Auth([`${Permission.CHANGE_APPOINTMENT_STATUS}`])
   @UsePipes(new ValidationPipe())
   async ConfirmAppointmentStatus(
     @Param('id') id: string,
@@ -86,14 +121,19 @@ export class AppointmentsController {
     }
 
     if (appointment.doctor_id !== user.sub) {
-      throw new ForbiddenException('Bạn không có quyền thực hiện hành động này trên lịch hẹn này.');
+      throw new ForbiddenException(
+        'Bạn không có quyền thực hiện hành động này trên lịch hẹn này.',
+      );
     }
     updateAppointmentStatusDto.status = AppointmentStatus.CONFIRMED;
-    return this.appointmentsService.updateAppointmentStatus(id, updateAppointmentStatusDto.status);
+    return this.appointmentsService.updateAppointmentStatus(
+      id,
+      updateAppointmentStatusDto.status,
+    );
   }
 
   @Patch('status/cancel/:id')
-  @Auth([`${Permission.CHANGE_APPOINTMENT_STATUS}`]) 
+  @Auth([`${Permission.CHANGE_APPOINTMENT_STATUS}`])
   @UsePipes(new ValidationPipe())
   async CancelAppointmentStatus(
     @Param('id') id: string,
@@ -105,36 +145,45 @@ export class AppointmentsController {
       throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
     }
     if (appointment.doctor_id !== user.sub) {
-      throw new ForbiddenException('Bạn không có quyền thực hiện hành động này trên lịch hẹn này.');
+      throw new ForbiddenException(
+        'Bạn không có quyền thực hiện hành động này trên lịch hẹn này.',
+      );
     }
     updateAppointmentStatusDto.status = AppointmentStatus.CANCELLED;
-    return this.appointmentsService.updateAppointmentStatus(id, updateAppointmentStatusDto.status);
+    return this.appointmentsService.updateAppointmentStatus(
+      id,
+      updateAppointmentStatusDto.status,
+    );
   }
 
   @Patch('notes/:id')
-  @Auth([`${Permission.CHANGE_APPOINTMENT_NOTE}`]) 
+  @Auth([`${Permission.CHANGE_APPOINTMENT_NOTE}`])
   @UsePipes(new ValidationPipe())
   async updateAppointmentNotes(
     @Param('id') id: string,
     @Body() updateAppointmentNotesDto: UpdateAppointmentNotesDto,
     @CurrentUser() user: any,
   ): Promise<Appointment> {
-
-      const appointment = await this.appointmentsService.findOne(id);
+    const appointment = await this.appointmentsService.findOne(id);
     if (!appointment) {
       throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
     }
     if (appointment.doctor_id !== user.sub) {
-      throw new ForbiddenException('Bạn không có quyền thực hiện hành động này trên lịch hẹn này.');
+      throw new ForbiddenException(
+        'Bạn không có quyền thực hiện hành động này trên lịch hẹn này.',
+      );
     }
-    return this.appointmentsService.updateAppointmentNotes(id, updateAppointmentNotesDto.notes);
+    return this.appointmentsService.updateAppointmentNotes(
+      id,
+      updateAppointmentNotesDto.notes,
+    );
   }
-  
+
   @Delete(':id')
   remove(@Param('id') id: string): Promise<void> {
     return this.appointmentsService.remove(id);
   }
-  
+
   @Get('status/:action/:appointmentId')
   async redirectToPatch(
     @Param('action') action: string,
@@ -148,15 +197,21 @@ export class AppointmentsController {
 
     try {
       const appointment = await this.appointmentsService.findOne(id);
-    if (!appointment) {
-      throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
-    }
+      if (!appointment) {
+        throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
+      }
 
-    if (action === 'confirm') {
-        await this.appointmentsService.updateAppointmentStatus(id, AppointmentStatus.CONFIRMED);
-    } else if (action === 'cancel') {
-        await this.appointmentsService.updateAppointmentStatus(id, AppointmentStatus.CANCELLED);
-    }
+      if (action === 'confirm') {
+        await this.appointmentsService.updateAppointmentStatus(
+          id,
+          AppointmentStatus.CONFIRMED,
+        );
+      } else if (action === 'cancel') {
+        await this.appointmentsService.updateAppointmentStatus(
+          id,
+          AppointmentStatus.CANCELLED,
+        );
+      }
 
       res.setHeader('Content-Type', 'text/html');
       res.send(`
@@ -184,7 +239,9 @@ export class AppointmentsController {
         </head>
         <body>
           <div class="message">
-            <h2>Lịch hẹn đã được ${action === 'confirm' ? 'duyệt' : 'hủy'} thành công!</h2>
+            <h2>Lịch hẹn đã được ${
+              action === 'confirm' ? 'duyệt' : 'hủy'
+            } thành công!</h2>
             <p>Bạn có thể đóng cửa sổ này.</p>
           </div>
         </body>

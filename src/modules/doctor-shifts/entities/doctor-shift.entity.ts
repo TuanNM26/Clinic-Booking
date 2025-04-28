@@ -5,7 +5,7 @@ import { BaseEntity } from '../../../common/database/base.entity';
 import { DoctorShiftStatus } from '../../../common/enum/doctorShift.status.enum';
 
 @Entity('doctor_shifts')
-export class DoctorShift extends BaseEntity{
+export class DoctorShift extends BaseEntity {
   @PrimaryColumn()
   doctor_id: string;
 
@@ -21,13 +21,12 @@ export class DoctorShift extends BaseEntity{
     default: DoctorShiftStatus.ACTIVE,
   })
   status: DoctorShiftStatus;
-  
 
-  @ManyToOne(() => User, user => user.doctorShifts)
+  @ManyToOne(() => User, (user) => user.doctorShifts)
   @JoinColumn({ name: 'doctor_id' })
   doctor: User;
 
-  @ManyToOne(() => Shift, shift => shift.doctorShifts)
+  @ManyToOne(() => Shift, (shift) => shift.doctorShifts)
   @JoinColumn({ name: 'shift_id' })
   shift: Shift;
 

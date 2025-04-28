@@ -37,11 +37,14 @@ export class RoleRepository {
     return await this.roleRepository.findOneBy({ id });
   }
 
-  async remove(id: string): Promise<void> { 
+  async remove(id: string): Promise<void> {
     await this.roleRepository.softDelete(id);
   }
 
-  async addPermissionToRole(roleId: string, permissionId: string): Promise<Role> {
+  async addPermissionToRole(
+    roleId: string,
+    permissionId: string,
+  ): Promise<Role> {
     const role = await this.roleRepository.findOne({
       where: { id: roleId },
       relations: ['permissions'],
@@ -51,22 +54,24 @@ export class RoleRepository {
       throw new NotFoundException('Role not found');
     }
 
-    const permission = await this.permissionService.findOne(permissionId)
+    const permission = await this.permissionService.findOne(permissionId);
 
     if (!permission) {
       throw new NotFoundException('Permission not found');
     }
 
-    
-    const alreadyExists = role.permissions.some(p => p.id === permissionId);
+    const alreadyExists = role.permissions.some((p) => p.id === permissionId);
     if (!alreadyExists) {
-      role.permissions.push(permission); 
-      await this.roleRepository.save(role); 
+      role.permissions.push(permission);
+      await this.roleRepository.save(role);
     }
-    return role;  
+    return role;
   }
 
-  async removePermissionFromRole(roleId: string, permissionId: string): Promise<Role> {
+  async removePermissionFromRole(
+    roleId: string,
+    permissionId: string,
+  ): Promise<Role> {
     const role = await this.roleRepository.findOne({
       where: { id: roleId },
       relations: ['permissions'],
@@ -76,7 +81,9 @@ export class RoleRepository {
       throw new NotFoundException('Role not found');
     }
 
-    const permissionIndex = role.permissions.findIndex(p => p.id === permissionId);
+    const permissionIndex = role.permissions.findIndex(
+      (p) => p.id === permissionId,
+    );
 
     if (permissionIndex === -1) {
       throw new NotFoundException('Permission not found in the role');

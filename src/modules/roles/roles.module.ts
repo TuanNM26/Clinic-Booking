@@ -13,9 +13,14 @@ import { AuthModule } from 'src/common/auth/auth.module';
 import { PermissionModule } from 'src/common/guards/permission.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Role]), PermissionsModule, AuthModule, PermissionModule],
-    controllers: [RolesController],
-    providers: [RolesService,RoleRepository],
-    exports: [RolesService]
+  imports: [
+    TypeOrmModule.forFeature([Role]),
+    PermissionsModule,
+    AuthModule,
+    PermissionModule,
+  ],
+  controllers: [RolesController],
+  providers: [RolesService, RoleRepository],
+  exports: [RolesService],
 })
 export class RolesModule {}

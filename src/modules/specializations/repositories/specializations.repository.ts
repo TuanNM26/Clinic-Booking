@@ -12,8 +12,12 @@ export class SpecializationRepository {
     private readonly specializationRepository: Repository<Specialization>,
   ) {}
 
-  async create(createSpecializationDto: CreateSpecializationDto): Promise<Specialization> {
-    const specialization = this.specializationRepository.create(createSpecializationDto);
+  async create(
+    createSpecializationDto: CreateSpecializationDto,
+  ): Promise<Specialization> {
+    const specialization = this.specializationRepository.create(
+      createSpecializationDto,
+    );
     return await this.specializationRepository.save(specialization);
   }
 
@@ -29,7 +33,10 @@ export class SpecializationRepository {
     return await this.specializationRepository.findOneBy({ name });
   }
 
-  async update(id: string, updateSpecializationDto: UpdateSpecializationDto): Promise<SpecializationDto | null> {
+  async update(
+    id: string,
+    updateSpecializationDto: UpdateSpecializationDto,
+  ): Promise<SpecializationDto | null> {
     await this.specializationRepository.update(id, updateSpecializationDto);
     return await this.specializationRepository.findOneBy({ id });
   }

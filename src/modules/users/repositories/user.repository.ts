@@ -15,8 +15,8 @@ export class UsersRepository {
 
   findUserBySpecialization(specialization: string) {
     return this.repository.find({
-      where : { specialization_id : specialization  },
-      relations : ['specialization', 'role']
+      where: { specialization_id: specialization },
+      relations: ['specialization', 'role'],
     });
   }
 
@@ -27,26 +27,26 @@ export class UsersRepository {
 
   async getAllUsers(): Promise<User[]> {
     return this.repository.find({
-      relations: ['role', 'specialization'], 
+      relations: ['role', 'specialization'],
     });
   }
-  
+
   async getUserById(id: string): Promise<User | null> {
     return this.repository.findOne({
       where: { id },
-      relations: ['role', 'specialization'], 
+      relations: ['role', 'specialization'],
     });
   }
-  
+
   async findUsersByRole(roleName: string): Promise<User[]> {
     return this.repository.find({
       where: {
         role: { name: roleName },
       },
-      relations: ['role','specialization'],
+      relations: ['role', 'specialization'],
     });
   }
-  
+
   async findManagedSpecialtyIdByHead(headId: string): Promise<string | null> {
     const user = await this.repository.findOne({
       where: {
@@ -57,7 +57,6 @@ export class UsersRepository {
     console.log(user);
     return user?.specialization_id || null;
   }
-  
 
   getByEmail(email: string): Promise<User> {
     return this.repository.findOne({ where: { email } });

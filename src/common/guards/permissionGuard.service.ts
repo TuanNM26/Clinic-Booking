@@ -28,21 +28,20 @@ export class PermissionGuardService {
     });
 
     if (permission) {
-      return permission.roles.map(role => role.id);
+      return permission.roles.map((role) => role.id);
     }
 
     return [];
   }
 
-  
   async getPermissionNamesByRoleId(roleId: string): Promise<string[]> {
     const role = await this.roleRepository.findOne({
       where: { id: roleId },
-      relations: ['permissions'], 
+      relations: ['permissions'],
     });
 
     if (role) {
-      return role.permissions.map(permission => permission.name);
+      return role.permissions.map((permission) => permission.name);
     }
 
     return [];

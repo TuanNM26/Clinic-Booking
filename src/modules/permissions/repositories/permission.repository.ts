@@ -29,7 +29,10 @@ export class PermissionRepository {
     return await this.permissionRepository.findOneBy({ name });
   }
 
-  async update(id: string, updatePermissionDto: UpdatePermissionDto): Promise<Permission | null> {
+  async update(
+    id: string,
+    updatePermissionDto: UpdatePermissionDto,
+  ): Promise<Permission | null> {
     await this.permissionRepository.update(id, updatePermissionDto);
     return await this.permissionRepository.findOneBy({ id });
   }

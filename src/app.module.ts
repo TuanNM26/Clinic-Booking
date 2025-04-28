@@ -36,7 +36,7 @@ const envPath = path.join(__dirname, './configs/.env-dev');
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: path.join(__dirname, './configs/common/configs/.env-dev'), 
+      envFilePath: path.join(__dirname, './configs/common/configs/.env-dev'),
       isGlobal: true,
     }),
     ScheduleModule.forRoot(),
@@ -49,11 +49,13 @@ const envPath = path.join(__dirname, './configs/.env-dev');
       password: process.env.DB_PASS,
       autoLoadEntities: true,
       entities: [
-        User, 
-        Role, 
-        DoctorShift, Permission,  
+        User,
+        Role,
+        DoctorShift,
+        Permission,
         Shift,
-        Appointment,Specialization
+        Appointment,
+        Specialization,
       ],
       synchronize: false,
       migrations: [path.join(__dirname, 'migrations', '*.{js,ts}')],
@@ -62,34 +64,34 @@ const envPath = path.join(__dirname, './configs/.env-dev');
     BullModule.forRootAsync({
       imports: [ConfigModule], // Import ConfigModule to access configuration
       useFactory: async (configService: ConfigService) => ({
-      redis: {
-        host: configService.get<string>('REDIS_HOST'), 
-        port: configService.get<number>('REDIS_PORT'),
-      },
+        redis: {
+          host: configService.get<string>('REDIS_HOST'),
+          port: configService.get<number>('REDIS_PORT'),
+        },
       }),
       inject: [ConfigService],
     }),
     MailerModule.forRootAsync({
-      imports: [ConfigModule], 
+      imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         transport: {
           host: configService.get<string>('MAIL_HOST'),
           port: configService.get<number>('MAIL_PORT'),
-          secure: configService.get<boolean>('MAIL_SECURE'), 
+          secure: configService.get<boolean>('MAIL_SECURE'),
           auth: {
             user: configService.get<string>('MAIL_USER'),
             pass: configService.get<string>('MAIL_PASSWORD'),
           },
         },
         tls: {
-          rejectUnauthorized: false, 
+          rejectUnauthorized: false,
         },
         defaults: {
           from: `${configService.get<string>('MAIL_FROM')}`,
         },
         template: {
           dir: path.join(__dirname, 'common', 'templates'),
-          adapter: new HandlebarsAdapter(), 
+          adapter: new HandlebarsAdapter(),
           options: {
             strict: false,
           },
@@ -107,7 +109,7 @@ const envPath = path.join(__dirname, './configs/.env-dev');
     DoctorShiftsModule,
     AppointmentsModule,
     // SeederModule,
-    CronModule
+    CronModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -4,7 +4,7 @@ import { Appointment } from '../../appointments/entities/appointment.entity';
 import { BaseEntity } from '../../../common/database/base.entity';
 
 @Entity('specializations')
-export class Specialization extends BaseEntity{
+export class Specialization extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -17,9 +17,9 @@ export class Specialization extends BaseEntity{
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
 
-  @OneToMany(() => User, user => user.specialization)
+  @OneToMany(() => User, (user) => user.specialization)
   users: User[];
 
-  @OneToMany(() => Appointment, appointment => appointment.specialized)
+  @OneToMany(() => Appointment, (appointment) => appointment.specialized)
   appointments: Appointment[];
 }

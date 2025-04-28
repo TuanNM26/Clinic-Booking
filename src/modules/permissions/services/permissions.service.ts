@@ -9,9 +9,13 @@ export class PermissionsService {
   constructor(private readonly permissionRepository: PermissionRepository) {}
 
   async create(createPermissionDto: CreatePermissionDto): Promise<Permission> {
-    const existingPermission = await this.permissionRepository.findByName(createPermissionDto.name);
+    const existingPermission = await this.permissionRepository.findByName(
+      createPermissionDto.name,
+    );
     if (existingPermission) {
-      throw new Error(`Permission with name "${createPermissionDto.name}" already exists`);
+      throw new Error(
+        `Permission with name "${createPermissionDto.name}" already exists`,
+      );
     }
     return this.permissionRepository.create(createPermissionDto);
   }
@@ -36,7 +40,10 @@ export class PermissionsService {
     return permission;
   }
 
-  async update(id: string, updatePermissionDto: UpdatePermissionDto): Promise<Permission> {
+  async update(
+    id: string,
+    updatePermissionDto: UpdatePermissionDto,
+  ): Promise<Permission> {
     const permission = await this.permissionRepository.findOne(id);
     if (!permission) {
       throw new NotFoundException(`Permission with ID "${id}" not found`);
@@ -51,6 +58,8 @@ export class PermissionsService {
       throw new NotFoundException(`Permission with ID "${id}" not found`);
     }
     await this.permissionRepository.remove(id);
-    return { message: `Permission with ID "${id}" has been successfully deleted` };
+    return {
+      message: `Permission with ID "${id}" has been successfully deleted`,
+    };
   }
 }

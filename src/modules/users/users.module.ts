@@ -10,12 +10,12 @@ import { PermissionModule } from 'src/common/guards/permission.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]), 
+    TypeOrmModule.forFeature([User]),
     forwardRef(() => AuthModule),
-    PermissionModule
+    PermissionModule,
   ],
   controllers: [UsersController],
   providers: [UsersService, UsersRepository],
-  exports: [UsersService]
+  exports: [UsersService],
 })
 export class UsersModule {}

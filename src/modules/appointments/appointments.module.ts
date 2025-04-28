@@ -16,16 +16,18 @@ import { DoctorShiftsModule } from '../doctor-shifts/doctor-shifts.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Appointment]), 
-            PermissionModule, 
-            AuthModule,
-            MailModule,
-            UsersModule,
-            ShiftsModule,
-            ConfigModule,
-            forwardRef(() => DoctorShiftsModule)],
+  imports: [
+    TypeOrmModule.forFeature([Appointment]),
+    PermissionModule,
+    AuthModule,
+    MailModule,
+    UsersModule,
+    ShiftsModule,
+    ConfigModule,
+    forwardRef(() => DoctorShiftsModule),
+  ],
   controllers: [AppointmentsController],
-  providers: [AppointmentsService,AppointmentsRepository],
-  exports: [AppointmentsService]
+  providers: [AppointmentsService, AppointmentsRepository],
+  exports: [AppointmentsService],
 })
 export class AppointmentsModule {}

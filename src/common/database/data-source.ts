@@ -1,11 +1,12 @@
-
-
 import { DataSource } from 'typeorm';
 import * as path from 'path';
 import { config } from 'dotenv';
 import * as dotenv from 'dotenv';
 
-const envPath2 = path.resolve(__dirname, '../../configs/common/configs/.env-dev');
+const envPath2 = path.resolve(
+  __dirname,
+  '../../configs/common/configs/.env-dev',
+);
 dotenv.config({ path: envPath2 });
 
 import { User } from '../../modules/users/entities/user.entity';
@@ -15,8 +16,6 @@ import { Specialization } from '../../modules/specializations/entities/specializ
 import { Appointment } from '../../modules/appointments/entities/appointment.entity';
 import { Permission } from '../../modules/permissions/entities/permission.entity';
 import { Shift } from '../../modules/shifts/entities/shift.entity';
-
-
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
@@ -35,6 +34,6 @@ export const AppDataSource = new DataSource({
     Appointment,
   ],
   synchronize: false,
-  migrations: ['dist/migrations/**/*.{ts,js}'], 
+  migrations: ['dist/migrations/**/*.{ts,js}'],
   migrationsRun: true,
 });

@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Shift } from '../../shifts/entities/shift.entity';
 import { Specialization } from '../../specializations/entities/specialization.entity';
@@ -6,7 +12,7 @@ import { BaseEntity } from '../../../common/database/base.entity';
 import { AppointmentStatus } from '../../../common/enum/status.enum';
 
 @Entity('appointments')
-export class Appointment extends BaseEntity{
+export class Appointment extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -37,21 +43,24 @@ export class Appointment extends BaseEntity{
   @Column({ nullable: true })
   reason_canceled: string;
 
-  @ManyToOne(() => User, user => user.appointments)
+  @ManyToOne(() => User, (user) => user.appointments)
   @JoinColumn({ name: 'doctor_id' })
   doctor: User;
 
   @Column()
   shift_id: string;
 
-  @ManyToOne(() => Shift, shift => shift.appointments)
+  @ManyToOne(() => Shift, (shift) => shift.appointments)
   @JoinColumn({ name: 'shift_id' })
   shift: Shift;
 
   @Column()
   specialized_id: string;
 
-  @ManyToOne(() => Specialization, specialization => specialization.appointments)
+  @ManyToOne(
+    () => Specialization,
+    (specialization) => specialization.appointments,
+  )
   @JoinColumn({ name: 'specialized_id' })
   specialized: Specialization;
 
@@ -60,7 +69,7 @@ export class Appointment extends BaseEntity{
     enum: AppointmentStatus,
     default: AppointmentStatus.PENDING,
   })
-  status: AppointmentStatus; 
+  status: AppointmentStatus;
 
   @Column({ type: 'timestamp' })
   appointment_date: Date;

@@ -1,11 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Put,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { SpecializationsService } from './services/specializations.service';
 import { CreateSpecializationDto } from './dto/create-specialization.dto';
 import { UpdateSpecializationDto } from './dto/update-specialization.dto';
 
 @Controller('specializations')
 export class SpecializationsController {
-  constructor(private readonly specializationsService: SpecializationsService) {}
+  constructor(
+    private readonly specializationsService: SpecializationsService,
+  ) {}
 
   @Post()
   create(@Body() createSpecializationDto: CreateSpecializationDto) {
@@ -22,13 +35,16 @@ export class SpecializationsController {
     return this.specializationsService.findOne(id);
   }
 
-  @Get('name/:name') 
+  @Get('name/:name')
   findByName(@Param('name') name: string) {
     return this.specializationsService.findByName(name);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateSpecializationDto: UpdateSpecializationDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateSpecializationDto: UpdateSpecializationDto,
+  ) {
     return this.specializationsService.update(id, updateSpecializationDto);
   }
 

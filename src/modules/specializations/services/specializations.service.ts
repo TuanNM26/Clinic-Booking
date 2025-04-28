@@ -8,14 +8,21 @@ import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class SpecializationsService {
-  constructor(private readonly specializationRepository: SpecializationRepository) {}
+  constructor(
+    private readonly specializationRepository: SpecializationRepository,
+  ) {}
 
-  async create(createSpecializationDto: CreateSpecializationDto): Promise<Specialization> {
-    const existingSpecialization = await this.specializationRepository.findByName(
-      createSpecializationDto.name,
-    );
+  async create(
+    createSpecializationDto: CreateSpecializationDto,
+  ): Promise<Specialization> {
+    const existingSpecialization =
+      await this.specializationRepository.findByName(
+        createSpecializationDto.name,
+      );
     if (existingSpecialization) {
-      throw new Error(`Specialization with name "${createSpecializationDto.name}" already exists`);
+      throw new Error(
+        `Specialization with name "${createSpecializationDto.name}" already exists`,
+      );
     }
     return this.specializationRepository.create(createSpecializationDto);
   }
@@ -30,7 +37,7 @@ export class SpecializationsService {
   async findOne(id: string): Promise<SpecializationDto> {
     const specialization = await this.specializationRepository.findOne(id);
     if (!specialization) {
-      return null; 
+      return null;
     }
     return plainToInstance(SpecializationDto, specialization, {
       excludeExtraneousValues: true,
@@ -63,10 +70,12 @@ export class SpecializationsService {
     await this.specializationRepository.remove(id);
   }
 
-  async findByName(name: string): Promise<SpecializationDto> { 
+  async findByName(name: string): Promise<SpecializationDto> {
     const specialization = await this.specializationRepository.findByName(name);
     if (!specialization) {
-      throw new NotFoundException(`Specialization with name "${name}" not found`);
+      throw new NotFoundException(
+        `Specialization with name "${name}" not found`,
+      );
     }
     return plainToInstance(SpecializationDto, specialization, {
       excludeExtraneousValues: true,

@@ -8,9 +8,9 @@ import { PermissionModule } from 'src/common/guards/permission.module';
 import { AuthModule } from 'src/common/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Shift]), PermissionModule,AuthModule],
+  imports: [TypeOrmModule.forFeature([Shift]), PermissionModule, AuthModule],
   controllers: [ShiftsController],
-  providers: [ShiftsService,ShiftRepository],
-  exports: [ShiftsService]
+  providers: [ShiftsService, ShiftRepository],
+  exports: [ShiftsService],
 })
 export class ShiftsModule {}

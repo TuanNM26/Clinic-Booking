@@ -1,4 +1,10 @@
-import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateAppointmentDto } from '../dto/create-appointment.dto';
 import { UpdateAppointmentDto } from '../dto';
 import { AppointmentsRepository } from '../repositories/appointments.repository';
@@ -18,23 +24,25 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AppointmentsService {
-  
-  
   constructor(
-    private readonly appointmentsRepository: AppointmentsRepository, 
+    private readonly appointmentsRepository: AppointmentsRepository,
     private readonly mailService: MailService,
     private readonly doctorService: UsersService,
     private readonly configService: ConfigService,
     private readonly shiftService: ShiftsService,
     @Inject(forwardRef(() => DoctorShiftsService))
-     private readonly doctorShiftService: DoctorShiftsService,
+    private readonly doctorShiftService: DoctorShiftsService,
   ) {}
 
-  async create(createAppointmentDto: CreateAppointmentDto): Promise<AppointmentResponseDto> {
-    const appointment = await this.appointmentsRepository.createAppointment(createAppointmentDto);
+  async create(
+    createAppointmentDto: CreateAppointmentDto,
+  ): Promise<AppointmentResponseDto> {
+    const appointment = await this.appointmentsRepository.createAppointment(
+      createAppointmentDto,
+    );
 
-    const patientEmail = appointment.email; 
-    const patientName = appointment.full_name; 
+    const patientEmail = appointment.email;
+    const patientName = appointment.full_name;
     const doctorId = appointment.doctor_id;
     const shiftId = appointment.shift_id;
     const appointmentDate = appointment.appointment_date;
@@ -44,32 +52,38 @@ export class AppointmentsService {
 
     const shift = await this.shiftService.findOne(shiftId);
     const appointmentTime = appointment.start_time;
-    const baseUrl = this.configService.get<string>('BASE_URL')
-    console.log("url mới đây nhé " + baseUrl)
+    const baseUrl = this.configService.get<string>('BASE_URL');
+    const dateObj = new Date(appointmentDate);
+    const day = dateObj.getDate().toString().padStart(2, '0');
+    const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+    const year = dateObj.getFullYear();
+    const formattedDate = `${day}-${month}-${year}`;
     const appointmentDetails = {
       appointmentId: appointment.id,
       patientName: patientName,
       doctorName: doctorName,
       appointmentTime: appointmentTime,
-      appointmentDate: appointmentDate,
-      baseUrl: baseUrl
+      appointmentDate: formattedDate,
+      baseUrl: baseUrl,
     };
 
     await this.mailService.sendAppointmentNotification(
       patientEmail,
       'Xác nhận lịch hẹn khám',
       appointmentDetails,
-      'patientConfirmShedule', 
+      'patientConfirmShedule',
     );
 
     await this.mailService.sendAppointmentNotification(
       doctor.email,
       'Xác nhận lịch hẹn khám',
       appointmentDetails,
-      'doctorNewAppointment', 
+      'doctorNewAppointment',
     );
 
-    return plainToInstance(AppointmentResponseDto,appointment, {excludeExtraneousValues : true})
+    return plainToInstance(AppointmentResponseDto, appointment, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async findAll(query: any): Promise<Appointment[]> {
@@ -82,13 +96,19 @@ export class AppointmentsService {
       findOptions.where = { ...findOptions.where, shift_id: query.shiftId };
     }
     if (query.specializedId) {
-      findOptions.where = { ...findOptions.where, specialized_id: query.specializedId };
+      findOptions.where = {
+        ...findOptions.where,
+        specialized_id: query.specializedId,
+      };
     }
     if (query.status) {
       findOptions.where = { ...findOptions.where, status: query.status };
     }
     if (query.date) {
-      findOptions.where = { ...findOptions.where, appointment_date: query.date };
+      findOptions.where = {
+        ...findOptions.where,
+        appointment_date: query.date,
+      };
     }
 
     return this.appointmentsRepository.findAllAppointments(findOptions);
@@ -98,22 +118,44 @@ export class AppointmentsService {
     return this.appointmentsRepository.findAppointmentById(id);
   }
 
-  async findAppointmentsByShift(doctorId: string, shiftId: string): Promise<Appointment[]> {
-    return this.appointmentsRepository.findAppointmentsByShift(doctorId,shiftId);
+  async findAppointmentsByShift(
+    doctorId: string,
+    shiftId: string,
+  ): Promise<Appointment[]> {
+    return this.appointmentsRepository.findAppointmentsByShift(
+      doctorId,
+      shiftId,
+    );
   }
 
-  async update(id: string, updateAppointmentDto: UpdateAppointmentDto): Promise<Appointment> {
-    return this.appointmentsRepository.updateAppointment(id, updateAppointmentDto);
+  async update(
+    id: string,
+    updateAppointmentDto: UpdateAppointmentDto,
+  ): Promise<Appointment> {
+    return this.appointmentsRepository.updateAppointment(
+      id,
+      updateAppointmentDto,
+    );
   }
 
-  async updateAppointmentStatus(id: string, status: AppointmentStatus): Promise<Appointment> {
-    const updatedAppointment = await this.appointmentsRepository.updateStatus(id, status);
+  async updateAppointmentStatus(
+    id: string,
+    status: AppointmentStatus,
+  ): Promise<Appointment> {
+    const updatedAppointment = await this.appointmentsRepository.updateStatus(
+      id,
+      status,
+    );
     if (!updatedAppointment) {
       throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
     }
     const appointment = this.findOne(id);
 
-    const doctor = await this.doctorService.findOne((await appointment).doctor_id);
+    const doctor = await this.doctorService.findOne(
+      (
+        await appointment
+      ).doctor_id,
+    );
     const doctorName = doctor ? doctor.full_name : 'Không xác định';
 
     const shift = await this.shiftService.findOne((await appointment).shift_id);
@@ -125,27 +167,38 @@ export class AppointmentsService {
       appointmentTime: appointmentTime,
       appointmentDate: (await appointment).appointment_date,
       doctorNote: (await appointment).notes,
-      status: status
+      status: status,
     };
 
     await this.mailService.sendAppointmentNotification(
-      (await appointment).email,
+      (
+        await appointment
+      ).email,
       'Cập nhật thông tin lịch khám',
       appointmentDetails,
-      'doctorUpdateAppointment', 
+      'doctorUpdateAppointment',
     );
 
     return updatedAppointment;
   }
 
-  async cancelAppointment(id: string, status: AppointmentStatus, reason:string): Promise<Appointment> {
-    const updatedAppointment = await this.appointmentsRepository.cancelAppointment(id, status,reason);
+  async cancelAppointment(
+    id: string,
+    status: AppointmentStatus,
+    reason: string,
+  ): Promise<Appointment> {
+    const updatedAppointment =
+      await this.appointmentsRepository.cancelAppointment(id, status, reason);
     if (!updatedAppointment) {
       throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
     }
     const appointment = this.findOne(id);
 
-    const doctor = await this.doctorService.findOne((await appointment).doctor_id);
+    const doctor = await this.doctorService.findOne(
+      (
+        await appointment
+      ).doctor_id,
+    );
     const doctorName = doctor ? doctor.full_name : 'Không xác định';
 
     const shift = await this.shiftService.findOne((await appointment).shift_id);
@@ -158,28 +211,40 @@ export class AppointmentsService {
       appointmentDate: (await appointment).appointment_date,
       doctorNote: (await appointment).notes,
       status: status,
-      reason: reason
+      reason: reason,
     };
 
     await this.mailService.sendAppointmentNotification(
-      (await appointment).email,
+      (
+        await appointment
+      ).email,
       'Cập nhật thông tin lịch khám',
       appointmentDetails,
-      'cancel-appointment', 
+      'cancel-appointment',
     );
 
     return updatedAppointment;
   }
 
-  async updateAppointmentNotes(id: string, notes: string): Promise<Appointment> {
-    const updatedAppointment = await this.appointmentsRepository.updateNotes(id, notes);
+  async updateAppointmentNotes(
+    id: string,
+    notes: string,
+  ): Promise<Appointment> {
+    const updatedAppointment = await this.appointmentsRepository.updateNotes(
+      id,
+      notes,
+    );
     if (!updatedAppointment) {
       throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
     }
 
     const appointment = this.findOne(id);
 
-    const doctor = await this.doctorService.findOne((await appointment).doctor_id);
+    const doctor = await this.doctorService.findOne(
+      (
+        await appointment
+      ).doctor_id,
+    );
     const doctorName = doctor ? doctor.full_name : 'Không xác định';
 
     const shift = await this.shiftService.findOne((await appointment).shift_id);
@@ -191,14 +256,16 @@ export class AppointmentsService {
       appointmentTime: appointmentTime,
       appointmentDate: (await appointment).appointment_date,
       doctorNote: notes,
-      status: (await appointment).status
+      status: (await appointment).status,
     };
 
     await this.mailService.sendAppointmentNotification(
-      (await appointment).email,
+      (
+        await appointment
+      ).email,
       'Cập nhật thông tin lịch khám',
       appointmentDetails,
-      'doctorUpdateAppointment', 
+      'doctorUpdateAppointment',
     );
 
     return updatedAppointment;
@@ -212,8 +279,14 @@ export class AppointmentsService {
     return this.appointmentsRepository.getStatusById(id);
   }
 
-  async findAllForDoctor(query: any, id: string): Promise<AppointmentResponseDto[]> {
-    const appointments = await this.appointmentsRepository.findAllForDoctor(query, id);
+  async findAllForDoctor(
+    query: any,
+    id: string,
+  ): Promise<AppointmentResponseDto[]> {
+    const appointments = await this.appointmentsRepository.findAllForDoctor(
+      query,
+      id,
+    );
     return plainToInstance(AppointmentResponseDto, appointments, {
       excludeExtraneousValues: true,
     });
@@ -227,39 +300,51 @@ export class AppointmentsService {
     return this.appointmentsRepository.getStatistics();
   }
 
-  async getAppointmentStatisticsBySpecialty(specialtyId: string){
+  async getAppointmentStatisticsBySpecialty(specialtyId: string) {
     return this.appointmentsRepository.getStatisticsBySpecialty(specialtyId);
   }
-  
 
-  async getShiftIdByTime(doctorId: string, startTime: string, date: Date): Promise<string> {
+  async getShiftIdByTime(
+    doctorId: string,
+    startTime: string,
+    date: Date,
+  ): Promise<string> {
     if (isNaN(date.getTime())) {
       throw new BadRequestException('Ngày không hợp lệ.');
     }
-  
+
     const formattedDate = date.toISOString().split('T')[0];
-  
-    const shifts = await this.doctorShiftService.findShiftsByDoctorAndDate(doctorId, formattedDate); 
-  
+
+    const shifts = await this.doctorShiftService.findShiftsByDoctorAndDate(
+      doctorId,
+      formattedDate,
+    );
+
     for (const shift of shifts) {
-      const shiftStart = shift.start_time;  
-      const shiftEnd = shift.end_time;     
-  
+      const shiftStart = shift.start_time;
+      const shiftEnd = shift.end_time;
+
       if (this.isTimeInShiftRange(startTime, shiftStart, shiftEnd)) {
         return shift.shift_id;
       }
     }
-  
+
     throw new BadRequestException('Giờ khám không hợp lệ');
   }
-  
 
-  private isTimeInShiftRange(startTime: string, shiftStart: string, shiftEnd: string): boolean {
+  private isTimeInShiftRange(
+    startTime: string,
+    shiftStart: string,
+    shiftEnd: string,
+  ): boolean {
     const startTimeMinutes = this.convertTimeToMinutes(startTime);
     const shiftStartMinutes = this.convertTimeToMinutes(shiftStart);
     const shiftEndMinutes = this.convertTimeToMinutes(shiftEnd);
 
-    return startTimeMinutes >= shiftStartMinutes && startTimeMinutes < shiftEndMinutes;
+    return (
+      startTimeMinutes >= shiftStartMinutes &&
+      startTimeMinutes < shiftEndMinutes
+    );
   }
 
   private convertTimeToMinutes(time: string): number {

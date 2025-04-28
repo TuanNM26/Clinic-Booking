@@ -4,6 +4,6 @@ import { PermissionGuard } from '../guards/permissonGuard';
 export function Auth(permissions: string[] = []): MethodDecorator {
   return applyDecorators(
     SetMetadata('permissions', permissions),
-    UseGuards(PermissionGuard)
+    UseGuards(PermissionGuard),
   );
 }

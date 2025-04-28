@@ -1,5 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsOptional, IsString, IsDate, IsEnum, IsNotEmpty } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsDate,
+  IsEnum,
+  IsNotEmpty,
+} from 'class-validator';
 import { AppointmentStatus } from 'src/common/enum/status.enum';
 
 export class UpdateAppointmentDto {
@@ -18,7 +24,6 @@ export class UpdateAppointmentDto {
   @IsOptional()
   @IsDate()
   @Type(() => Date)
-
   dob?: Date;
 
   @IsOptional()

@@ -9,8 +9,10 @@ import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UsersService {
-  
-  constructor(private readonly usersRepo: UsersRepository, private authService : AuthService) {}
+  constructor(
+    private readonly usersRepo: UsersRepository,
+    private authService: AuthService,
+  ) {}
 
   async create(dto: CreateUserDto): Promise<User> {
     const existingUser = await this.usersRepo.findByEmail(dto.email);
@@ -26,20 +28,25 @@ export class UsersService {
   async findAll(): Promise<UserResponseDto[]> {
     const users = await this.usersRepo.getAllUsers();
     console.log(users);
-    return plainToInstance(UserResponseDto, users, { excludeExtraneousValues: true });
+    return plainToInstance(UserResponseDto, users, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async findOne(id: string): Promise<UserResponseDto> {
     const user = await this.usersRepo.getUserById(id);
     if (!user) throw new NotFoundException('User not found');
-    return plainToInstance(UserResponseDto, user, { excludeExtraneousValues: true });
+    return plainToInstance(UserResponseDto, user, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async findUsersByRole(roleName: string): Promise<UserResponseDto[]> {
     const users = await this.usersRepo.findUsersByRole(roleName);
-    return plainToInstance(UserResponseDto, users, { excludeExtraneousValues: true });
+    return plainToInstance(UserResponseDto, users, {
+      excludeExtraneousValues: true,
+    });
   }
-  
 
   async findByEmail(email: string): Promise<User> {
     const user = await this.usersRepo.findByEmail(email);
@@ -59,16 +66,22 @@ export class UsersService {
 
   async findUserBySpecialization(specialization: string) {
     const user = await this.usersRepo.findUserBySpecialization(specialization);
-    return plainToInstance(UserResponseDto, user, { excludeExtraneousValues: true });
+    return plainToInstance(UserResponseDto, user, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async getManagedSpecialtyIdByHead(userId: string): Promise<string> {
-    const specialtyId = await this.usersRepo.findManagedSpecialtyIdByHead(userId);
-  
+    const specialtyId = await this.usersRepo.findManagedSpecialtyIdByHead(
+      userId,
+    );
+
     if (!specialtyId) {
-      throw new NotFoundException('Không tìm thấy chuyên khoa bạn đang quản lý');
+      throw new NotFoundException(
+        'Không tìm thấy chuyên khoa bạn đang quản lý',
+      );
     }
-  
+
     return specialtyId;
   }
 }

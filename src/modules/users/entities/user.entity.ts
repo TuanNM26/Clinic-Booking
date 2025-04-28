@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
 import { Role } from '../../roles/entities/role.entity';
 import { Specialization } from '../../specializations/entities/specialization.entity';
 import { DoctorShift } from '../../doctor-shifts/entities/doctor-shift.entity';
@@ -6,7 +13,7 @@ import { Appointment } from '../../appointments/entities/appointment.entity';
 import { BaseEntity } from '../../../common/database/base.entity';
 
 @Entity('users')
-export class User extends BaseEntity{
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -31,7 +38,6 @@ export class User extends BaseEntity{
   @Column({ nullable: true })
   identify_number: string;
 
-
   @Column({ type: 'date', nullable: true })
   dob: Date;
 
@@ -44,14 +50,14 @@ export class User extends BaseEntity{
   @Column()
   specialization_id: string;
 
-  @ManyToOne(() => Specialization, specialization => specialization.users)
+  @ManyToOne(() => Specialization, (specialization) => specialization.users)
   @JoinColumn({ name: 'specialization_id' })
   specialization: Specialization;
 
   @Column()
   role_id: string;
 
-  @ManyToOne(() => Role, role => role.users)
+  @ManyToOne(() => Role, (role) => role.users)
   @JoinColumn({ name: 'role_id' })
   role: Role;
 
@@ -61,9 +67,9 @@ export class User extends BaseEntity{
   @Column({ default: 0 })
   experience_years: number;
 
-  @OneToMany(() => DoctorShift, ds => ds.doctor)
+  @OneToMany(() => DoctorShift, (ds) => ds.doctor)
   doctorShifts: DoctorShift[];
 
-  @OneToMany(() => Appointment, appointment => appointment.doctor)
+  @OneToMany(() => Appointment, (appointment) => appointment.doctor)
   appointments: Appointment[];
 }

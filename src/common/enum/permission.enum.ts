@@ -32,5 +32,5 @@ export enum Permission {
   MANAGE_ROLES = 'manage_roles',
   GET_ALL_SHIFTS = 'get_all_shifts',
   GET_APPOINTMENTS_BY_DOCTOR_ID = 'get_appointments_by_doctor_id',
-  GET_LIST_OF_DOCTOR_SHIFTS = 'get_list_of_doctor_shifts'
+  GET_LIST_OF_DOCTOR_SHIFTS = 'get_list_of_doctor_shifts',
 }

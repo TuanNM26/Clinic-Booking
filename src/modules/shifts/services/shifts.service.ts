@@ -13,12 +13,16 @@ export class ShiftsService {
 
   async create(createShiftDto: CreateShiftDto): Promise<ResponseShiftDto> {
     const createdShift = await this.shiftRepository.create(createShiftDto);
-    return plainToInstance(ResponseShiftDto, createdShift, { excludeExtraneousValues: true });
+    return plainToInstance(ResponseShiftDto, createdShift, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async findAll(): Promise<ResponseShiftDto[]> {
     const shifts = await this.shiftRepository.findAll();
-    return plainToInstance(ResponseShiftDto, shifts, { excludeExtraneousValues: true });
+    return plainToInstance(ResponseShiftDto, shifts, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async findOne(id: string): Promise<ResponseShiftDto> {
@@ -26,10 +30,15 @@ export class ShiftsService {
     if (!shift) {
       throw new NotFoundException(`Shift with ID "${id}" not found`);
     }
-    return plainToInstance(ResponseShiftDto, shift, { excludeExtraneousValues: true });
+    return plainToInstance(ResponseShiftDto, shift, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  async update(id: string, updateShiftDto: UpdateShiftDto): Promise<ResponseShiftDto> {
+  async update(
+    id: string,
+    updateShiftDto: UpdateShiftDto,
+  ): Promise<ResponseShiftDto> {
     const shift = await this.shiftRepository.findOne(id);
     if (!shift) {
       throw new NotFoundException(`Shift with ID "${id}" not found`);
@@ -48,9 +57,19 @@ export class ShiftsService {
     return { message: `Shift with ID "${id}" has been successfully deleted` };
   }
 
-  async getAvailableShifts(specializationId: string, doctorId : string ,date: string ) {
-    const shifts = await this.shiftRepository.getAvailableShifts(specializationId, doctorId, date);
+  async getAvailableShifts(
+    specializationId: string,
+    doctorId: string,
+    date: string,
+  ) {
+    const shifts = await this.shiftRepository.getAvailableShifts(
+      specializationId,
+      doctorId,
+      date,
+    );
 
-    return plainToInstance(AvailableShiftDto, shifts, { excludeExtraneousValues: true });
+    return plainToInstance(AvailableShiftDto, shifts, {
+      excludeExtraneousValues: true,
+    });
   }
 }

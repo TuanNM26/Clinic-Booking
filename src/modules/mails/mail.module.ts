@@ -9,9 +9,9 @@ import { MailProcessor } from './mail.processor';
     BullModule.registerQueue({
       name: 'emailQueue',
     }),
-    MailerModule
+    MailerModule,
   ],
-  providers: [MailService,MailProcessor],
-  exports: [MailService], 
+  providers: [MailService, MailProcessor],
+  exports: [MailService],
 })
 export class MailModule {}
