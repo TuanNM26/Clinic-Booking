@@ -56,7 +56,7 @@ const envPath = path.join(__dirname, './configs/.env-dev');
         Appointment,Specialization
       ],
       synchronize: false,
-      migrations: ['dist/common/migrations/*.(js|ts)'],
+      migrations: [path.join(__dirname, 'migrations', '*.{js,ts}')],
       migrationsRun: true,
     }),
     BullModule.forRoot({

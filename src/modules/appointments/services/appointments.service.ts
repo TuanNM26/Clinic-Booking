@@ -237,7 +237,7 @@ export class AppointmentsService {
       throw new BadRequestException('Ngày không hợp lệ.');
     }
   
-    const formattedDate = date.toISOString().split('T')[0]; // 'YYYY-MM-DD'
+    const formattedDate = date.toISOString().split('T')[0];
   
     const shifts = await this.doctorShiftService.findShiftsByDoctorAndDate(doctorId, formattedDate); 
   
