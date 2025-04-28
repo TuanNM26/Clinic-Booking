@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Between, Repository, UpdateResult } from 'typeorm';
+import { Between, In, Repository, UpdateResult } from 'typeorm';
 import { DoctorShift } from '../entities/doctor-shift.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDoctorShiftDto } from '../dto/create-doctor-shift.dto';
@@ -282,7 +282,7 @@ export class DoctorShiftRepository {
         where: {
           doctor_id: doctorId,
           appointment_date: Between(startOfDay, endOfDay),
-          status: AppointmentStatus.CONFIRMED,
+          status: In([AppointmentStatus.CONFIRMED, AppointmentStatus.PENDING]),
         },
         select: ['start_time'],
       },

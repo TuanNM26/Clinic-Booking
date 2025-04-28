@@ -171,13 +171,13 @@ export class DoctorShiftsService {
       date,
     );
     if (!doctorShift) {
-      throw new Error('Ca làm không tồn tại');
+      throw new Error('Shift is not exist');
     }
 
     const shift = await this.shiftService.findOne(shiftId);
 
     if (!shift || !shift.start_time) {
-      throw new Error('Thông tin ca làm không hợp lệ');
+      throw new Error('Shift information is not valid');
     }
     const [hours, minutes, seconds = 0] = shift.start_time
       .split(':')
@@ -192,7 +192,7 @@ export class DoctorShiftsService {
 
     if (timeDifference < 60 * 60 * 1000) {
       throw new BadRequestException(
-        'Không thể hủy ca làm vì thời gian còn lại quá ít',
+        'Can not cancel because time too close',
       );
     }
     await this.doctorShiftRepository.updateShiftStatus(

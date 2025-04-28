@@ -51,15 +51,20 @@ export class CronService {
 
         const timeDifference = appointmentDateTime.getTime() - now.getTime();
         if (timeDifference > 0 && timeDifference <= reminderThreshold) {
+          const dateObj = appointmentDate;
+          const day = dateObj.getDate().toString().padStart(2, '0');
+          const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+          const year = dateObj.getFullYear();
+          const formattedDate = `${day}-${month}-${year}`;
           const context = {
             patientName: appointment.full_name,
             appointmentTime: appointment.start_time,
-            appointmentDate: appointment.appointment_date,
+            appointmentDate: formattedDate,
             appointmentAddress: appointment.address,
             appointmentNote: appointment.notes,
             doctorName: appointment.doctor.full_name,
           };
-          const subject = 'Lời nhắc lịch hẹn khám bệnh';
+          const subject = 'Appointment Reminder';
           const template = 'appointmentNotification';
 
           try {

@@ -78,7 +78,7 @@ export class UsersService {
 
     if (!specialtyId) {
       throw new NotFoundException(
-        'Không tìm thấy chuyên khoa bạn đang quản lý',
+        'Can not find specialization',
       );
     }
 

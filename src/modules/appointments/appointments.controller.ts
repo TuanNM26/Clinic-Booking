@@ -117,12 +117,12 @@ export class AppointmentsController {
   ): Promise<Appointment> {
     const appointment = await this.appointmentsService.findOne(id);
     if (!appointment) {
-      throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
+      throw new NotFoundException(`Can not find appointment with id: ${id}`);
     }
 
     if (appointment.doctor_id !== user.sub) {
       throw new ForbiddenException(
-        'Bạn không có quyền thực hiện hành động này trên lịch hẹn này.',
+        'You do not have permission for this action .',
       );
     }
     updateAppointmentStatusDto.status = AppointmentStatus.CONFIRMED;
@@ -142,11 +142,11 @@ export class AppointmentsController {
   ): Promise<Appointment> {
     const appointment = await this.appointmentsService.findOne(id);
     if (!appointment) {
-      throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
+      throw new NotFoundException(`Can not find appointment with id: ${id}`);
     }
     if (appointment.doctor_id !== user.sub) {
       throw new ForbiddenException(
-        'Bạn không có quyền thực hiện hành động này trên lịch hẹn này.',
+        'You do not have permission for this action .',
       );
     }
     updateAppointmentStatusDto.status = AppointmentStatus.CANCELLED;
@@ -166,11 +166,11 @@ export class AppointmentsController {
   ): Promise<Appointment> {
     const appointment = await this.appointmentsService.findOne(id);
     if (!appointment) {
-      throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
+      throw new NotFoundException(`Can not find appointment with id: ${id}`);
     }
     if (appointment.doctor_id !== user.sub) {
       throw new ForbiddenException(
-        'Bạn không có quyền thực hiện hành động này trên lịch hẹn này.',
+        'You do not have permission for this action .',
       );
     }
     return this.appointmentsService.updateAppointmentNotes(
@@ -192,13 +192,13 @@ export class AppointmentsController {
     @Res({ passthrough: false }) res: Response,
   ) {
     if (!['confirm', 'cancel'].includes(action)) {
-      throw new HttpException('Hành động không hợp lệ', HttpStatus.BAD_REQUEST);
+      throw new HttpException('Actice invalid', HttpStatus.BAD_REQUEST);
     }
 
     try {
       const appointment = await this.appointmentsService.findOne(id);
       if (!appointment) {
-        throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
+        throw new NotFoundException(`Can not find appointment with id: ${id}`);
       }
 
       if (action === 'confirm') {

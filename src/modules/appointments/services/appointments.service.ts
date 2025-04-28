@@ -48,7 +48,7 @@ export class AppointmentsService {
     const appointmentDate = appointment.appointment_date;
 
     const doctor = await this.doctorService.findOne(doctorId);
-    const doctorName = doctor ? doctor.full_name : 'Không xác định';
+    const doctorName = doctor ? doctor.full_name : 'Not found';
 
     const shift = await this.shiftService.findOne(shiftId);
     const appointmentTime = appointment.start_time;
@@ -69,14 +69,14 @@ export class AppointmentsService {
 
     await this.mailService.sendAppointmentNotification(
       patientEmail,
-      'Xác nhận lịch hẹn khám',
+      'Confirm information of appointment',
       appointmentDetails,
       'patientConfirmShedule',
     );
 
     await this.mailService.sendAppointmentNotification(
       doctor.email,
-      'Xác nhận lịch hẹn khám',
+      'Confirm information of appointment',
       appointmentDetails,
       'doctorNewAppointment',
     );
@@ -147,7 +147,7 @@ export class AppointmentsService {
       status,
     );
     if (!updatedAppointment) {
-      throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
+      throw new NotFoundException(`Not found appointment with id: ${id}`);
     }
     const appointment = this.findOne(id);
 
@@ -156,7 +156,7 @@ export class AppointmentsService {
         await appointment
       ).doctor_id,
     );
-    const doctorName = doctor ? doctor.full_name : 'Không xác định';
+    const doctorName = doctor ? doctor.full_name : 'Not found';
 
     const shift = await this.shiftService.findOne((await appointment).shift_id);
     const appointmentTime = shift.start_time;
@@ -174,7 +174,7 @@ export class AppointmentsService {
       (
         await appointment
       ).email,
-      'Cập nhật thông tin lịch khám',
+      'Update information of appointment',
       appointmentDetails,
       'doctorUpdateAppointment',
     );
@@ -190,7 +190,7 @@ export class AppointmentsService {
     const updatedAppointment =
       await this.appointmentsRepository.cancelAppointment(id, status, reason);
     if (!updatedAppointment) {
-      throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
+      throw new NotFoundException(`Not found appointment with id: ${id}`);
     }
     const appointment = this.findOne(id);
 
@@ -199,7 +199,7 @@ export class AppointmentsService {
         await appointment
       ).doctor_id,
     );
-    const doctorName = doctor ? doctor.full_name : 'Không xác định';
+    const doctorName = doctor ? doctor.full_name : 'Not found';
 
     const shift = await this.shiftService.findOne((await appointment).shift_id);
     const appointmentTime = (await appointment).start_time;
@@ -218,7 +218,7 @@ export class AppointmentsService {
       (
         await appointment
       ).email,
-      'Cập nhật thông tin lịch khám',
+      'Update information of appointment',
       appointmentDetails,
       'cancel-appointment',
     );
@@ -235,7 +235,7 @@ export class AppointmentsService {
       notes,
     );
     if (!updatedAppointment) {
-      throw new NotFoundException(`Không tìm thấy lịch hẹn với ID ${id}`);
+      throw new NotFoundException(`Not found appointment with id: ${id}`);
     }
 
     const appointment = this.findOne(id);
@@ -245,7 +245,7 @@ export class AppointmentsService {
         await appointment
       ).doctor_id,
     );
-    const doctorName = doctor ? doctor.full_name : 'Không xác định';
+    const doctorName = doctor ? doctor.full_name : 'Not found';
 
     const shift = await this.shiftService.findOne((await appointment).shift_id);
     const appointmentTime = shift.start_time;
@@ -263,7 +263,7 @@ export class AppointmentsService {
       (
         await appointment
       ).email,
-      'Cập nhật thông tin lịch khám',
+      'Update information of appointment',
       appointmentDetails,
       'doctorUpdateAppointment',
     );
@@ -310,7 +310,7 @@ export class AppointmentsService {
     date: Date,
   ): Promise<string> {
     if (isNaN(date.getTime())) {
-      throw new BadRequestException('Ngày không hợp lệ.');
+      throw new BadRequestException('Date invalid');
     }
 
     const formattedDate = date.toISOString().split('T')[0];
@@ -329,7 +329,7 @@ export class AppointmentsService {
       }
     }
 
-    throw new BadRequestException('Giờ khám không hợp lệ');
+    throw new BadRequestException('Time is invalid');
   }
 
   private isTimeInShiftRange(

@@ -35,7 +35,7 @@ export class AppointmentsRepository {
 
     const shift = await this.shiftService.findOne(shift_id);
     if (!shift) {
-      throw new HttpException('Ca làm không tồn tại.', HttpStatus.NOT_FOUND);
+      throw new HttpException('Shift is not exist.', HttpStatus.NOT_FOUND);
     }
 
     const isDoctorAssigned = await this.doctorShiftService.findOne(
@@ -44,7 +44,7 @@ export class AppointmentsRepository {
     );
     if (!isDoctorAssigned) {
       throw new HttpException(
-        'Bác sĩ chưa được phân ca làm này.',
+        'Doctor is not registed for this shift',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -55,7 +55,7 @@ export class AppointmentsRepository {
 
     if (shiftDateTimeUTC < now) {
       throw new HttpException(
-        'Không thể đặt lịch khám trong ca đã qua.',
+        'Can not choose for time in the past.',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -82,7 +82,7 @@ export class AppointmentsRepository {
 
     if (hasConflict) {
       throw new HttpException(
-        'Đã có lịch hẹn khác gần thời gian này (dưới 30 phút).',
+        'Already have appointment in between 30 minutes.',
         HttpStatus.CONFLICT,
       );
     }
@@ -146,7 +146,7 @@ export class AppointmentsRepository {
       appointment.status === AppointmentStatus.CONFIRMED &&
       status === AppointmentStatus.CONFIRMED
     ) {
-      throw new BadRequestException('Lịch hẹn này đã được xác nhận.');
+      throw new BadRequestException('Appointment already confirmed.');
     }
     appointment.status = status;
     return this.appointmentRepository.save(appointment);
@@ -167,7 +167,7 @@ export class AppointmentsRepository {
       appointment.status === AppointmentStatus.CONFIRMED &&
       status === AppointmentStatus.CONFIRMED
     ) {
-      throw new BadRequestException('Lịch hẹn này đã được xác nhận.');
+      throw new BadRequestException('Appointment already confirmed.');
     }
     appointment.status = status;
     appointment.reason_canceled = reason;
@@ -263,7 +263,7 @@ export class AppointmentsRepository {
     const appointmentsPerDoctor: Record<string, number> = {};
     for (const appt of appointments) {
       if (appt.doctor && appointmentsPerDoctorRaw[appt.doctor_id]) {
-        const doctorName = appt.doctor.full_name || 'Không rõ tên bác sĩ';
+        const doctorName = appt.doctor.full_name || 'Not Found';
         appointmentsPerDoctor[doctorName] =
           appointmentsPerDoctorRaw[appt.doctor_id];
       }
@@ -355,7 +355,7 @@ export class AppointmentsRepository {
     const appointmentsPerDoctor: Record<string, number> = {};
     for (const appt of appointments) {
       if (appt.doctor && appointmentsPerDoctorRaw[appt.doctor_id]) {
-        const doctorName = appt.doctor.full_name || 'Không rõ tên bác sĩ';
+        const doctorName = appt.doctor.full_name || 'Not found';
         appointmentsPerDoctor[doctorName] =
           appointmentsPerDoctorRaw[appt.doctor_id];
       }
