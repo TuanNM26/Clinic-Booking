@@ -128,6 +128,18 @@ export class AppointmentsService {
     );
   }
 
+  async findAppointmentsByShiftAndTime(
+    doctorId: string,
+    shiftId: string,
+    date:Date
+  ): Promise<Appointment[]> {
+    return this.appointmentsRepository.findAppointmentsByShiftAndTime(
+      doctorId,
+      shiftId,
+      date
+    );
+  }
+
   async update(
     id: string,
     updateAppointmentDto: UpdateAppointmentDto,
@@ -159,13 +171,14 @@ export class AppointmentsService {
     const doctorName = doctor ? doctor.full_name : 'Not found';
 
     const shift = await this.shiftService.findOne((await appointment).shift_id);
-    const appointmentTime = shift.start_time;
-
+    const appointmentTime = (await appointment).start_time;
+    const appointmentDate = (await appointment).appointment_date;
+    const formattedDate = new Date(appointmentDate).toISOString().split('T')[0];
     const appointmentDetails = {
       patientName: (await appointment).full_name,
       doctorName: doctorName,
       appointmentTime: appointmentTime,
-      appointmentDate: (await appointment).appointment_date,
+      appointmentDate: formattedDate,
       doctorNote: (await appointment).notes,
       status: status,
     };
@@ -248,13 +261,14 @@ export class AppointmentsService {
     const doctorName = doctor ? doctor.full_name : 'Not found';
 
     const shift = await this.shiftService.findOne((await appointment).shift_id);
-    const appointmentTime = shift.start_time;
-
+    const appointmentTime = (await appointment).start_time;
+    const appointmentDate = (await appointment).appointment_date;
+    const formattedDate = new Date(appointmentDate).toISOString().split('T')[0];  
     const appointmentDetails = {
       patientName: (await appointment).full_name,
       doctorName: doctorName,
       appointmentTime: appointmentTime,
-      appointmentDate: (await appointment).appointment_date,
+      appointmentDate: formattedDate,
       doctorNote: notes,
       status: (await appointment).status,
     };

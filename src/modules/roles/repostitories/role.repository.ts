@@ -21,7 +21,10 @@ export class RoleRepository {
   }
 
   async findAll(): Promise<Role[]> {
-    return await this.roleRepository.find();
+    return await this.roleRepository.find({
+      relations: ['permissions']
+    }
+    );
   }
 
   async findOne(id: string): Promise<Role | null> {

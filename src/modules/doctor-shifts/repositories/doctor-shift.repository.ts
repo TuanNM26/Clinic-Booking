@@ -31,13 +31,13 @@ export class DoctorShiftRepository {
     });
 
     if (!shift) {
-      throw new NotFoundException('Ca làm không tồn tại.');
+      throw new NotFoundException('Shift is not exist.');
     }
 
     const today = new Date();
     const shiftDate = new Date(date);
     if (shiftDate < new Date(today.setHours(0, 0, 0, 0))) {
-      throw new BadRequestException('Không thể đăng ký ca làm trong quá khứ.');
+      throw new BadRequestException('Can not register shift in the past.');
     }
 
     const doctor = await this.doctorShiftRepository.manager.findOne(User, {
@@ -46,12 +46,9 @@ export class DoctorShiftRepository {
 
     if (!doctor || !doctor.is_active) {
       throw new BadRequestException(
-        'Bác sĩ không tồn tại hoặc đã ngưng hoạt động.',
+        'Doctor is not active.',
       );
     }
-    console.log(doctorId);
-    console.log(shiftId);
-    console.log(shiftDate);
     const conflict = await this.doctorShiftRepository
       .createQueryBuilder('doctor_shift')
       .innerJoin('doctor_shift.shift', 's')
@@ -64,12 +61,16 @@ export class DoctorShiftRepository {
       })
       .getOne();
     console.log(conflict);
-
-    if (conflict) {
+    if (conflict && conflict.status === DoctorShiftStatus.CANCELLED) {
+      conflict.status = DoctorShiftStatus.ACTIVE;
+      return await this.doctorShiftRepository.save(conflict);
+    }
+    if (conflict && conflict.status !== DoctorShiftStatus.CANCELLED) {
       throw new BadRequestException(
-        'Bác sĩ đã có ca làm trùng thời gian trong ngày này.',
+        'Doctor is already have shift in this time.',
       );
     }
+    
 
     const doctorShift = this.doctorShiftRepository.create({
       doctor_id: doctorId,

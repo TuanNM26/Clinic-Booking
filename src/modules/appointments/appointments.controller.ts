@@ -20,6 +20,7 @@ import {
 import { AppointmentsService } from './services/appointments.service';
 import { CreateAppointmentDto } from './dto';
 import { UpdateAppointmentDto } from './dto';
+import * as XLSX from 'xlsx';
 import { Appointment } from './entities/appointment.entity';
 import { AppointmentResponseDto } from './dto';
 import { CurrentUser } from 'src/common/decorator/currentUser.decorator';
@@ -67,16 +68,61 @@ export class AppointmentsController {
     return this.appointmentsService.getAppointmentStatistics();
   }
 
-  @Get('statistics/by-specialty')
+//   @Get('statistics/by-specialty')
+// @Auth([`${Permission.SHOW_APPOINTMENT_STATISTIC_BY_SPECIALIZATION}`])
+// async getStatisticsBySpecialty(@CurrentUser() user: any, @Res() res: Response) {
+//     const specialtyId = await this.userService.getManagedSpecialtyIdByHead(
+//         user.sub,
+//     );
+//     console.log(specialtyId);
+//     const appointmentStatistics: AppointmentStatisticsDto = await this.appointmentsService.getAppointmentStatisticsBySpecialty(
+//         specialtyId,
+//     );
+//     const excelData = [
+//         { header: 'Tổng số lịch hẹn', value: appointmentStatistics.totalAppointments },
+//         { header: 'Lịch hẹn đã xác nhận', value: appointmentStatistics.confirmedAppointments },
+//         { header: 'Lịch hẹn đang chờ', value: appointmentStatistics.pendingAppointments },
+//         { header: 'Lịch hẹn đã hủy', value: appointmentStatistics.canceledAppointments },
+//         { header: 'Tỷ lệ xác nhận', value: appointmentStatistics.confirmationRate },
+//         { header: 'Tỷ lệ hủy', value: appointmentStatistics.cancellationRate },
+//         { header: 'Số bệnh nhân mới', value: appointmentStatistics.newPatientCount },
+//         { header: 'Số bệnh nhân tái khám', value: appointmentStatistics.returningPatientCount },
+//         { header: 'Thời gian chờ xác nhận trung bình (giờ)', value: appointmentStatistics.averageConfirmationTimeInHours },
+//         { header: 'Số lịch hẹn theo bác sĩ', value: '' }, 
+//         ...Object.entries(appointmentStatistics.appointmentsPerDoctor).map(([doctorName, count]) => ({
+//             header: doctorName,
+//             value: count,
+//         })),
+//     ];
+
+//     const workbook = XLSX.utils.book_new();
+//     const worksheet = XLSX.utils.json_to_sheet(excelData, { header: ['header', 'value'] });
+
+//     XLSX.utils.book_append_sheet(workbook, worksheet, 'Thống kê chuyên khoa');
+
+//     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'buffer' });
+
+//     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+//     res.setHeader('Content-Disposition', `attachment; filename="thong_ke_chuyen_khoa_${new Date().toISOString().slice(0, 10)}.xlsx"`);
+//     res.status(HttpStatus.OK).send(Buffer.from(excelBuffer));
+// }
+
+@Get('statistics/by-specialty')
+
   @Auth([`${Permission.SHOW_APPOINTMENT_STATISTIC_BY_SPECIALIZATION}`])
+
   async getStatisticsBySpecialty(@CurrentUser() user: any) {
-    const specialtyId = await this.userService.getManagedSpecialtyIdByHead(
-      user.sub,
-    );
-    console.log(specialtyId);
-    return this.appointmentsService.getAppointmentStatisticsBySpecialty(
-      specialtyId,
-    );
+
+  const specialtyId = await this.userService.getManagedSpecialtyIdByHead(
+
+  user.sub,
+
+  );
+  console.log(specialtyId);
+  return this.appointmentsService.getAppointmentStatisticsBySpecialty(
+  specialtyId,
+
+  );
   }
 
   @Get(':id')
@@ -219,7 +265,7 @@ export class AppointmentsController {
         <html>
         <head>
           <meta charset="utf-8" />
-          <title>Kết quả xử lý</title>
+          <title>Processing Result</title>
           <style>
             body {
               font-family: Arial, sans-serif;
@@ -239,14 +285,14 @@ export class AppointmentsController {
         </head>
         <body>
           <div class="message">
-            <h2>Lịch hẹn đã được ${
-              action === 'confirm' ? 'duyệt' : 'hủy'
-            } thành công!</h2>
-            <p>Bạn có thể đóng cửa sổ này.</p>
+            <h2>The appointment has been ${
+              action === 'confirm' ? 'approved' : 'canceled'
+            } successfully!</h2>
+            <p>You may close this window now.</p>
           </div>
         </body>
         </html>
-      `);
+      `);      
     } catch (err) {
       console.error(err);
     }

@@ -165,54 +165,59 @@ export class DoctorShiftsService {
     cancelShiftDto: CancelShiftDto,
   ) {
     const { reason } = cancelShiftDto;
+  
     const doctorShift = await this.doctorShiftRepository.findOneByDate(
       doctorId,
       shiftId,
       date,
     );
+  
     if (!doctorShift) {
       throw new Error('Shift is not exist');
     }
-
+  
     const shift = await this.shiftService.findOne(shiftId);
-
+  
     if (!shift || !shift.start_time) {
       throw new Error('Shift information is not valid');
     }
-    const [hours, minutes, seconds = 0] = shift.start_time
-      .split(':')
-      .map(Number);
+  
+    const [hours, minutes, seconds = 0] = shift.start_time.split(':').map(Number);
     const shiftStartDateTime = new Date(doctorShift.date);
     shiftStartDateTime.setHours(hours);
     shiftStartDateTime.setMinutes(minutes);
     shiftStartDateTime.setSeconds(seconds);
-
+  
     const now = new Date();
     const timeDifference = shiftStartDateTime.getTime() - now.getTime();
-
+  
     if (timeDifference < 60 * 60 * 1000) {
-      throw new BadRequestException(
-        'Can not cancel because time too close',
-      );
+      throw new BadRequestException('Can not cancel because time too close');
     }
+  
     await this.doctorShiftRepository.updateShiftStatus(
       doctorId,
       shiftId,
       date,
       DoctorShiftStatus.CANCELLED,
     );
-
-    const appointments = await this.appointmentService.findAppointmentsByShift(
+  
+    const appointments = await this.appointmentService.findAppointmentsByShiftAndTime(
       doctorId,
       shiftId,
+      date,
     );
-
-    for (const appointment of appointments) {
-      await this.appointmentService.cancelAppointment(
-        appointment.id,
-        AppointmentStatus.CANCELLED,
-        reason,
+  
+    if (appointments && appointments.length > 0) {
+      await Promise.all(
+        appointments.map((appointment) =>
+          this.appointmentService.cancelAppointment(
+            appointment.id,
+            AppointmentStatus.CANCELLED,
+            reason,
+          )
+        )
       );
     }
-  }
+  }  
 }

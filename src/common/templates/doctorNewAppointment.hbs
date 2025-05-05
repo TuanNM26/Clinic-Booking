@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Thông báo lịch hẹn mới</title>
+  <title>New Appointment Notification</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -52,26 +52,26 @@
 </head>
 <body>
   <div class="container">
-    <h2>Thông báo lịch hẹn mới</h2>
-    <p>Xin chào bác sĩ {{ doctorName }},</p>
-    <p>Bạn có một lịch hẹn khám mới vừa được đặt:</p>
+    <h2>New Appointment Notification</h2>
+    <p>Hello Dr. {{ doctorName }},</p>
+    <p>You have a new medical appointment scheduled:</p>
     <div class="appointment-details">
-      <p><strong>Bệnh nhân:</strong> {{ patientName }}</p>
-      <p><strong>Thời gian:</strong> {{ appointmentTime }}</p>
-      <p><strong>Ngày:</strong> {{ appointmentDate }}</p>
+      <p><strong>Patient:</strong> {{ patientName }}</p>
+      <p><strong>Time:</strong> {{ appointmentTime }}</p>
+      <p><strong>Date:</strong> {{ appointmentDate }}</p>
       {{#if appointmentNote}}
-      <p><strong>Ghi chú của bệnh nhân:</strong> {{ appointmentNote }}</p>
+      <p><strong>Patient's Note:</strong> {{ appointmentNote }}</p>
       {{/if}}
     </div>
-    <p>Vui lòng xem chi tiết lịch trình của bạn.</p>
+    <p>Please review your schedule for more details.</p>
 
     <div class="button-container">
-      <a href="{{baseUrl}}/appointments/status/confirm/{{appointmentId}}" class="btn btn-approve">Duyệt lịch</a>
-      <a href="{{baseUrl}}/appointments/status/cancel/{{appointmentId}}" class="btn btn-cancel">Hủy lịch</a>
+      <a href="{{baseUrl}}/appointments/status/confirm/{{appointmentId}}" class="btn btn-approve">Approve</a>
+      <a href="{{baseUrl}}/appointments/status/cancel/{{appointmentId}}" class="btn btn-cancel">Cancel</a>
     </div>
 
-    <p>Trân trọng,</p>
-    <p>Hệ thống đặt lịch phòng khám</p>
+    <p>Best regards,</p>
+    <p>Clinic Appointment System</p>
   </div>
 </body>
 </html>

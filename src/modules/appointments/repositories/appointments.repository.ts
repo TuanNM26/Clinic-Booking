@@ -8,7 +8,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, FindOptionsWhere, Repository } from 'typeorm';
+import { FindManyOptions, FindOptionsWhere, Not, Repository } from 'typeorm';
 import { Appointment } from '../entities/appointment.entity';
 import { CreateAppointmentDto } from '../dto/create-appointment.dto';
 import { UpdateAppointmentDto } from '../dto';
@@ -17,6 +17,8 @@ import { ShiftsService } from 'src/modules/shifts/services/shifts.service';
 import { DoctorShiftsService } from 'src/modules/doctor-shifts/services/doctor-shifts.service';
 import { AppointmentStatisticsDto } from '../dto/appointment-statistics.dto';
 import dayjs from 'dayjs';
+import { Between } from 'typeorm';
+import * as moment from 'moment';
 @Injectable()
 export class AppointmentsRepository {
   constructor(
@@ -60,10 +62,26 @@ export class AppointmentsRepository {
       );
     }
 
+    const existingCancelledAppointment = await this.appointmentRepository.findOne({
+      where: {
+        doctor_id,
+        appointment_date,
+        start_time,
+        status: AppointmentStatus.CANCELLED,
+      },
+    });
+  
+    if (existingCancelledAppointment) {
+      existingCancelledAppointment.status = AppointmentStatus.PENDING;
+      const updatedAppointment = await this.appointmentRepository.save(existingCancelledAppointment);
+      return updatedAppointment;
+    }
+
     const existingAppointments = await this.appointmentRepository.find({
       where: {
         doctor_id,
         appointment_date,
+        status: Not(AppointmentStatus.CANCELLED),
       },
     });
 
@@ -71,11 +89,8 @@ export class AppointmentsRepository {
     const newStartMinutes = newHour * 60 + newMinute;
 
     const hasConflict = existingAppointments.some((appointment) => {
-      const [existingHour, existingMinute] = appointment.start_time
-        .split(':')
-        .map(Number);
+      const [existingHour, existingMinute] = appointment.start_time.split(':').map(Number);
       const existingStartMinutes = existingHour * 60 + existingMinute;
-
       const diffInMinutes = Math.abs(existingStartMinutes - newStartMinutes);
       return diffInMinutes < 30;
     });
@@ -120,6 +135,25 @@ export class AppointmentsRepository {
         `Appointments for doctor ID "${doctorId}" and shift ID "${shiftId}" not found`,
       );
     }
+    return appointments;
+  }
+
+  async findAppointmentsByShiftAndTime(
+    doctorId: string,
+    shiftId: string,
+    date: Date
+  ): Promise<Appointment[]> {
+    const startOfDay = moment(date).startOf('day').toDate(); 
+    const endOfDay = moment(date).endOf('day').toDate();     
+  
+    const appointments = await this.appointmentRepository.find({
+      where: {
+        doctor_id: doctorId,
+        shift_id: shiftId,
+        appointment_date: Between(startOfDay, endOfDay)
+      },
+    });
+    console.log("appointment herre: " + appointments)
     return appointments;
   }
 

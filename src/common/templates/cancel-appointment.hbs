@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Thông báo huỷ lịch hẹn khám bệnh</title>
+  <title>Appointment Cancellation Notice</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -36,28 +36,28 @@
 </head>
 <body>
   <div class="container">
-    <h2>Thông báo huỷ lịch hẹn</h2>
-    <p>Xin chào {{ patientName }},</p>
-    <p>Chúng tôi rất tiếc phải thông báo rằng lịch hẹn khám bệnh của bạn đã được <strong>huỷ bỏ</strong>.</p>
+    <h2>Appointment Cancellation Notice</h2>
+    <p>Hello {{ patientName }},</p>
+    <p>We regret to inform you that your scheduled medical appointment has been <strong>cancelled</strong>.</p>
 
     <div class="appointment-details">
-      <p><strong>Thời gian:</strong> {{ appointmentTime }}</p>
-      <p><strong>Ngày:</strong> {{ appointmentDate }}</p>
+      <p><strong>Time:</strong> {{ appointmentTime }}</p>
+      <p><strong>Date:</strong> {{ appointmentDate }}</p>
       {{#if doctorName}}
-      <p><strong>Bác sĩ:</strong> {{ doctorName }}</p>
+      <p><strong>Doctor:</strong> {{ doctorName }}</p>
       {{/if}}
       {{#if appointmentAddress}}
-      <p><strong>Địa điểm:</strong> {{ appointmentAddress }}</p>
+      <p><strong>Location:</strong> {{ appointmentAddress }}</p>
       {{/if}}
       {{#if reason}}
-      <p class="note"><strong>Lý do huỷ:</strong> {{ reason }}</p>
+      <p class="note"><strong>Cancellation Reason:</strong> {{ reason }}</p>
       {{/if}}
     </div>
 
-    <p>Nếu bạn có bất kỳ thắc mắc hoặc cần đặt lại lịch, vui lòng liên hệ với chúng tôi hoặc truy cập hệ thống đặt lịch trực tuyến.</p>
+    <p>If you have any questions or would like to reschedule, please contact us or visit our online booking system.</p>
 
-    <p>Trân trọng,</p>
-    <p>Hệ thống đặt lịch phòng khám</p>
+    <p>Best regards,</p>
+    <p>Clinic Appointment System</p>
   </div>
 </body>
 </html>

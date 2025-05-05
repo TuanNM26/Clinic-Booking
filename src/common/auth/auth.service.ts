@@ -54,7 +54,7 @@ export default class AuthService {
     const accessToken = this.sign(
       payload,
       this._configService.get<string>('ACCESS_KEY')!,
-      { expiresIn: '15m' },
+      { expiresIn: '1d' },
     );
 
     const refreshToken = this.sign(
@@ -79,7 +79,7 @@ export default class AuthService {
       const newAccessToken = this.sign(
         { username: payload.username, sub: payload.sub, role: payload.role },
         this._configService.get<string>('ACCESS_KEY')!,
-        { expiresIn: '15m' },
+        { expiresIn: '30m' },
       );
 
       return { access_token: newAccessToken };

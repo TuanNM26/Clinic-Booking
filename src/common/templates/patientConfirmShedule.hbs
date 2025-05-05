@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Xác nhận lịch hẹn khám</title>
+  <title>Appointment Confirmation</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -34,21 +34,21 @@
 </head>
 <body>
   <div class="container">
-    <h2>Xác nhận lịch hẹn khám</h2>
-    <p>Xin chào {{ patientName }},</p>
-    <p>Chúng tôi xin xác nhận lịch hẹn khám của bạn như sau:</p>
+    <h2>Appointment Confirmation</h2>
+    <p>Hello {{ patientName }},</p>
+    <p>We would like to confirm your appointment as follows:</p>
     <div class="appointment-details">
-      <p><strong>Bác sĩ:</strong> {{ doctorName }}</p>
-      <p><strong>Thời gian:</strong> {{ appointmentTime }}</p>
-      <p><strong>Ngày:</strong> {{ appointmentDate }}</p>
+      <p><strong>Doctor:</strong> {{ doctorName }}</p>
+      <p><strong>Time:</strong> {{ appointmentTime }}</p>
+      <p><strong>Date:</strong> {{ appointmentDate }}</p>
       {{#if appointmentNote}}
-      <p><strong>Ghi chú:</strong> {{ appointmentNote }}</p>
+      <p><strong>Note:</strong> {{ appointmentNote }}</p>
       {{/if}}
     </div>
-    <p>Vui lòng đến phòng khám đúng giờ.</p>
-    <p>Nếu bạn có bất kỳ câu hỏi nào, xin vui lòng liên hệ với chúng tôi.</p>
-    <p>Trân trọng,</p>
-    <p>Hệ thống đặt lịch phòng khám</p>
+    <p>Please arrive at the clinic on time.</p>
+    <p>If you have any questions, feel free to contact us.</p>
+    <p>Best regards,</p>
+    <p>Clinic Appointment System</p>
   </div>
 </body>
 </html>
